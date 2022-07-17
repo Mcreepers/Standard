@@ -8,13 +8,8 @@
 #include "protocol_dbus.h"
 
 Chassis_Ctrl Chassis;
-//State_Switch Chassis_State_Switch(5);
-
-uint16_t last_key;
 
 u8 UIsend=0;
-u8 Speed_Gear;
-extern uint8_t Armor_Plate_Flag;
 //底盘速度环pid值
 const static fp32 Motor_Speed_Pid[3] = {M3505_MOTOR_SPEED_PID_KP, M3505_MOTOR_SPEED_PID_KI, M3505_MOTOR_SPEED_PID_KD};
 //底盘旋转环pid值
@@ -25,9 +20,11 @@ const static fp32 chassis_z_order_filter[1] = {CHASSIS_ACCEL_Z_NUM};
 #if useSteering
 const static fp32 m6020_motor_angle_pid[3] = {M6020_MOTOR_ANGLE_PID_KP, M6020_MOTOR_ANGLE_PID_KI, M6020_MOTOR_ANGLE_PID_KD};
 const static fp32 m6020_motor_speed_pid[3] = {M6020_MOTOR_SPEED_PID_KP, M6020_MOTOR_SPEED_PID_KI, M6020_MOTOR_SPEED_PID_KD};
+const static fp32 MOTOR_6020_offset[4] = {MOTOR_6020_1_offset, MOTOR_6020_2_offset, MOTOR_6020_3_offset, MOTOR_6020_4_offset};//6020 ecd中值
 #endif
 #define CHASSISMSG_Q_NUM    1  		    //底盘消息队列的数量
 QueueHandle_t Chassis_Queue;   		//底盘状态消息队列句柄
+
 void Chassis_Task(void *pvParameters)
 {
 	Chassis_Queue=xQueueCreate(CHASSISMSG_Q_NUM,sizeof(u8));
@@ -59,8 +56,11 @@ void Chassis_Task(void *pvParameters)
 		}
 		
 		xQueueSend(Guard_Queue, &(Guard_ID = chassis), 0);
-
-		vTaskDelay(CHASSIS_CONTROL_TIME_MS);
+		if (xQueuePeek(Error_Queue, &Guard_ID, 0))
+		{
+			Chassis.error_behaviour_control_set();
+		}
+			vTaskDelay(CHASSIS_CONTROL_TIME_MS);
 	}
 }
 
@@ -187,7 +187,7 @@ void Chassis_Ctrl::chassis_behaviour_mode_set(void)
 			if (Chassis.Velocity.Speed_Gear > 0)
 				Chassis.Velocity.Speed_Gear--;
 		}
-		Speed_Gear = Chassis.Velocity.Speed_Gear;
+		// Speed_Gear = Chassis.Velocity.Speed_Gear;
 		//视觉开关
 		read_key_single(&Press.R, &Chassis.Flags.Vision_Flag);
 		//UI添加
@@ -684,4 +684,13 @@ fp32 Chassis_Ctrl::motor_angle_to_set_change(uint16_t angle, uint16_t offset_ecd
         relative_angle_change += 8192;
     }
     return relative_angle_change;
+}
+
+void Chassis_Ctrl::error_behaviour_control_set(void)
+{
+	const float *error = 0;
+	if (Guard_ID == usart6)
+	{
+		chassis_yaw_relative_angle = error;
+	}
 }

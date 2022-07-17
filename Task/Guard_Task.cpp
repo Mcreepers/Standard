@@ -7,7 +7,7 @@ Error_Flags_t Error_Flag;
 //警戒任务
 void Guard_Task(void *pvParameters)
 {
-//    IWDG_Init(4, 100);
+    IWDG_Init(4, 100);
     Guard.Guard_Start();
     
     while (1)
@@ -42,13 +42,13 @@ void Guard_Ctrl::Guard_Start(void)
     *Guard.ID = usart8;
     // Guard_Init(usart8, ID ,100, &Error_Send);
     *Guard.ID = rc_ctrl1;
-    Guard_Init(rc_ctrl1, ID ,100, &System_Reset);
+    Guard_Init(rc_ctrl1, ID ,200, &System_Reset);
 }
 //警戒任务初始化
 void Guard_Ctrl::Guard_Init(Guard_ID_t num, Guard_ID_t *Name, uint32_t MaxValue, void(*errcb)(void))
 {
     SG_Structure[num].Name = *Name;
-    SG_Structure[num].Enable = 1;//默认使能
+    SG_Structure[num].Enable = 0;
     SG_Structure[num].Counter = 0;
     SG_Structure[num].MaxValue = MaxValue;
     if (errcb == NULL)
@@ -74,7 +74,7 @@ void Guard_Ctrl::Guard_Scan(void)
             {
                 SG_Structure[i].errcallback();
             }
-            if (SG_Structure[i].Counter - SG_Structure[i].MaxValue > 20)
+            if ((int16_t)(SG_Structure[i].Counter - SG_Structure[i].MaxValue) > 20)
             {
                 SG_Structure[i].Enable = 0;
             }
@@ -89,6 +89,7 @@ void Guard_Feed(Guard_ID_t *Name)
     {
         if (Guard.SG_Structure[i].Name == *Name)
         {
+            Guard.SG_Structure[i].Enable = 1;
             Guard.SG_Structure[i].Counter = 0;
             break;
         }

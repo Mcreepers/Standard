@@ -14,7 +14,6 @@ extern void Guard_Scan_Time(TimerHandle_t xTimer);
 }
 #endif
 
-
 typedef enum
 {
     message=0x00,

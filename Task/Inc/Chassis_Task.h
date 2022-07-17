@@ -67,14 +67,6 @@ void Chassis_Task(void *pvParameters);
 //底盘3508最大can发送电流值
 #define MAX_MOTOR_CAN_CURRENT 10000.0f
 
-#define MOTOR_6020_1_offset 6758
-#define MOTOR_6020_2_offset 5520
-#define MOTOR_6020_3_offset 1342
-#define MOTOR_6020_4_offset 58
-const static fp32 MOTOR_6020_offset[4] = {MOTOR_6020_1_offset, MOTOR_6020_2_offset, MOTOR_6020_3_offset, MOTOR_6020_4_offset};//6020 ecd中值
-
-//底盘前后左右控制按键+加速键
-
 //功率优先
 #define POWER_FIRST 1 
 //血量优先
@@ -141,6 +133,12 @@ const static fp32 MOTOR_6020_offset[4] = {MOTOR_6020_1_offset, MOTOR_6020_2_offs
 #define M3505_MOTOR_SPEED_PID_MAX_IOUT 2000.0f
 
 #if useSteering
+//底盘6020ecd偏差值
+#define MOTOR_6020_1_offset 6758
+#define MOTOR_6020_2_offset 5520
+#define MOTOR_6020_3_offset 1342
+#define MOTOR_6020_4_offset 58
+
 //底盘6020电机角度环PID
 #define M6020_MOTOR_ANGLE_PID_KP 10.0f
 #define M6020_MOTOR_ANGLE_PID_KI 0.0f
@@ -237,7 +235,7 @@ typedef enum
 
 typedef struct
 {
-	fp32 vx;      //底盘速度 前进方向 前为正，单位 m/s
+	  fp32 vx;      //底盘速度 前进方向 前为正，单位 m/s
     fp32 vy;      //底盘速度 左右方向 左为正  单位 m/s
     fp32 wz;      //底盘旋转角速度，逆时针为正 单位 rad/s
     fp32 vx_set;  //底盘设定速度 前进方向 前为正，单位 m/s
@@ -281,6 +279,7 @@ public:
     void chassis_behaviour_mode_set(void);
     fp32 motor_angle_to_set_change(uint16_t angle, uint16_t offset_ecd);
     void chassis_control_loop(void);
+    void error_behaviour_control_set(void);
 #if useSteering
     Chassis_Steering_t Steering[4];
     chassis_steering_mode_e Steering_Mode;
