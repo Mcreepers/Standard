@@ -9,7 +9,7 @@ void Guard_Task(void *pvParameters)
 {
     IWDG_Init(4, 100);
     Guard.Guard_Start();
-    
+
     while (1)
     {
         if (xQueueReceive(Guard_Queue, &Guard_ID, portMAX_DELAY))
@@ -26,23 +26,23 @@ void Guard_Ctrl::Guard_Start(void)
     *Guard.ID = message;
     Guard_Init(message, ID, 100, &System_Reset);
     *Guard.ID = chassis;
-    Guard_Init(chassis, ID ,100, &System_Reset);
+    Guard_Init(chassis, ID, 100, &System_Reset);
     *Guard.ID = UIdraw;
     // Guard_Init(UIdraw2, ID ,100, &System_Reset);
     *Guard.ID = Can1;
     // Guard_Init(Can1, ID ,100, &System_Reset);
     *Guard.ID = Can2;
-    Guard_Init(Can2, ID ,100, &System_Reset);
+    Guard_Init(Can2, ID, 100, &System_Reset);
     *Guard.ID = usart3;
     // Guard_Init(usart3, ID ,100, &Error_Send);
     *Guard.ID = usart6;
-    Guard_Init(usart6, ID ,100, &Error_Send);
+    Guard_Init(usart6, ID, 100, &Error_Send);
     *Guard.ID = usart7;
     // Guard_Init(usart7, ID ,100, &Error_Send);
     *Guard.ID = usart8;
     // Guard_Init(usart8, ID ,100, &Error_Send);
     *Guard.ID = rc_ctrl1;
-    Guard_Init(rc_ctrl1, ID ,200, &System_Reset);
+    Guard_Init(rc_ctrl1, ID, 200, &System_Reset);
 }
 //警戒任务初始化
 void Guard_Ctrl::Guard_Init(Guard_ID_t num, Guard_ID_t *Name, uint32_t MaxValue, void(*errcb)(void))
@@ -116,29 +116,29 @@ void Guard_Scan_Time(TimerHandle_t xTimer)
 //分频因子=4*2^prer.但最大值只能是256!
 //rlr:重装载寄存器值:低11位有效.
 //时间计算(大概):Tout=((4*2^prer)*rlr)/32 (ms).
-void IWDG_Init(uint8_t prer,uint16_t rlr)
+void IWDG_Init(uint8_t prer, uint16_t rlr)
 {
-	IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable); //使能对IWDG->PR IWDG->RLR的写
-	
-	IWDG_SetPrescaler(prer); //设置IWDG分频系数
+    IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable); //使能对IWDG->PR IWDG->RLR的写
 
-	IWDG_SetReload(rlr);   //设置IWDG装载值
+    IWDG_SetPrescaler(prer); //设置IWDG分频系数
 
-	IWDG_ReloadCounter(); //reload
-	
-	IWDG_Enable();       //使能看门狗
+    IWDG_SetReload(rlr);   //设置IWDG装载值
+
+    IWDG_ReloadCounter(); //reload
+
+    IWDG_Enable();       //使能看门狗
 }
 
 //喂独立看门狗
 void IWDG_Feed(void)
 {
-	IWDG_ReloadCounter();//reload
+    IWDG_ReloadCounter();//reload
 }
 
 //寄存器软件复位
 void System_Reset(void)
 {
-	SCB->AIRCR  = (uint32_t)((0x5FAUL << SCB_AIRCR_VECTKEY_Pos)    |
-		   (SCB->AIRCR & SCB_AIRCR_PRIGROUP_Msk) |
-			SCB_AIRCR_SYSRESETREQ_Msk);
+    SCB->AIRCR = (uint32_t)((0x5FAUL << SCB_AIRCR_VECTKEY_Pos) |
+        (SCB->AIRCR & SCB_AIRCR_PRIGROUP_Msk) |
+        SCB_AIRCR_SYSRESETREQ_Msk);
 }

@@ -15,7 +15,7 @@
 extern "C" {
 #endif
 
-void Chassis_Task(void *pvParameters);
+  void Chassis_Task(void *pvParameters);
 
 #ifdef __cplusplus
 }
@@ -178,9 +178,9 @@ typedef struct
   fp32 accel;
   fp32 speed;
   fp32 speed_set;
-  
+
   fp32 angle;
-  fp32 angle_last;  
+  fp32 angle_last;
   int8_t angle_round;
   fp32 angle_real;
 
@@ -215,8 +215,8 @@ typedef struct
 Chassis_Error_Flags_t;
 typedef enum
 {
-	CHASSIS_NO_MOVE=0,
-	CHASSIS_FOLLOW_YAW,//跟随云台
+  CHASSIS_NO_MOVE = 0,
+  CHASSIS_FOLLOW_YAW,//跟随云台
   CHASSIS_NO_FOLLOW_YAW,//不跟随云台
   CHASSIS_LITTLE_TOP,//小陀螺
   CHASSIS_VISION,
@@ -235,67 +235,68 @@ typedef enum
 
 typedef struct
 {
-	  fp32 vx;      //底盘速度 前进方向 前为正，单位 m/s
-    fp32 vy;      //底盘速度 左右方向 左为正  单位 m/s
-    fp32 wz;      //底盘旋转角速度，逆时针为正 单位 rad/s
-    fp32 vx_set;  //底盘设定速度 前进方向 前为正，单位 m/s
-    fp32 vy_set;  //底盘设定速度 左右方向 左为正，单位 m/s
-    fp32 wz_set;  //底盘设定旋转角速度，逆时针为正 单位 rad/s
+  fp32 vx;      //底盘速度 前进方向 前为正，单位 m/s
+  fp32 vy;      //底盘速度 左右方向 左为正  单位 m/s
+  fp32 wz;      //底盘旋转角速度，逆时针为正 单位 rad/s
+  fp32 vx_set;  //底盘设定速度 前进方向 前为正，单位 m/s
+  fp32 vy_set;  //底盘设定速度 左右方向 左为正，单位 m/s
+  fp32 wz_set;  //底盘设定旋转角速度，逆时针为正 单位 rad/s
 
-    fp32 vx_max_speed;  //前进方向最大速度 单位m/s
-    fp32 vx_min_speed;  //前进方向最小速度 单位m/s
-    fp32 vy_max_speed;  //左右方向最大速度 单位m/s
-    fp32 vy_min_speed;  //左右方向最小速度 单位m/s
-	
-	uint8_t Speed_Gear;  //速度档位
-	fp32    Speed_Set[3];//底盘速度
+  fp32 vx_max_speed;  //前进方向最大速度 单位m/s
+  fp32 vx_min_speed;  //前进方向最小速度 单位m/s
+  fp32 vy_max_speed;  //左右方向最大速度 单位m/s
+  fp32 vy_min_speed;  //左右方向最小速度 单位m/s
+
+  uint8_t Speed_Gear;  //速度档位
+  fp32    Speed_Set[4];//底盘速度
 } Chassis_Velocity_t;
 
-class Chassis_Ctrl{
-public:
-    const RC_ctrl_t *RC_Ptr;
-    const float *chassis_yaw_relative_angle;   //底盘使用到yaw云台电机的相对角度来计算底盘的欧拉角
-    float chassis_relative_angle;   //底盘使用到yaw云台电机的相对角度来计算底盘的欧拉角
+class Chassis_Ctrl
+{
+  public:
+  const RC_ctrl_t *RC_Ptr;
+  const float *chassis_yaw_relative_angle;   //底盘使用到yaw云台电机的相对角度来计算底盘的欧拉角
+  float chassis_relative_angle;   //底盘使用到yaw云台电机的相对角度来计算底盘的欧拉角
 
-    Chassis_Motor_t Motor[Chassis_Motor_Numbers];
+  Chassis_Motor_t Motor[Chassis_Motor_Numbers];
 
-    PidTypeDef  Speed_Pid[Chassis_Motor_Numbers];
-    PidTypeDef  Follow_Gimbal_Pid; 
-    PidTypeDef  chassis_setangle;
-    PidTypeDef  chassis_setangle_gyro;
+  PidTypeDef  Speed_Pid[Chassis_Motor_Numbers];
+  PidTypeDef  Follow_Gimbal_Pid;
+  PidTypeDef  chassis_setangle;
+  PidTypeDef  chassis_setangle_gyro;
 
-    first_order_filter_type_t Filter_vx;
-    first_order_filter_type_t Filter_vy;
-    first_order_filter_type_t Filter_vw;
+  first_order_filter_type_t Filter_vx;
+  first_order_filter_type_t Filter_vy;
+  first_order_filter_type_t Filter_vw;
 
-    Chassis_Velocity_t   Velocity;
-    Chassis_Ctrl_Flags_t Flags;
-    chassis_mode_e Mode;
-    chassis_mode_e Last_Mode;
-    
-    void Chassis_Init(void);
-    void Feedback_Update( void );
-    void Control(void);
-    void chassis_behaviour_mode_set(void);
-    fp32 motor_angle_to_set_change(uint16_t angle, uint16_t offset_ecd);
-    void chassis_control_loop(void);
-    void error_behaviour_control_set(void);
+  Chassis_Velocity_t   Velocity;
+  Chassis_Ctrl_Flags_t Flags;
+  chassis_mode_e Mode;
+  chassis_mode_e Last_Mode;
+
+  void Chassis_Init(void);
+  void Feedback_Update(void);
+  void Control(void);
+  void chassis_behaviour_mode_set(void);
+  fp32 motor_angle_to_set_change(uint16_t angle, uint16_t offset_ecd);
+  void chassis_control_loop(void);
+  void error_behaviour_control_set(void);
 #if useSteering
-    Chassis_Steering_t Steering[4];
-    chassis_steering_mode_e Steering_Mode;
+  Chassis_Steering_t Steering[4];
+  chassis_steering_mode_e Steering_Mode;
 
-    PidTypeDef  steering_Speed_Pid[4];
-    PidTypeDef  steering_Angle_Pid[4];
+  PidTypeDef  steering_Speed_Pid[4];
+  PidTypeDef  steering_Angle_Pid[4];
 #endif
-private:
-	  void chassis_rc_to_control_vector( fp32 *vx_set, fp32 *vy_set);
-    void chassis_behaviour_control_set(fp32 *vx_set, fp32 *vy_set, fp32 *angle_set);
-    void chassis_vector_to_wheel_speed(fp32 *vx_set,fp32 *vy_set,fp32 *wz_set);
-    void rc_key_v_set(void);
+  private:
+  void chassis_rc_to_control_vector(fp32 *vx_set, fp32 *vy_set);
+  void chassis_behaviour_control_set(fp32 *vx_set, fp32 *vy_set, fp32 *angle_set);
+  void chassis_vector_to_wheel_speed(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set);
+  void rc_key_v_set(void);
 #if  useSteering
-    void steering_behaviour_control_set(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set);
-    void chassis_round_calc(void);
-    void steering_mode_control_set(void);
+  void steering_behaviour_control_set(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set);
+  void chassis_round_calc(void);
+  void steering_mode_control_set(void);
 
 #endif
 };

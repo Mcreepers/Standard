@@ -6,7 +6,7 @@ extern "C" {
 #endif
 
 #include "platform.h"
-	
+
 #ifdef __cplusplus
 }
 #endif
@@ -34,7 +34,7 @@ struct Usart_Data_t
 	uint8_t Len;
 	uint8_t Num;
 	uint8_t Data[10];
-	Usart_Data_t(uint8_t Len=0,uint8_t Header=0,uint8_t Tail=0)
+	Usart_Data_t(uint8_t Len = 0, uint8_t Header = 0, uint8_t Tail = 0)
 	{
 		this->Len = Len;
 		this->Header = Header;
@@ -44,26 +44,26 @@ struct Usart_Data_t
 
 class Serialctrl : public Serialdev
 {
-public:
+	public:
 	Serialctrl(USART_TypeDef *_USARTx, uint32_t BufferSize, uint8_t leader, uint8_t tail) : Serialdev(_USARTx, BufferSize) { usart = new Usart_Data_t(BufferSize, leader, tail); }
 	Serialctrl(USART_TypeDef *_USARTx, uint32_t BufferSize, uint16_t USART_ITPending, uint8_t leader, uint8_t tail) : Serialdev(_USARTx, BufferSize, USART_ITPending) { usart = new Usart_Data_t(BufferSize, leader, tail); }
 
-	void attachInterrupt( USART_CallbackFunction_t Function );
-  void IRQHandler( void );
+	void attachInterrupt(USART_CallbackFunction_t Function);
+	void IRQHandler(void);
 
-  void sendData( uint8_t ch );
-  void sendData( const void *str );
-  void sendData( const void *buf,uint8_t len );
-	
-  int available(void);
-  uint8_t read(void);
-  int8_t Data[10];
-  Usart_Data_t *usart;
-private:
+	void sendData(uint8_t ch);
+	void sendData(const void *str);
+	void sendData(const void *buf, uint8_t len);
+
+	int available(void);
+	uint8_t read(void);
+	int8_t Data[10];
+	Usart_Data_t *usart;
+	private:
 
 	void Hook(void);
-  int peek( void );
-  void flush( void );
+	int peek(void);
+	void flush(void);
 };
 
 #endif /* _DEV_SERIAL */

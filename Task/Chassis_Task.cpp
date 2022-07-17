@@ -449,7 +449,7 @@ void Chassis_Ctrl::Control(void)
 	{
 		Chassis.Velocity.vx_set = 0;
 		Chassis.Velocity.vy_set = 0;
-		Chassis.Velocity.wz_set = 0;			
+		Chassis.Velocity.wz_set = 0;
 	}
 }
 

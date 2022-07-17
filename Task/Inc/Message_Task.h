@@ -132,6 +132,7 @@ extern Message_Data_t Message_Data;
 extern Message_Ctrl Message;
 extern rc_key_v_t Key;
 extern rc_press_t Press;
+extern Gimbal_Data_t Gimbal;
 extern void rc_key_v_set(void);
 
 const float *get_yaw_motor_point(void);
