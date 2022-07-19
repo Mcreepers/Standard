@@ -97,7 +97,6 @@ const float *get_yaw_motor_point(void)
 	return &Gimbal.ECD;
 }
 
-extern QueueHandle_t Chassis_Queue;
 void sum_key_count(int16_t key_num, count_num_key *temp_count);
 void clear_key_count(count_num_key *temp_count);
 

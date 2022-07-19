@@ -22,12 +22,9 @@ const static fp32 m6020_motor_angle_pid[3] = {M6020_MOTOR_ANGLE_PID_KP, M6020_MO
 const static fp32 m6020_motor_speed_pid[3] = {M6020_MOTOR_SPEED_PID_KP, M6020_MOTOR_SPEED_PID_KI, M6020_MOTOR_SPEED_PID_KD};
 const static fp32 MOTOR_6020_offset[4] = {MOTOR_6020_1_offset, MOTOR_6020_2_offset, MOTOR_6020_3_offset, MOTOR_6020_4_offset};//6020 ecd中值
 #endif
-#define CHASSISMSG_Q_NUM    1  		    //底盘消息队列的数量
-QueueHandle_t Chassis_Queue;   		//底盘状态消息队列句柄
 
 void Chassis_Task(void *pvParameters)
 {
-	Chassis_Queue=xQueueCreate(CHASSISMSG_Q_NUM,sizeof(u8));
 	CAN_ALL_Init();//所有电机控制都在一个类中
 	Chassis.Chassis_Init();
 	
@@ -137,11 +134,6 @@ void Chassis_Ctrl::chassis_behaviour_mode_set(void)
 		{
 			// key_C.count=0;//标志位清零等待下一次按下
 			Chassis.Mode = CHASSIS_NO_MOVE;//底盘保持不动
-			if (Chassis_Queue != NULL)
-			{
-				//发送底盘状态消息
-				xQueueSend(Chassis_Queue,&Chassis.Mode,10);//FreeRTOS里消息队列的运用，用于给裁判系统发送当前的底盘状态
-			}
 		}
 		if (read_key_count(&Key.X)==1)
 		{
@@ -161,11 +153,6 @@ void Chassis_Ctrl::chassis_behaviour_mode_set(void)
 			{
 				Chassis.Mode=CHASSIS_NO_FOLLOW_YAW;//底盘不跟随云台
 			}
-			//发送底盘状态消息
-			if (Chassis_Queue != NULL)
-			{
-				xQueueSend(Chassis_Queue, &Chassis.Mode, 10);
-			}
 		}
 		if (read_key_count(&Key.G) == 1)
 		{//开启小陀螺
@@ -184,7 +171,6 @@ void Chassis_Ctrl::chassis_behaviour_mode_set(void)
 			if (Chassis.Velocity.Speed_Gear > 0)
 				Chassis.Velocity.Speed_Gear--;
 		}
-		// Speed_Gear = Chassis.Velocity.Speed_Gear;
 		//视觉开关
 		read_key_single(&Press.R, &Chassis.Flags.Vision_Flag);
 		//UI添加
