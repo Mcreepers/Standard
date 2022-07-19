@@ -1,5 +1,6 @@
 #include "UIDraw_Task.h"
 
+#include "queue.h"
 #include "arm_math.h"
 #include "protocol_ui.h"
 #include "protocol_judgement.h"
@@ -24,11 +25,13 @@ uint16_t standard_ID1, standard_ID2;
 
 const Chassis_Ctrl_Flags_t *chassis_flag;
 const chassis_mode_e *chassis_mode;
+const Gimbal_Data_t *Gimbal;
 void UIDraw_Task(void *pvParameters)
 {
     usart7_DMA_init();
     chassis_flag = get_chassis_flag_control_point();
     chassis_mode = get_chassis_mode_control_point();
+    Gimbal = get_gimbal_data_point();
     while (1)
     {
         standard_ID1 = game_robot_state_t.robot_id;
@@ -96,9 +99,9 @@ void UIDraw_Task(void *pvParameters)
             Char_Painter("shoot", Flase, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Orange, 3, 20, 1500, 550, Type_Flag_Shoot_Mode);
         delay_ms(10);
 
-        if (Gimbal.goal == 1)
+        if (Gimbal->goal == 1)
             Graph_Painter("cir", UI_Graph_Change, UI_Graph_Circle, standard_ID1, standard_ID2, 3, Graphic_Color_Green, 10, 960, 540, NULL, NULL, 50, NULL, NULL);
-        else if (Gimbal.goal == 0)
+        else if (Gimbal->goal == 0)
             Graph_Painter("cir", UI_Graph_Change, UI_Graph_Circle, standard_ID1, standard_ID2, 3, Graphic_Color_White, 10, 960, 540, NULL, NULL, 50, NULL, NULL);
 
         if (chassis_flag->Predict_Flag == 1)
@@ -176,9 +179,10 @@ void UIDraw_Task(void *pvParameters)
         Graph_Painter("L2", UI_Graph_ADD, UI_Graph_Line, standard_ID1, standard_ID2, 3, Graphic_Color_White, 2, 960, 413, 1000, 413, NULL, NULL, NULL);
         Graph_Painter("L3", UI_Graph_ADD, UI_Graph_Line, standard_ID1, standard_ID2, 3, Graphic_Color_White, 2, 960, 405, 1000, 405, NULL, NULL, NULL);
         Graph_Painter("15", UI_Graph_ADD, UI_Graph_Rectangle, standard_ID1, standard_ID2, 3, Graphic_Color_White, 2, 910, 580, 1010, 500, NULL, NULL, NULL);
-        vTaskDelay(10);
         // #if INCLUDE_uxTaskGetStackHighWaterMark
         //         UserTaskStack = uxTaskGetStackHighWaterMark(NULL);
         // #endif
+        xQueueSend(Message_Queue, &(Message_Data.Data_ID = UIdraw), 0);
+        vTaskDelay(10);
     }
 }

@@ -22,6 +22,8 @@ void Message_Task(void *pvParameters);
 #define Message_Q_NUM    1  		    //消息队列的数量
 extern QueueHandle_t Message_Queue;   		//消息队列句柄
 
+#define Gimbal_Motor_Yaw_Offset_ECD 940
+
 union I
 {
     char s[2];
@@ -114,10 +116,9 @@ extern Message_Data_t Message_Data;
 extern Message_Ctrl Message;
 extern rc_key_v_t Key;
 extern rc_press_t Press;
-extern Gimbal_Data_t Gimbal;
 extern void rc_key_v_set(void);
 
-const float *get_yaw_motor_point(void);
+const Gimbal_Data_t *get_gimbal_data_point(void);
 // const GIMBAL_DADTA_T *get_gimbal_data_point(void);
 void sum_key_count(int16_t key_num, count_num_key *temp_count);
 void clear_key_count(count_num_key *temp_count);

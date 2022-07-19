@@ -41,7 +41,6 @@ void Message_Task(void *pvParameters)
 //                Usart3_hook((Usart_Data_t *)Message_Data.Data_Ptr);
                 break;
             case serial6:
-                memcpy(&Usart6.Data, &Serial6.usart->Data, sizeof(Serial6.usart->Data));
                 Usart6_hook((Usart_Data_t *)Message_Data.Data_Ptr);
                 break;
             case serial7:
@@ -55,14 +54,14 @@ void Message_Task(void *pvParameters)
                 break;
             default:
                 break;
-            }
+			}
+			Guard.Guard_Feed(&Message_ID);
 		}
 	}
 }
 
 void Usart3_hook(void)
 {
-	Guard.Guard_Feed(&Message_ID);
 
 }
 
@@ -70,35 +69,30 @@ void Usart6_hook(Usart_Data_t *Usart6)
 {
 	int_data.s[0] = Usart6->Data[1];
 	int_data.s[1] = Usart6->Data[2];
-	Gimbal.ECD = Chassis.motor_angle_to_set_change(int_data.d,940);
+	Gimbal.ECD = Chassis.motor_angle_to_set_change(int_data.d,Gimbal_Motor_Yaw_Offset_ECD);
 	Gimbal.gimbal_grade = Usart6->Data[3];
 	Gimbal.compensation_state = Usart6->Data[4];
 	Gimbal.follow_on = Usart6->Data[5];
 	Gimbal.goal = Usart6->Data[6];
 	Gimbal.energy_state = Usart6->Data[7];
 //	Gimbal.predict = Usart6->Data[8];
-	Guard.Guard_Feed(&Message_ID);
 }
 
 void Usart7_hook(void)
 {
 	
-	Guard.Guard_Feed(&Message_ID);
 
 }
 
 void Usart8_hook(void)
 {
-	Guard.Guard_Feed(&Message_ID);
 
 }
-const float *get_yaw_motor_point(void)
+
+const Gimbal_Data_t *get_gimbal_data_point(void)
 {
-	return &Gimbal.ECD;
+	return &Gimbal;
 }
-
-void sum_key_count(int16_t key_num, count_num_key *temp_count);
-void clear_key_count(count_num_key *temp_count);
 
 //统计按键 按下次数：eg:  按下-松开  按下-松开  2次
 //key_num==1代表有键盘按下
