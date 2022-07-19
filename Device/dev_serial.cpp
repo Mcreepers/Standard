@@ -98,11 +98,13 @@ void Serialctrl::Hook(void)
         if (usart->Data[usart->Len] == usart->Tail)
         {
             xQueueSendFromISR(Message_Queue, &Message_Data.Data_ID, 0);
+            Message_Data.Data_Ptr = &usart;
         }
     }
     else
     {
         xQueueSendFromISR(Message_Queue, &Message_Data.Data_ID, 0);
+        Message_Data.Data_Ptr = &usart;
     }
 }
 extern "C"{

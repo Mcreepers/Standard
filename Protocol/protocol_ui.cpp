@@ -266,7 +266,7 @@ void Char_Painter(char name[3], char msg[], uint32_t Operate_tpye, uint16_t Send
 	
 	Append_CRC16_Check_Sum((uint8_t*)&char_data_struct,sizeof(char_data_struct));    
 	memcpy(&tx7_buf[0], (uint8_t *)&char_data_struct, sizeof(char_data_struct));
-  Usart_SendBuff((uint8_t *)&tx7_buf,sizeof(char_data_struct));
+  	Usart_SendBuff((uint8_t *)&tx7_buf,sizeof(char_data_struct));
 	
 	memcpy(tx7_buf,"\0", sizeof(tx7_buf));
 	memset(&char_data_struct,0,sizeof(char_data_struct));

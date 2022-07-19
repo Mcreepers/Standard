@@ -3,12 +3,8 @@
 #include <stdio.h>
 #include "string.h"
 #include "device.h"
-//英雄  裁判系统串口
+//裁判系统串口
 
-/*-----UART8_TX-----PE1-----*/
-//DMA通道：数据流0 通道5
-/*-----UART8_RX-----PE0-----*/
-//DMA通道：数据流6 通道5
 static ext_game_robot_HP_t          game_robot_HP_t;
 static ext_game_status_t            game_status;
 static ext_game_robot_status_t      game_robot_state_t;
@@ -24,16 +20,11 @@ static ext_game_robot_pos_t	        game_robot_pos_t;
 //static draw_data_struct_t		draw_data_struct;
 static void MYDMA_Config(DMA_Stream_TypeDef *DMA_Streamx, u32 chx, u32 par, u32 mar, u16 ndtr);
 
-uint8_t USART8_TX_BUF[TX_BUF_NUM];
-
-//接收状态
-//bit15，	接收完成标志
-//bit14，	接收到0xff
-//bit13~0，	接收到的有效字节数目
-u16 USART8_RX_STA = 0;       //接收状态标记	  
 
 uint8_t rx7_buf[RX_BUF_NUM];
 uint8_t	tx7_buf[TX_BUF_NUM];
+
+static void referee_data_solve(void);
 
 void usart7_DMA_init(void)
 {
@@ -65,42 +56,19 @@ void MYDMA_Enable(DMA_Stream_TypeDef *DMA_Streamx, u16 ndtr)
 
 void chassis_to_judgeui(uint16_t txlen)
 {
-	USART_DMACmd(UART7, USART_DMAReq_Tx, ENABLE);  //使能串口8的DMA发送     
-	MYDMA_Enable(DMA1_Stream1, txlen);     //开始一次DMA传输！
-	// u16 i = 0;
-	// u16 tx_len=txlen;
-	// while(txlen--){
-	// 	usart8_send_char(USART8_TX_BUF[i++]);
-	// }
+	// USART_DMACmd(UART7, USART_DMAReq_Tx, ENABLE);  //使能串口8的DMA发送     
+	// MYDMA_Enable(DMA1_Stream1, txlen);     //开始一次DMA传输！
+	u16 i = 0;
+	u16 tx_len=txlen;
+	while(txlen--){
+		usart7_send_char(tx7_buf[i++]);
+	}
 	memset(tx7_buf, 0, txlen);
 }
 
-static u8 temp;
-static u16 UART8_DataLength;
-static void referee_data_solve(void);
-void UART8_IRQHandler(void)
-{
-	if (UART8->SR & (1 << 4))//检测到线路空闲
-	{
-
-		temp = UART8->SR;
-		temp = UART8->DR;
-
-		DMA_Cmd(DMA1_Stream6, DISABLE); //先停止DMA，暂停接收 
-		DMA_ClearFlag(DMA1_Stream6, DMA_FLAG_TCIF2 | DMA_FLAG_HTIF2);
-		USART_DMACmd(UART8, USART_DMAReq_Rx, DISABLE); //先停止串口8的DMA接收
-		UART8_DataLength = RX_BUF_NUM - DMA_GetCurrDataCounter(DMA1_Stream6);
-		referee_data_solve();
-		DMA_SetCurrDataCounter(DMA1_Stream6, RX_BUF_NUM); //DMA通道的DMA缓存的大小
-		DMA_Cmd(DMA1_Stream6, ENABLE); //使能USART8 TX DMA1 所指示的通道 
-		USART_DMACmd(UART8, USART_DMAReq_Rx, ENABLE); //使能串口8的DMA接收
-		DMA_Cmd(DMA1_Stream6, ENABLE); //使能USART8 TX DMA1 所指示的通道 
-	}
-}
-
 //裁判系统相关
-static void get_receiver(hero_robo_data_t *res);
-hero_robo_data_t hero_robo_data;
+static void get_receiver(robo_data_t *res);
+robo_data_t robo_data;
 static void referee_data_solve(void)
 {
 	static uint16_t start_pos = 0, next_start_pos = 0;
@@ -165,19 +133,19 @@ static void referee_data_solve(void)
 	{
 		start_pos = 0;
 	}
-	get_receiver(&hero_robo_data);
+	get_receiver(&robo_data);
 }
 
-static void get_receiver(hero_robo_data_t *res)
+static void get_receiver(robo_data_t *res)
 {
-	res->hreo_level = game_robot_state_t.robot_level;
-	res->hero_HP = game_robot_state_t.remain_HP;
-	res->hero_ID = game_robot_state_t.robot_id;
+	res->robo_level = game_robot_state_t.robot_level;
+	res->robo_HP = game_robot_state_t.remain_HP;
+	res->robo_ID = game_robot_state_t.robot_id;
 }
 
-const hero_robo_data_t *get_hero_robo_angle_Point(void)
+const robo_data_t *get_robo_data_Point(void)
 {
-	return &hero_robo_data;
+	return &robo_data;
 }
 
 void Usart_SendBuff(u8 *buf, u16 len)

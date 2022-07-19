@@ -8,8 +8,6 @@
 #include "protocol_judgement.h"
 
 QueueHandle_t Message_Queue;   		//消息队列句柄
-QueueHandle_t Guard_Queue;
-QueueHandle_t Error_Queue;
 
 void SoftWareInit(void)
 {
@@ -18,14 +16,12 @@ void SoftWareInit(void)
 	power_ctrl_configuration();
 	
 	Message_Queue = xQueueCreate(Message_Q_NUM, sizeof(uint8_t));
-	Guard_Queue = xQueueCreate(5, sizeof(uint8_t));
-	Error_Queue = xQueueCreate(Message_Q_NUM, sizeof(uint8_t));
 	
 	Serial3.Serial_Init(115200);
-	//   Serial8.Serial_Init( 115200, SERIAL_8N1 );
-	usart8_init();
+	Serial8.Serial_Init( 115200, SERIAL_8N1 );
 	Serial6.Serial_Init(115200, 6, 2);
 	Serial7.Serial_Init( 115200, SERIAL_8N1, 6, 2 ); //哪种初始化方式都可以
+	usart7_DMA_init();
 
 	for (uint8_t i = POWER1_CTRL_SWITCH; i < POWER4_CTRL_SWITCH + 1; i++)
 	{

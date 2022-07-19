@@ -31,74 +31,66 @@ void Message_Task(void *pvParameters)
 			{
 #if useSteering
 			case CanData1:
-				CAN1_Ctrl.Hook(Message_Data.Rx_Message);
+				CAN1_Ctrl.Hook((CanRxMsg *)Message_Data.Data_Ptr);
 				break;
 #endif
 			case CanData2:
-				CAN2_Ctrl.Hook(Message_Data.Rx_Message);
+				CAN2_Ctrl.Hook((CanRxMsg *)Message_Data.Data_Ptr);
                 break;
             case serial3:
-//                Usart3_hook();
+//                Usart3_hook((Usart_Data_t *)Message_Data.Data_Ptr);
                 break;
             case serial6:
                 memcpy(&Usart6.Data, &Serial6.usart->Data, sizeof(Serial6.usart->Data));
-                Usart6_hook();
+                Usart6_hook((Usart_Data_t *)Message_Data.Data_Ptr);
                 break;
             case serial7:
-                // Usart7_hook();
+                // Usart7_hook((Usart_Data_t *)Message_Data.Data_Ptr);
                 break;
             case serial8:
-                // Usart8_hook();
+                // Usart8_hook((Usart_Data_t *)Message_Data.Data_Ptr);
                 break;
-            case rc_ctrl0:
+            case RC_ctrl:
                 rc_key_v_set();
                 break;
             default:
                 break;
             }
 		}
-		xQueueSend(Guard_Queue, &(Guard_ID = message), 0);
 	}
 }
 
 void Usart3_hook(void)
 {
-	xQueueSend(Guard_Queue, &(Guard_ID = usart3), 0);
+	Guard.Guard_Feed(&Message_ID);
 
 }
 
-void Usart6_hook(void)
+void Usart6_hook(Usart_Data_t *Usart6)
 {
-	int_data.s[0] = Usart6.Data[1];
-	int_data.s[1] = Usart6.Data[2];
+	int_data.s[0] = Usart6->Data[1];
+	int_data.s[1] = Usart6->Data[2];
 	Gimbal.ECD = Chassis.motor_angle_to_set_change(int_data.d,940);
-	Gimbal.gimbal_grade = Usart6.Data[3];
-	Gimbal.compensation_state = Usart6.Data[4];
-	Gimbal.follow_on = Usart6.Data[5];
-	Gimbal.goal = Usart6.Data[6];
-	Gimbal.energy_state = Usart6.Data[7];
-	//        Gimbal.predict = Usart6.Data[8];
-	xQueueSend(Guard_Queue, &(Guard_ID = usart6), 0);
-	if (xQueuePeek(Error_Queue, &Guard_ID, 0))
-	{
-		if (Guard_ID == usart6)
-		{
-			Error_Flag.Gimbal = true;
-			Error_Flag.Visual = true;
-		}
-	}
+	Gimbal.gimbal_grade = Usart6->Data[3];
+	Gimbal.compensation_state = Usart6->Data[4];
+	Gimbal.follow_on = Usart6->Data[5];
+	Gimbal.goal = Usart6->Data[6];
+	Gimbal.energy_state = Usart6->Data[7];
+//	Gimbal.predict = Usart6->Data[8];
+	Guard.Guard_Feed(&Message_ID);
 }
 
 void Usart7_hook(void)
 {
 	
-	xQueueSend(Guard_Queue, &(Guard_ID = usart7), 0);
+	Guard.Guard_Feed(&Message_ID);
 
 }
 
 void Usart8_hook(void)
 {
-	xQueueSend(Guard_Queue, &(Guard_ID = usart8), 0);
+	Guard.Guard_Feed(&Message_ID);
+
 }
 const float *get_yaw_motor_point(void)
 {
@@ -265,5 +257,5 @@ void rc_key_v_set(void)
 		sum_key_count(0,&Press.R);
 	}
 
-	xQueueSend(Guard_Queue, &(Guard_ID = rc_ctrl1), 0);
+	Guard.Guard_Feed(&Message_ID);
 }

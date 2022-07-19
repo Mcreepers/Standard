@@ -25,8 +25,8 @@
 
 #define Graphic_Width     3
 
-#define R1_Hero 					1
-#define R2_Engineer 			2
+#define R1_Hero 			1
+#define R2_Engineer 		2
 #define R3_Standard1      3
 #define R4_Standard2      4
 #define R5_Standard3      5
@@ -34,8 +34,8 @@
 #define R_Sentry          7
 #define R_Radar           9
 
-#define B1_Hero 					101
-#define B2_Engineer 			102
+#define B1_Hero 			101
+#define B2_Engineer 		102
 #define B3_Standard1      103
 #define B4_Standard2      104
 #define B5_Standard3      105
@@ -43,15 +43,15 @@
 #define B_Sentry          107
 #define B_Radar           109
 
-#define R1_Hero_Client 					  0x101
-#define R2_Engineer_Client				0x102
+#define R1_Hero_Client 				0x101
+#define R2_Engineer_Client			0x102
 #define R3_Standard1_Client       0x103
 #define R4_Standard2_Client       0x104
 #define R5_Standard3_Client       0x105
 #define R6_Aerial_Client          0x106
 
-#define B1_Hero_Client 					  0x165
-#define B2_Engineer_Client				0x166
+#define B1_Hero_Client 			0x165
+#define B2_Engineer_Client		0x166
 #define B3_Standard1_Client       0x167
 #define B4_Standard2_Client       0x168
 #define B5_Standard3_Client       0x169

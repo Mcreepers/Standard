@@ -2,7 +2,6 @@
 #include "Message_Task.h"
 #include "timers.h"
 Guard_Ctrl Guard;
-Guard_ID_t Guard_ID;
 Error_Flags_t Error_Flag;
 //警戒任务
 void Guard_Task(void *pvParameters)
@@ -12,44 +11,42 @@ void Guard_Task(void *pvParameters)
 
     while (1)
     {
-        if (xQueueReceive(Guard_Queue, &Guard_ID, portMAX_DELAY))
-        {
-            Guard_Feed(&Guard_ID);
-            IWDG_Feed();
-        }
+        Guard.Guard_Scan();
+        IWDG_Feed();
+        
+        vTaskDelay(1);
     }
 }
 //警戒任务开始
 void Guard_Ctrl::Guard_Start(void)
 {
     // uint8_t i;
-    *Guard.ID = message;
-    Guard_Init(message, ID, 100, &System_Reset);
-    *Guard.ID = chassis;
+    *ID = chassis;
     Guard_Init(chassis, ID, 100, &System_Reset);
-    *Guard.ID = UIdraw;
-    // Guard_Init(UIdraw2, ID ,100, &System_Reset);
-    *Guard.ID = Can1;
-    // Guard_Init(Can1, ID ,100, &System_Reset);
-    *Guard.ID = Can2;
-    Guard_Init(Can2, ID, 100, &System_Reset);
-    *Guard.ID = usart3;
+     *ID = UIdraw;
+    // Guard_Init(UIdraw, ID ,100, &System_Reset);
+     *ID = CanData1;
+    // Guard_Init(CanData1, ID ,100, &System_Reset);
+     *ID = CanData2;
+    Guard_Init(CanData2, ID, 100, &System_Reset);
+     *ID = serial3;
     // Guard_Init(usart3, ID ,100, &Error_Send);
-    *Guard.ID = usart6;
-    Guard_Init(usart6, ID, 100, &Error_Send);
-    *Guard.ID = usart7;
-    // Guard_Init(usart7, ID ,100, &Error_Send);
-    *Guard.ID = usart8;
-    // Guard_Init(usart8, ID ,100, &Error_Send);
-    *Guard.ID = rc_ctrl1;
-    Guard_Init(rc_ctrl1, ID, 200, &System_Reset);
+     *ID = serial6;
+    Guard_Init(serial6, ID, 100, &Error_Send);
+     *ID = serial7;
+    // Guard_Init(serial7, ID ,100, &Error_Send);
+     *ID = serial8;
+    // Guard_Init(serial8, ID ,100, &Error_Send);
+     *ID = RC_ctrl;
+    Guard_Init(RC_ctrl, ID, 200, &System_Reset);
 }
 //警戒任务初始化
-void Guard_Ctrl::Guard_Init(Guard_ID_t num, Guard_ID_t *Name, uint32_t MaxValue, void(*errcb)(void))
+void Guard_Ctrl::Guard_Init(ID_t num, ID_t *Name, uint32_t MaxValue, void(*errcb)(void))
 {
-    SG_Structure[num].Name = *Name;
+    SG_Structure[num].Name = Name;
     SG_Structure[num].Enable = 0;
-    SG_Structure[num].Counter = 0;
+    SG_Structure[num].Time = 0;
+    SG_Structure[num].Error = 0;
     SG_Structure[num].MaxValue = MaxValue;
     if (errcb == NULL)
     {
@@ -69,12 +66,12 @@ void Guard_Ctrl::Guard_Scan(void)
     {
         if ((SG_Structure[i].Enable == 1) && (SG_Structure[i].MaxValue != 0))
         {
-            SG_Structure[i].Counter++;
-            if (SG_Structure[i].Counter > SG_Structure[i].MaxValue)
+            SG_Structure[i].Error=xTaskGetTickCount()-SG_Structure[i].Time;
+            if (SG_Structure[i].Error > SG_Structure[i].MaxValue)
             {
                 SG_Structure[i].errcallback();
             }
-            if ((int16_t)(SG_Structure[i].Counter - SG_Structure[i].MaxValue) > 20)
+            if ((int16_t)(SG_Structure[i].Error - SG_Structure[i].MaxValue) > 100)
             {
                 SG_Structure[i].Enable = 0;
             }
@@ -82,34 +79,37 @@ void Guard_Ctrl::Guard_Scan(void)
     }
 }
 //警戒任务喂狗
-void Guard_Feed(Guard_ID_t *Name)
+void Guard_Ctrl::Guard_Feed(ID_t *Name)
 {
     uint8_t i;
     for (i = 0;i < GUARD_TOTAL_NUM;i++)
     {
-        if (Guard.SG_Structure[i].Name == *Name)
+        if (Guard.SG_Structure[i].Name == Name)
         {
             Guard.SG_Structure[i].Enable = 1;
-            Guard.SG_Structure[i].Counter = 0;
+            Guard.SG_Structure[i].Time = xTaskGetTickCount();
             break;
         }
     }
-}
-//向错误消息队列发送消息
-void Error_Send(void)
-{
-    xQueueOverwriteFromISR(Error_Queue, &Guard.ID, 0);
 }
 //警戒任务默认回调函数
 void Guard_Return(void)
 {
     return;
 }
-//软件定时器
-void Guard_Scan_Time(TimerHandle_t xTimer)
+void Error_Send(void)
 {
-    Guard.Guard_Scan();
+    switch (*Guard.ID)
+    {
+    case serial6:
+        /* code */
+        break;
+    
+    default:
+        break;
+    }
 }
+
 //初始化独立看门狗
 //prer:分频数:0~7(只有低3位有效!)
 //rlr:自动重装载值,0~0XFFF.

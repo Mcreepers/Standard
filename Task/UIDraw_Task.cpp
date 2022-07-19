@@ -27,16 +27,9 @@ void UIDraw_Task(void *pvParameters)
     usart7_DMA_init();
     while (1)
     {
-        if (game_robot_state_t.robot_id == 3)
-        {
-            standard_ID1 = R3_Standard1;
-            standard_ID2 = R3_Standard1_Client;
-        }
-        if (game_robot_state_t.robot_id == 103)
-        {
-            standard_ID1 = B3_Standard1;
-            standard_ID2 = B3_Standard1_Client;
-        }
+        standard_ID1 = game_robot_state_t.robot_id;
+        standard_ID2 = 0x100 + uint32_t(game_robot_state_t.robot_id);
+        
         while (uisend > 1)
         {
             //µ×ÅÌ×´Ì¬
@@ -156,7 +149,6 @@ void UIDraw_Task(void *pvParameters)
         // 	Num_Painter ("vo",UI_Graph_Change,UI_Graph_Int,standard_ID1,standard_ID2,3,Graphic_Color_Yellow,3,1300,100,20,NULL,USART8_RX_BUF[1],NULL);				
         //     Graph_Painter(" ",UI_Graph_Change,UI_Graph_Line,standard_ID1,standard_ID2,3,Graphic_Color_Yellow,10,500,100,500+USART8_RX_BUF[1]*44,100,NULL,NULL,NULL);				
         // }
-
         // 	Num_Painter ("li",UI_Graph_Change,UI_Graph_Int,standard_ID1,standard_ID2,3,Graphic_Color_Yellow,3,1350,100,20,NULL,USART8_RX_BUF[2],NULL);
         // delay_ms(10);
 
@@ -186,4 +178,3 @@ void UIDraw_Task(void *pvParameters)
         // #endif
     }
 }
-

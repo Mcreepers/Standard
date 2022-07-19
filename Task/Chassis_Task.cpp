@@ -56,11 +56,8 @@ void Chassis_Task(void *pvParameters)
 		}
 		
 		xQueueSend(Guard_Queue, &(Guard_ID = chassis), 0);
-		if (xQueuePeek(Error_Queue, &Guard_ID, 0))
-		{
-			Chassis.error_behaviour_control_set();
-		}
-			vTaskDelay(CHASSIS_CONTROL_TIME_MS);
+		
+		vTaskDelay(CHASSIS_CONTROL_TIME_MS);
 	}
 }
 
@@ -689,7 +686,7 @@ fp32 Chassis_Ctrl::motor_angle_to_set_change(uint16_t angle, uint16_t offset_ecd
 void Chassis_Ctrl::error_behaviour_control_set(void)
 {
 	const float *error = 0;
-	if (Guard_ID == usart6)
+	// if (Guard_ID == usart6)
 	{
 		chassis_yaw_relative_angle = error;
 	}

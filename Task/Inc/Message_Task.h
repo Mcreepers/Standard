@@ -41,15 +41,17 @@ typedef enum
 	serial6,
 	serial7,
 	serial8,
-	rc_ctrl0,
+	RC_ctrl,
+	chassis,
+	UIdraw,
+	ID_t_count
 }ID_t;
 
 struct Message_Data_t
 {
 	ID_t Data_ID;
 	uint32_t DataValue;
-	CanRxMsg *Rx_Message;
-	
+	void *Data_Ptr;
 	Message_Data_t(){}
 };
 
@@ -98,26 +100,6 @@ struct rc_press_t
 	count_num_key L;
 	count_num_key R;
 };
-
-// struct Serial_Data_t
-// {
-// 	uint8_t header;
-// 	uint8_t tail;
-// 	uint8_t len;
-// 	uint8_t num;
-// 	uint8_t state;
-// 	uint8_t Data[10];
-// 	Serial_Data_t(uint8_t len=0,uint8_t header=0,uint8_t tail=0)
-// 	{
-// 		this->len = len;
-// 		this->header = header;
-// 		this->tail = tail;
-// 	}
-// //	~Serial_Data_t()
-// //	{
-// //		delete[]Data;
-// //	}
-// };
 
 class Message_Ctrl
 {
