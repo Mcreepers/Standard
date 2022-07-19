@@ -691,3 +691,13 @@ void Chassis_Ctrl::error_behaviour_control_set(void)
 		chassis_yaw_relative_angle = error;
 	}
 }
+
+const Chassis_Ctrl_Flags_t *get_chassis_control_point(void)
+{
+    return &Chassis.Flags;
+}
+
+const chassis_mode_e *get_chassis_mode_control_point(void)
+{
+	return &Chassis.Mode;
+}

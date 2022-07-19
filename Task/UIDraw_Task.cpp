@@ -22,9 +22,13 @@ char Buff[3][2] = { "1","2","3" };
 uint32_t x1, x2, x3, x4, y1, y2, y3, y4;
 uint16_t standard_ID1, standard_ID2;
 
+const Chassis_Ctrl_Flags_t *chassis_flag;
+const chassis_mode_e *chassis_mode;
 void UIDraw_Task(void *pvParameters)
 {
     usart7_DMA_init();
+    chassis_flag = get_chassis_flag_control_point();
+    chassis_mode = get_chassis_mode_control_point();
     while (1)
     {
         standard_ID1 = game_robot_state_t.robot_id;
@@ -77,18 +81,18 @@ void UIDraw_Task(void *pvParameters)
             uisend--;
         }
 
-        Char_Painter("friesp", Chassis_Mode[Chassis.Mode], UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Green, 3, 20, 1500, 790, Type_Flag_Frie_Speed);
+        Char_Painter("friesp", Chassis_Mode[*chassis_mode], UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Green, 3, 20, 1500, 790, Type_Flag_Frie_Speed);
         delay_ms(10);
 
-        if (Chassis.Flags.Vision_Flag == 1)
+        if (chassis_flag->Vision_Flag == 1)
             Char_Painter("aim", Ture, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Green, 3, 20, 1500, 750, Type_Flag_Auto_Aiming);
-        else if (Chassis.Flags.Vision_Flag == 0)
+        else if (chassis_flag->Vision_Flag == 0)
             Char_Painter("aim", Flase, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Orange, 3, 20, 1500, 750, Type_Flag_Auto_Aiming);
         delay_ms(10);
 
-        if (Chassis.Flags.Fric_Flag == 1)
+        if (chassis_flag->Fric_Flag == 1)
             Char_Painter("shoot", Ture, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Green, 3, 20, 1500, 550, Type_Flag_Shoot_Mode);
-        else if (Chassis.Flags.Fric_Flag == 0)
+        else if (chassis_flag->Fric_Flag == 0)
             Char_Painter("shoot", Flase, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Orange, 3, 20, 1500, 550, Type_Flag_Shoot_Mode);
         delay_ms(10);
 
@@ -97,15 +101,15 @@ void UIDraw_Task(void *pvParameters)
         else if (Gimbal.goal == 0)
             Graph_Painter("cir", UI_Graph_Change, UI_Graph_Circle, standard_ID1, standard_ID2, 3, Graphic_Color_White, 10, 960, 540, NULL, NULL, 50, NULL, NULL);
 
-        if (Chassis.Flags.Predict_Flag == 1)
+        if (chassis_flag->Predict_Flag == 1)
             Char_Painter("predict", Ture, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Green, 3, 20, 1500, 710, Type_Flag_Predict);
-        else if (Chassis.Flags.Predict_Flag == 0)
+        else if (chassis_flag->Predict_Flag == 0)
             Char_Painter("predict", Flase, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Orange, 3, 20, 1500, 710, Type_Flag_Predict);
         delay_ms(10);
 
-        if (Chassis.Flags.Energy_Flag == 1)
+        if (chassis_flag->Energy_Flag == 1)
             Char_Painter("energy", Ture, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Green, 3, 20, 1500, 670, Type_Flag_Energy);
-        else if (Chassis.Flags.Energy_Flag == 0)
+        else if (chassis_flag->Energy_Flag == 0)
             Char_Painter("energy", Flase, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Orange, 3, 20, 1500, 670, Type_Flag_Energy);
         delay_ms(10);
 
@@ -118,9 +122,9 @@ void UIDraw_Task(void *pvParameters)
         else if (Chassis.Velocity.Speed_Gear == 3)
             Char_Painter("level", Speed_gears[Chassis.Velocity.Speed_Gear], UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Pink, 3, 25, 340, 780, Type_Flag_Level);
 
-        if (Chassis.Flags.Speed_Up_Flag == 1)
+        if (chassis_flag->Speed_Up_Flag == 1)
             Char_Painter("power", null, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Pink, 3, 25, 340, 720, Type_Flag_Speed_up);
-        else if (Chassis.Flags.Speed_Up_Flag == 0) Char_Painter("power", null, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Green, 3, 25, 340, 720, Type_Flag_Speed_up);
+        else if (chassis_flag->Speed_Up_Flag == 0) Char_Painter("power", null, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Green, 3, 25, 340, 720, Type_Flag_Speed_up);
 
         Num_Painter("outpost_red", UI_Graph_Change, UI_Graph_Int, standard_ID1, standard_ID2, 3, Graphic_Color_Purplish_red, 3, 10, 840, 20, NULL, game_robot_HP_t.red_outpost_HP, NULL);
         delay_ms(10);

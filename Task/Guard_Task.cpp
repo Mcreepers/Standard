@@ -21,40 +21,40 @@ void Guard_Task(void *pvParameters)
 void Guard_Ctrl::Guard_Start(void)
 {
     // uint8_t i;
-    *ID = chassis;
-    Guard_Init(chassis, ID, 100, &System_Reset);
-     *ID = UIdraw;
-    // Guard_Init(UIdraw, ID ,100, &System_Reset);
-     *ID = CanData1;
-    // Guard_Init(CanData1, ID ,100, &System_Reset);
-     *ID = CanData2;
-    Guard_Init(CanData2, ID, 100, &System_Reset);
-     *ID = serial3;
-    // Guard_Init(usart3, ID ,100, &Error_Send);
-     *ID = serial6;
-    Guard_Init(serial6, ID, 100, &Error_Send);
-     *ID = serial7;
-    // Guard_Init(serial7, ID ,100, &Error_Send);
-     *ID = serial8;
-    // Guard_Init(serial8, ID ,100, &Error_Send);
-     *ID = RC_ctrl;
-    Guard_Init(RC_ctrl, ID, 200, &System_Reset);
+    ID = chassis;
+    Guard_Init(&ID, 100, &System_Reset);
+    ID = UIdraw;
+    // Guard_Init(&ID ,100, &System_Reset);
+    ID = CanData1;
+    // Guard_Init(&ID ,100, &System_Reset);
+    ID = CanData2;
+    Guard_Init(&ID, 100, &System_Reset);
+    ID = serial3;
+    // Guard_Init(&ID ,100, &Error_Send);
+    ID = serial6;
+    Guard_Init(&ID, 100, &Error_Send);
+    ID = serial7;
+    // Guard_Init(&ID ,100, &Error_Send);
+    ID = serial8;
+    // Guard_Init(&ID ,100, &Error_Send);
+    ID = RC_ctrl;
+    Guard_Init( &ID, 200, &System_Reset);
 }
 //警戒任务初始化
-void Guard_Ctrl::Guard_Init(ID_t num, ID_t *Name, uint32_t MaxValue, void(*errcb)(void))
+void Guard_Ctrl::Guard_Init(ID_t *Name, uint32_t MaxValue, void(*errcb)(void))
 {
-    SG_Structure[num].Name = Name;
-    SG_Structure[num].Enable = 0;
-    SG_Structure[num].Time = 0;
-    SG_Structure[num].Error = 0;
-    SG_Structure[num].MaxValue = MaxValue;
+    SG_Structure[*Name].Name = Name;
+    SG_Structure[*Name].Enable = 0;
+    SG_Structure[*Name].Time = 0;
+    SG_Structure[*Name].Error = 0;
+    SG_Structure[*Name].MaxValue = MaxValue;
     if (errcb == NULL)
     {
-        SG_Structure[num].errcallback = &Guard_Return;
+        SG_Structure[*Name].errcallback = &Guard_Return;
     }
     else
     {
-        SG_Structure[num].errcallback = errcb;
+        SG_Structure[*Name].errcallback = errcb;
     }
 }
 
@@ -99,7 +99,7 @@ void Guard_Return(void)
 }
 void Error_Send(void)
 {
-    switch (*Guard.ID)
+    switch (Guard.ID)
     {
     case serial6:
         /* code */

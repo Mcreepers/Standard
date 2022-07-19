@@ -37,12 +37,12 @@ struct SG_Data_t
 class Guard_Ctrl
 {
 public:
-	Guard_Ctrl() { ID = new  ID_t; }
+	Guard_Ctrl() {}
 	void Guard_Start(void);
-	void Guard_Init(ID_t num, ID_t *Name, uint32_t MaxValue, void(*errcb)(void));
+	void Guard_Init(ID_t *Name, uint32_t MaxValue, void(*errcb)(void));
 	void Guard_Scan(void);
 	void Guard_Feed(ID_t *Name);
-	ID_t *ID;
+	ID_t ID;
 private:
 	SG_Data_t SG_Structure[GUARD_TOTAL_NUM];
 };
@@ -53,7 +53,6 @@ void Guard_Return(void);
 
 void System_Reset(void);
 extern QueueHandle_t Guard_Queue;
-extern QueueHandle_t Error_Queue;
 extern ID_t Guard_ID;
 extern Guard_Ctrl Guard;
 extern Error_Flags_t Error_Flag;
