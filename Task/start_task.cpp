@@ -23,7 +23,7 @@ TaskHandle_t ChassisTask_Handler;
 /*信息获取任务*/
 #define Message_TASK_PRIO     30
 #define Message_STK_SIZE      512
-TaskHandle_t MessageTask_Handler;  
+TaskHandle_t MessageTask_Handler;
 
 /*绘制UI任务*/
 #define UIDraw_TASK_PRIO     5
@@ -39,9 +39,6 @@ TaskHandle_t GuardTask_Handler;
 #define Correspondence_TASK_PRIO     10
 #define Correspondenced_STK_SIZE      512
 TaskHandle_t CorrespondenceTask_Handler;
-
-/*警戒任务更新定时器*/
-TimerHandle_t Guard_Scan;
 
 void startTast(void)
 {
@@ -77,12 +74,12 @@ void Start_Task(void *pvParameters){
                 (UBaseType_t)Chassis_TASK_PRIO,
                 (TaskHandle_t *)&ChassisTask_Handler);						
 
-//			 xTaskCreate((TaskFunction_t)UIDraw_Task,//创建绘制UI任务
-//                (const char *)"UIDraw_Task",
-//                (uint16_t)UIDraw_STK_SIZE,
-//                (void *)NULL,
-//                (UBaseType_t)UIDraw_TASK_PRIO,
-//                (TaskHandle_t *)&UIDrawTask_Handler);						
+			 xTaskCreate((TaskFunction_t)UIDraw_Task,//创建绘制UI任务
+               (const char *)"UIDraw_Task",
+               (uint16_t)UIDraw_STK_SIZE,
+               (void *)NULL,
+               (UBaseType_t)UIDraw_TASK_PRIO,
+               (TaskHandle_t *)&UIDrawTask_Handler);						
 
 			 xTaskCreate((TaskFunction_t)Guard_Task,//创建警戒任务
                 (const char *)"Correspondence_Task",
@@ -97,13 +94,6 @@ void Start_Task(void *pvParameters){
 //                (void *)NULL,
 //                (UBaseType_t)Correspondence_TASK_PRIO,
 //                (TaskHandle_t *)&CorrespondenceTask_Handler);						
-
-            Guard_Scan = xTimerCreate("Guard_Scan",//创建警戒任务定时器
-                 pdMS_TO_TICKS(20),
-                 pdTRUE,
-                 0,
-                 Guard_Scan_Time);
-            if (Guard_Scan) xTimerStart(Guard_Scan, 0);
             
             vTaskDelete(StartTask_Handler); //删除开始任务
 	 taskEXIT_CRITICAL();            //退出临界区

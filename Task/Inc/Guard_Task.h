@@ -4,6 +4,8 @@
 #include "dev_system.h"
 #include "queue.h"
 #include "timers.h"
+#include "Message_Task.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -50,9 +52,9 @@ private:
 void IWDG_Init(uint8_t prer, uint16_t rlr);//IWDG³õÊ¼»¯
 extern void IWDG_Feed(void);  //Î¹¹·º¯Êý
 void Error_Enable(uint8_t name);
-void System_Reset(uint8_t name);
+void System_RESET(uint8_t id);
+void Guard_Return(uint8_t id);
 
-void System_Reset(void);
 extern QueueHandle_t Guard_Queue;
 extern ID_t Guard_ID;
 extern Guard_Ctrl Guard;

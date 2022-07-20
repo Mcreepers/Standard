@@ -25,7 +25,7 @@ uint16_t standard_ID1, standard_ID2;
 
 const Chassis_Ctrl_Flags_t *chassis_flag;
 const chassis_mode_e *chassis_mode;
-const Gimbal_Data_t *Gimbal;
+const Gimbal_Data_t *Gimbal_UI;
 const Chassis_Velocity_t *chassis_velocity;
 
 void UIDraw_Task(void *pvParameters)
@@ -34,7 +34,7 @@ void UIDraw_Task(void *pvParameters)
     chassis_flag = get_chassis_flag_control_point();
     chassis_mode = get_chassis_mode_control_point();
     chassis_velocity = get_chassis_velocity_control_point();
-    Gimbal = get_gimbal_data_point();
+    Gimbal_UI = get_gimbal_data_point();
     while (1)
     {
         standard_ID1 = game_robot_state_t.robot_id;
@@ -102,9 +102,9 @@ void UIDraw_Task(void *pvParameters)
             Char_Painter("shoot", Flase, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Orange, 3, 20, 1500, 550, Type_Flag_Shoot_Mode);
         delay_ms(10);
 
-        if (Gimbal->goal == 1)
+        if (Gimbal_UI->goal == 1)
             Graph_Painter("cir", UI_Graph_Change, UI_Graph_Circle, standard_ID1, standard_ID2, 3, Graphic_Color_Green, 10, 960, 540, NULL, NULL, 50, NULL, NULL);
-        else if (Gimbal->goal == 0)
+        else if (Gimbal_UI->goal == 0)
             Graph_Painter("cir", UI_Graph_Change, UI_Graph_Circle, standard_ID1, standard_ID2, 3, Graphic_Color_White, 10, 960, 540, NULL, NULL, 50, NULL, NULL);
 
         if (chassis_flag->Predict_Flag == 1)

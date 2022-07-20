@@ -22,15 +22,15 @@ void Guard_Task(void *pvParameters)
 //警戒任务开始
 void Guard_Ctrl::Guard_Start(void)
 {
-    Guard_Init(chassis, 100, &System_Reset);
-    // Guard_Init(UIdraw ,100, &System_Reset);
-    // Guard_Init(CanData1 ,100, &System_Reset);
-    Guard_Init(CanData2, 100, &System_Reset);
+    Guard_Init(chassis, 100, &System_RESET);
+    // Guard_Init(UIdraw ,100, &System_RESET);
+    // Guard_Init(CanData1 ,100, &System_RESET);
+    Guard_Init(CanData2, 100, &System_RESET);
     // Guard_Init(serial3 ,100, &Error_Send);
     Guard_Init(serial6, 100, &Error_Enable);
     // Guard_Init(serial7 ,100, &Error_Send);
     // Guard_Init(serial8 ,100, &Error_Send);
-    Guard_Init(RC_ctrl, 200, &System_Reset);
+    Guard_Init(RC_ctrl, 200, &System_RESET);
 }
 //警戒任务初始化
 void Guard_Ctrl::Guard_Init(ID_t Name, uint32_t MaxValue, void(*errcb)(uint8_t id))
@@ -144,7 +144,7 @@ void IWDG_Feed(void)
 }
 
 //寄存器软件复位
-void System_Reset(uint8_t id)
+void System_RESET(uint8_t id)
 {
     SCB->AIRCR = (uint32_t)((0x5FAUL << SCB_AIRCR_VECTKEY_Pos) |
         (SCB->AIRCR & SCB_AIRCR_PRIGROUP_Msk) |

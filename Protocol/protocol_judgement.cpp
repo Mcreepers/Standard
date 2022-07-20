@@ -22,7 +22,7 @@ static void MYDMA_Config(DMA_Stream_TypeDef *DMA_Streamx, u32 chx, u32 par, u32 
 
 
 uint8_t rx7_buf[RX_BUF_NUM];
-uint8_t	tx7_buf[TX_BUF_NUM];
+uint8_t	TX7_buf[TX_BUF_NUM];
 
 static void referee_data_solve(void);
 
@@ -32,7 +32,7 @@ void usart7_DMA_init(void)
 		DMA_PeripheralInc_Disable, DMA_MemoryInc_Enable, DMA_PeripheralDataSize_Byte,
 		DMA_MemoryDataSize_Byte, DMA_Priority_VeryHigh,
 		DMA_FIFOThreshold_1QuarterFull);
-	usart7_RxDMA.dmaInit(MTP_NM_SGSG_DS, (uint32_t *)(UART7->DR), (uint32_t *)tx7_buf, TX_BUF_NUM,
+	usart7_RxDMA.dmaInit(MTP_NM_SGSG_DS, (uint32_t *)(UART7->DR), (uint32_t *)TX7_buf, TX_BUF_NUM,
 		DMA_PeripheralInc_Disable, DMA_MemoryInc_Enable, DMA_PeripheralDataSize_Byte,
 		DMA_MemoryDataSize_Byte, DMA_Priority_High,
 		DMA_FIFOThreshold_Full);
@@ -61,9 +61,9 @@ void chassis_to_judgeui(uint16_t txlen)
 	u16 i = 0;
 	u16 tx_len=txlen;
 	while(txlen--){
-		usart7_send_char(tx7_buf[i++]);
+		usart7_send_char(TX7_buf[i++]);
 	}
-	memset(tx7_buf, 0, txlen);
+	memset(TX7_buf, 0, txlen);
 }
 
 //裁判系统相关

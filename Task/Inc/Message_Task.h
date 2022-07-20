@@ -4,6 +4,7 @@
 #include "dev_system.h"
 
 #include "queue.h"
+#include "Chassis_Task.h"
 // #include "dev_serial.h"
 // #include <vector>
 
@@ -123,5 +124,6 @@ const Gimbal_Data_t *get_gimbal_data_point(void);
 uint8_t read_key_count(count_num_key *temp_count);
 void read_key_single(count_num_key *temp_count, bool *temp_bool);
 void read_key_even(count_num_key *temp_count, bool *temp_bool);
+void rc_key_v_set(RC_ctrl_t *RC);
 
 #endif

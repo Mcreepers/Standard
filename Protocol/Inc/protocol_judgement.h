@@ -391,7 +391,7 @@ extern  judge_type                   judgetype;
 extern  ext_game_robot_pos_t         game_robot_position;
 extern  ext_shoot_data_t			shoot_data_t;
 extern	uint8_t						rx7_buf[RX_BUF_NUM];
-extern  uint8_t						tx7_buf[TX_BUF_NUM];
+extern  uint8_t						TX7_buf[TX_BUF_NUM];
 extern	ext_game_robot_pos_t	game_robot_pos_t;
 extern	draw_data_struct_t		draw_data_struct;
 extern  char_data_struct_t    char_data_struct;
@@ -401,7 +401,7 @@ extern  ext_client_custom_graphic_delete_t graphic_delete_struct;
 // extern  num_data_struct_t  						num_data_struct;
 
 extern	ext_client_custom_graphic_single_t   client_custom_graphic_single_t;
-
+void usart7_send_char(uint8_t c);
 void Usart_SendBuff(uint8_t *buf, uint16_t len);
 void chassis_to_judgeui(uint16_t txlen);
 const robo_data_t *get_robo_data_Point();

@@ -8,7 +8,7 @@
 #include "protocol_dbus.h"
 
 Chassis_Ctrl Chassis;
-const Gimbal_Data_t *Gimbal;
+const Gimbal_Data_t *Gimbal_chassis;
 
 u8 UIsend = 0;
 //底盘速度环pid值
@@ -63,7 +63,7 @@ void Chassis_Task(void *pvParameters)
 void Chassis_Ctrl::Chassis_Init(void)
 {
   	RC_Ptr = get_remote_control_point();
-	Gimbal = get_gimbal_data_point();
+	Gimbal_chassis = get_gimbal_data_point();
 	
 	for ( uint8_t i = 0; i < 4; i++ )
 	{
@@ -342,7 +342,7 @@ void Chassis_Ctrl::chassis_behaviour_control_set(fp32 *vx_set, fp32 *vy_set, fp3
 	{
 		chassis_rc_to_control_vector(vx_set, vy_set);//将遥控值转换为底盘设定量
 
-		Chassis.chassis_relative_angle = *(Chassis.chassis_yaw_relative_angle);//相对云台角度
+		Chassis.chassis_relative_angle = Gimbal_chassis->ECD;//相对云台角度
 		if (Chassis.chassis_relative_angle > 10)// 最大到800
 		{
 			PID_Calc(&Chassis.Follow_Gimbal_Pid, Chassis.chassis_relative_angle, 50, 0);
@@ -670,16 +670,7 @@ fp32 Chassis_Ctrl::motor_angle_to_set_change(uint16_t angle, uint16_t offset_ecd
     return relative_angle_change;
 }
 
-void Chassis_Ctrl::error_behaviour_control_set(void)
-{
-	const float *error = 0;
-	// if (Guard_ID == usart6)
-	{
-		chassis_yaw_relative_angle = error;
-	}
-}
-
-const Chassis_Ctrl_Flags_t *get_chassis_control_point(void)
+const Chassis_Ctrl_Flags_t *get_chassis_flag_control_point(void)
 {
     return &Chassis.Flags;
 }
@@ -692,4 +683,12 @@ const chassis_mode_e *get_chassis_mode_control_point(void)
 const Chassis_Velocity_t *get_chassis_velocity_control_point(void)
 {
 	return &Chassis.Velocity;
+}
+
+//寄存器软件复位
+void System_Reset(void)
+{
+    SCB->AIRCR = (uint32_t)((0x5FAUL << SCB_AIRCR_VECTKEY_Pos) |
+        (SCB->AIRCR & SCB_AIRCR_PRIGROUP_Msk) |
+        SCB_AIRCR_SYSRESETREQ_Msk);
 }
