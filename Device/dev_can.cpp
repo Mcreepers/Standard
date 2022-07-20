@@ -97,6 +97,7 @@ void CANctrl::IRQHandler( void )
 
 void CANctrl::Hook(CanRxMsg *Rx_Message)
 {
+
     if (CAN_Function)
     {
         CAN_Function(Rx_Message);

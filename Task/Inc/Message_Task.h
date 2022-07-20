@@ -11,7 +11,7 @@
 extern "C" {
 #endif
 
-void Message_Task(void *pvParameters);
+	void Message_Task(void *pvParameters);
 
 #ifdef __cplusplus
 }
@@ -19,20 +19,15 @@ void Message_Task(void *pvParameters);
 
 #define Message_CONTROL_TIME_MS 1
 
-#define Message_Q_NUM    5  		    //消息队列的数量
+#define Message_Q_NUM    1  		    //消息队列的数量
 extern QueueHandle_t Message_Queue;   		//消息队列句柄
 
 #define Gimbal_Motor_Yaw_Offset_ECD 940
 
 union I
 {
-    char s[2];
-    uint16_t d;
-};
-union F 
-{
-    char s[8];
-    float d;
+	char s[2];
+	uint16_t d;
 };
 
 typedef enum
@@ -46,6 +41,7 @@ typedef enum
 	RC_ctrl,
 	chassis,
 	UIdraw,
+	fault,
 	ID_t_count
 }ID_t;
 
@@ -54,7 +50,7 @@ struct Message_Data_t
 	ID_t Data_ID;
 	uint32_t DataValue;
 	void *Data_Ptr;
-	Message_Data_t(){}
+	Message_Data_t() {}
 };
 
 struct Gimbal_Data_t
@@ -72,7 +68,7 @@ typedef struct
 {
 	u8	key_flag;
 	u8  count;//次数
-    u8  last_count;
+	u8  last_count;
 }count_num_key;
 
 struct rc_key_v_t
@@ -106,31 +102,26 @@ struct rc_press_t
 class Message_Ctrl
 {
 public:
-	Message_Ctrl(){
-		Data = new Message_Data_t();
-	}
 	Message_Data_t *Data;
 	const Chassis_Velocity_t *velocity;
 	const Chassis_Ctrl_Flags_t *flags;
 	const chassis_mode_e *mode;
+	void Hook(void *ptr);
+private:
+	void Usart3_Hook(Usart_Data_t *Usart3);
+	void Usart6_Hook(Usart_Data_t *Usart6);
+	void Usart7_Hook(Usart_Data_t *Usart7);
+	void Usart8_Hook(Usart_Data_t *Usart8);
 };
 
 extern Message_Data_t Message_Data;
 extern Message_Ctrl Message;
 extern rc_key_v_t Key;
 extern rc_press_t Press;
-extern void rc_key_v_set(void);
 
 const Gimbal_Data_t *get_gimbal_data_point(void);
-// const GIMBAL_DADTA_T *get_gimbal_data_point(void);
-void sum_key_count(int16_t key_num, count_num_key *temp_count);
-void clear_key_count(count_num_key *temp_count);
 uint8_t read_key_count(count_num_key *temp_count);
-void read_key_single(count_num_key *temp_count,bool *temp_bool);
+void read_key_single(count_num_key *temp_count, bool *temp_bool);
 void read_key_even(count_num_key *temp_count, bool *temp_bool);
-void Usart3_hook(void);
-void Usart6_hook(void);
-void Usart7_hook(void);
-void Usart8_hook(void);
 
 #endif

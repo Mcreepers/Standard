@@ -1,8 +1,10 @@
 #include "Guard_Task.h"
 #include "Message_Task.h"
 #include "timers.h"
+
 Guard_Ctrl Guard;
 Error_Flags_t Error_Flag;
+
 //警戒任务
 void Guard_Task(void *pvParameters)
 {
@@ -20,45 +22,34 @@ void Guard_Task(void *pvParameters)
 //警戒任务开始
 void Guard_Ctrl::Guard_Start(void)
 {
-    // uint8_t i;
-    ID = chassis;
-    Guard_Init(&ID, 100, &System_Reset);
-    ID = UIdraw;
-    // Guard_Init(&ID ,100, &System_Reset);
-    ID = CanData1;
-    // Guard_Init(&ID ,100, &System_Reset);
-    ID = CanData2;
-    Guard_Init(&ID, 100, &System_Reset);
-    ID = serial3;
-    // Guard_Init(&ID ,100, &Error_Send);
-    ID = serial6;
-    Guard_Init(&ID, 100, &Error_Send);
-    ID = serial7;
-    // Guard_Init(&ID ,100, &Error_Send);
-    ID = serial8;
-    // Guard_Init(&ID ,100, &Error_Send);
-    ID = RC_ctrl;
-    Guard_Init( &ID, 200, &System_Reset);
+    Guard_Init(chassis, 100, &System_Reset);
+    // Guard_Init(UIdraw ,100, &System_Reset);
+    // Guard_Init(CanData1 ,100, &System_Reset);
+    Guard_Init(CanData2, 100, &System_Reset);
+    // Guard_Init(serial3 ,100, &Error_Send);
+    Guard_Init(serial6, 100, &Error_Enable);
+    // Guard_Init(serial7 ,100, &Error_Send);
+    // Guard_Init(serial8 ,100, &Error_Send);
+    Guard_Init(RC_ctrl, 200, &System_Reset);
 }
 //警戒任务初始化
-void Guard_Ctrl::Guard_Init(ID_t *Name, uint32_t MaxValue, void(*errcb)(void))
+void Guard_Ctrl::Guard_Init(ID_t Name, uint32_t MaxValue, void(*errcb)(uint8_t id))
 {
-    SG_Structure[*Name].Name = Name;
-    SG_Structure[*Name].Enable = 0;
-    SG_Structure[*Name].Time = 0;
-    SG_Structure[*Name].Error = 0;
-    SG_Structure[*Name].MaxValue = MaxValue;
+    SG_Structure[Name].Name = Name;
+    SG_Structure[Name].Enable = 0;//默认关闭
+    SG_Structure[Name].Time = 0;
+    SG_Structure[Name].Error = 0;
+    SG_Structure[Name].MaxValue = MaxValue;
     if (errcb == NULL)
     {
-        SG_Structure[*Name].errcallback = &Guard_Return;
+        SG_Structure[Name].errcallback = &Guard_Return;
     }
     else
     {
-        SG_Structure[*Name].errcallback = errcb;
+        SG_Structure[Name].errcallback = errcb;
     }
 }
-
-//警戒任务扫描（在软件定时器中执行）
+//警戒任务扫描
 void Guard_Ctrl::Guard_Scan(void)
 {
     uint8_t i;
@@ -69,7 +60,7 @@ void Guard_Ctrl::Guard_Scan(void)
             SG_Structure[i].Error=xTaskGetTickCount()-SG_Structure[i].Time;
             if (SG_Structure[i].Error > SG_Structure[i].MaxValue)
             {
-                SG_Structure[i].errcallback();
+                SG_Structure[i].errcallback(i);
             }
             if ((int16_t)(SG_Structure[i].Error - SG_Structure[i].MaxValue) > 100)
             {
@@ -81,10 +72,15 @@ void Guard_Ctrl::Guard_Scan(void)
 //警戒任务喂狗
 void Guard_Ctrl::Guard_Feed(ID_t *Name)
 {
+    if (Name == NULL||*Name==fault)
+    {
+        return;
+    }
+    
     uint8_t i;
     for (i = 0;i < GUARD_TOTAL_NUM;i++)
     {
-        if (Guard.SG_Structure[i].Name == Name)
+        if (Guard.SG_Structure[i].Name == *Name)
         {
             Guard.SG_Structure[i].Enable = 1;
             Guard.SG_Structure[i].Time = xTaskGetTickCount();
@@ -92,19 +88,31 @@ void Guard_Ctrl::Guard_Feed(ID_t *Name)
         }
     }
 }
+//警戒任务使能(feed中的使能只针对已运行任务)
+void Guard_Ctrl::Guard_Enable(void)
+{
+    uint8_t i;
+    for (i = 0;i < GUARD_TOTAL_NUM;i++)
+    {
+        Guard.SG_Structure[i].Enable = 1;
+    }
+}
 //警戒任务默认回调函数
-void Guard_Return(void)
+void Guard_Return(uint8_t id)
 {
     return;
 }
-void Error_Send(void)
+void Error_Enable(uint8_t id)
 {
-    switch (Guard.ID)
+    switch (id)
     {
     case serial6:
-        /* code */
+        Error_Flag.Gimbal = 1;
+        Error_Flag.Visual = 1;
         break;
-    
+    case serial7:
+        Error_Flag.Judge = 1;
+        break;
     default:
         break;
     }
@@ -136,7 +144,7 @@ void IWDG_Feed(void)
 }
 
 //寄存器软件复位
-void System_Reset(void)
+void System_Reset(uint8_t id)
 {
     SCB->AIRCR = (uint32_t)((0x5FAUL << SCB_AIRCR_VECTKEY_Pos) |
         (SCB->AIRCR & SCB_AIRCR_PRIGROUP_Msk) |

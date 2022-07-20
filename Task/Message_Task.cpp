@@ -4,9 +4,7 @@
 #include "queue.h"
 #include "device.h"
 
-union I ecd_data;
 union I int_data;
-union F float_data;
 
 Usart_Data_t Usart3( Serial3_Buffer_Size, Serial3_Data_Header, Serial3_Data_tail );
 Usart_Data_t Usart6( Serial6_Buffer_Size, Serial6_Data_Header, Serial6_Data_tail );
@@ -15,76 +13,86 @@ Usart_Data_t Usart8( Serial8_Buffer_Size, Serial8_Data_Header, Serial8_Data_tail
 
 Message_Data_t Message_Data;
 Message_Ctrl Message;
-extern QueueHandle_t Message_Queue;   		//消息队列句柄
 ID_t Message_ID;
 Gimbal_Data_t Gimbal;
 rc_key_v_t Key;
 rc_press_t Press;
+
 void Message_Task(void *pvParameters)
 {
-    
-    while (1)
+	while (1)
     {
         if (xQueueReceive(Message_Queue, &Message_ID, portMAX_DELAY))
-        {
-            switch (Message_ID)
+		{
+			if (Message_Data.Data_Ptr != NULL)
 			{
-#if useSteering
-			case CanData1:
-				CAN1_Ctrl.Hook((CanRxMsg *)Message_Data.Data_Ptr);
-				break;
-#endif
-			case CanData2:
-				CAN2_Ctrl.Hook((CanRxMsg *)Message_Data.Data_Ptr);
-                break;
-            case serial3:
-//                Usart3_hook((Usart_Data_t *)Message_Data.Data_Ptr);
-                break;
-            case serial6:
-                Usart6_hook((Usart_Data_t *)Message_Data.Data_Ptr);
-                break;
-            case serial7:
-                // Usart7_hook((Usart_Data_t *)Message_Data.Data_Ptr);
-                break;
-            case serial8:
-                // Usart8_hook((Usart_Data_t *)Message_Data.Data_Ptr);
-                break;
-            case RC_ctrl:
-                rc_key_v_set();
-                break;
-            default:
-                break;
+				Message.Hook(&Message_Data.Data_Ptr);
 			}
 			Guard.Guard_Feed(&Message_ID);
 		}
 	}
 }
-
-void Usart3_hook(void)
+//消息处理
+void Message_Ctrl::Hook(void *ptr)
 {
-	
+	switch (Message_ID)
+	{
+	case CanData1:
+		CAN1_Ctrl.Hook((CanRxMsg *)ptr);
+		break;
+	case CanData2:
+		CAN2_Ctrl.Hook((CanRxMsg *)ptr);
+		break;
+	case serial3:
+		// Usart3_Hook((Usart_Data_t *)ptr);
+		break;
+	case serial6:
+		Usart6_Hook((Usart_Data_t *)ptr);
+		break;
+	case serial7:
+		// Usart7_Hook((Usart_Data_t *)ptr);
+		break;
+	case serial8:
+		// Usart8_Hook((Usart_Data_t *)ptr);
+		break;
+	case RC_ctrl:
+		rc_key_v_set((RC_ctrl_t *)ptr);
+		break;
+	default:
+		break;
+	}
+
 }
 
-void Usart6_hook(Usart_Data_t *Usart6)
+void Message_Ctrl::Usart3_Hook(Usart_Data_t *Usart3)
 {
+
+}
+
+void Message_Ctrl::Usart6_Hook(Usart_Data_t *Usart6)
+{
+
 	int_data.s[0] = Usart6->Data[1];
 	int_data.s[1] = Usart6->Data[2];
-	Gimbal.ECD = Chassis.motor_angle_to_set_change(int_data.d,Gimbal_Motor_Yaw_Offset_ECD);
+	Gimbal.ECD = Chassis.motor_angle_to_set_change(int_data.d, Gimbal_Motor_Yaw_Offset_ECD);
 	Gimbal.gimbal_grade = Usart6->Data[3];
 	Gimbal.compensation_state = Usart6->Data[4];
 	Gimbal.follow_on = Usart6->Data[5];
 	Gimbal.goal = Usart6->Data[6];
 	Gimbal.energy_state = Usart6->Data[7];
-//	Gimbal.predict = Usart6->Data[8];
+	//	Gimbal.predict = Usart6->Data[8];
+	if (Gimbal.ECD > 8192 || Gimbal.gimbal_grade > 3) Error_Flag.Gimbal = 1;
+	if (Gimbal.compensation_state > 2 || Gimbal.follow_on > 1 || Gimbal.energy_state > 1 || Gimbal.goal > 1
+		|| Gimbal.predict > 1) Error_Flag.Visual = 1;
 }
 
-void Usart7_hook(void)
+void Message_Ctrl::Usart7_Hook(Usart_Data_t *Usart7)
 {
-	
+
 
 }
 
-void Usart8_hook(void)
+void Message_Ctrl::Usart8_Hook(Usart_Data_t *Usart8)
 {
 
 }
@@ -156,99 +164,98 @@ void read_key_even(count_num_key *temp_count,bool *temp_bool)
 }
 
 //更新按键
-void rc_key_v_set(void)
+void rc_key_v_set(RC_ctrl_t *RC)
 {
-	if(rc_ctrl.key.v==KEY_PRESSED_OFFSET_W){
+	
+	if (RC->key.v == KEY_PRESSED_OFFSET_W){
 		sum_key_count(1,&Key.W);
 	}else{
 		sum_key_count(0,&Key.W);
 	}
-	if(rc_ctrl.key.v==KEY_PRESSED_OFFSET_S){
+	if(RC->key.v==KEY_PRESSED_OFFSET_S){
 		sum_key_count(1,&Key.S);
 	}else{
 		sum_key_count(0,&Key.S);
 	}
-	if(rc_ctrl.key.v==KEY_PRESSED_OFFSET_A){
+	if(RC->key.v==KEY_PRESSED_OFFSET_A){
 		sum_key_count(1,&Key.A);
 	}else{
 		sum_key_count(0,&Key.A);
 	}
-	if(rc_ctrl.key.v==KEY_PRESSED_OFFSET_D){
+	if(RC->key.v==KEY_PRESSED_OFFSET_D){
 		sum_key_count(1,&Key.D);
 	}else{
 		sum_key_count(0,&Key.D);
 	}
-	if(rc_ctrl.key.v==KEY_PRESSED_OFFSET_SHIFT){
+	if(RC->key.v==KEY_PRESSED_OFFSET_SHIFT){
 		sum_key_count(1,&Key.shift);
 	}else{
 		sum_key_count(0,&Key.shift);
 	}
-	if(rc_ctrl.key.v==KEY_PRESSED_OFFSET_CTRL){
+	if(RC->key.v==KEY_PRESSED_OFFSET_CTRL){
 		sum_key_count(1,&Key.ctrl);
 	}else{
 		sum_key_count(0,&Key.ctrl);
 	}
-	if(rc_ctrl.key.v==KEY_PRESSED_OFFSET_Q){
+	if(RC->key.v==KEY_PRESSED_OFFSET_Q){
 		sum_key_count(1,&Key.Q);
 	}else{
 		sum_key_count(0,&Key.Q);
 	}
-	if(rc_ctrl.key.v==KEY_PRESSED_OFFSET_E){
+	if(RC->key.v==KEY_PRESSED_OFFSET_E){
 		sum_key_count(1,&Key.E);
 	}else{
 		sum_key_count(0,&Key.E);
 	}
-	if(rc_ctrl.key.v==KEY_PRESSED_OFFSET_R){
+	if(RC->key.v==KEY_PRESSED_OFFSET_R){
 		sum_key_count(1,&Key.R);
 	}else{
 		sum_key_count(0,&Key.R);
 	}
-	if(rc_ctrl.key.v==KEY_PRESSED_OFFSET_F){
+	if(RC->key.v==KEY_PRESSED_OFFSET_F){
 		sum_key_count(1,&Key.F);
 	}else{
 		sum_key_count(0,&Key.F);
 	}
-	if(rc_ctrl.key.v==KEY_PRESSED_OFFSET_G){
+	if(RC->key.v==KEY_PRESSED_OFFSET_G){
 		sum_key_count(1,&Key.G);
 	}else{
 		sum_key_count(0,&Key.G);
 	}
-	if(rc_ctrl.key.v==KEY_PRESSED_OFFSET_Z){
+	if(RC->key.v==KEY_PRESSED_OFFSET_Z){
 		sum_key_count(1,&Key.Z);
 	}else{
 		sum_key_count(0,&Key.Z);
 	}
-	if(rc_ctrl.key.v==KEY_PRESSED_OFFSET_X){
+	if(RC->key.v==KEY_PRESSED_OFFSET_X){
 		sum_key_count(1,&Key.X);
 	}else{
 		sum_key_count(0,&Key.X);
 	}
-	if(rc_ctrl.key.v==KEY_PRESSED_OFFSET_C){
+	if(RC->key.v==KEY_PRESSED_OFFSET_C){
 		sum_key_count(1,&Key.C);
 	}else{
 		sum_key_count(0,&Key.C);
 	}
-	if(rc_ctrl.key.v==KEY_PRESSED_OFFSET_V){
+	if(RC->key.v==KEY_PRESSED_OFFSET_V){
 		sum_key_count(1,&Key.V);
 	}else{
 		sum_key_count(0,&Key.V);
 	}
-	if(rc_ctrl.key.v==KEY_PRESSED_OFFSET_B){
+	if(RC->key.v==KEY_PRESSED_OFFSET_B){
 		sum_key_count(1,&Key.B);
 	}else{
 		sum_key_count(0,&Key.B);
 	}
-	//鼠标按键
-	if (rc_ctrl.mouse.press_l == 1){
+	//鼠标
+	if (RC->mouse.press_l == 1){
 		sum_key_count(1,&Press.L);
 	}else{
 		sum_key_count(0,&Press.L);
 	}
-	if(rc_ctrl.mouse.press_r==1){
+	if(RC->mouse.press_r==1){
 		sum_key_count(1,&Press.R);
 	}else{
 		sum_key_count(0,&Press.R);
 	}
-
-	Guard.Guard_Feed(&Message_ID);
 }
