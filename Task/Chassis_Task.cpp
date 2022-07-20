@@ -8,8 +8,9 @@
 #include "protocol_dbus.h"
 
 Chassis_Ctrl Chassis;
+const Gimbal_Data_t *Gimbal;
 
-u8 UIsend=0;
+u8 UIsend = 0;
 //底盘速度环pid值
 const static fp32 Motor_Speed_Pid[3] = {M3505_MOTOR_SPEED_PID_KP, M3505_MOTOR_SPEED_PID_KI, M3505_MOTOR_SPEED_PID_KD};
 //底盘旋转环pid值
@@ -52,7 +53,7 @@ void Chassis_Task(void *pvParameters)
 #endif
 		}
 		
-		xQueueSend(Guard_Queue, &(Guard_ID = chassis), 0);
+        xQueueSend(Message_Queue, &(Message_Data.Data_ID = chassis), 0);
 		
 		vTaskDelay(CHASSIS_CONTROL_TIME_MS);
 	}
@@ -62,7 +63,7 @@ void Chassis_Task(void *pvParameters)
 void Chassis_Ctrl::Chassis_Init(void)
 {
   	RC_Ptr = get_remote_control_point();
-	chassis_yaw_relative_angle = get_yaw_motor_point();
+	Gimbal = get_gimbal_data_point();
 	
 	for ( uint8_t i = 0; i < 4; i++ )
 	{
@@ -381,7 +382,7 @@ void Chassis_Ctrl::Control(void)
     if (Chassis.Mode == CHASSIS_FOLLOW_YAW)
     {
 		Chassis.chassis_relative_angle=*(Chassis.chassis_yaw_relative_angle);//相对云台角度
-		relative_angle=Chassis.chassis_relative_angle*0.0007669903939428f;
+		relative_angle=Chassis.chassis_relative_angle*ECD_TO_PI;
         sin_yaw = arm_sin_f32(-relative_angle);
         cos_yaw = arm_cos_f32(-relative_angle);
         Chassis.Velocity.vx_set = cos_yaw * vx_set + sin_yaw * vy_set;
@@ -393,7 +394,7 @@ void Chassis_Ctrl::Control(void)
     {
 		//不跟随云台模式
 		Chassis.chassis_relative_angle=*(Chassis.chassis_yaw_relative_angle);//相对云台角度
-		relative_angle=Chassis.chassis_relative_angle*0.0007669903939428f;
+		relative_angle=Chassis.chassis_relative_angle*ECD_TO_PI;
 			
         //旋转控制底盘速度方向，保证前进方向是云台方向
         sin_yaw = arm_sin_f32(-relative_angle);
@@ -686,4 +687,9 @@ const Chassis_Ctrl_Flags_t *get_chassis_control_point(void)
 const chassis_mode_e *get_chassis_mode_control_point(void)
 {
 	return &Chassis.Mode;
+}
+
+const Chassis_Velocity_t *get_chassis_velocity_control_point(void)
+{
+	return &Chassis.Velocity;
 }

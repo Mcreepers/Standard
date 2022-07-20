@@ -62,7 +62,7 @@ void Message_Task(void *pvParameters)
 
 void Usart3_hook(void)
 {
-
+	
 }
 
 void Usart6_hook(Usart_Data_t *Usart6)

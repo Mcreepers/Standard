@@ -306,5 +306,6 @@ extern Chassis_Ctrl Chassis;
 
 extern const Chassis_Ctrl_Flags_t *get_chassis_flag_control_point(void);
 extern const chassis_mode_e *get_chassis_mode_control_point(void);
+extern const Chassis_Velocity_t *get_chassis_velocity_control_point(void);
 
 #endif /* __CHASSIS_TASK_H */

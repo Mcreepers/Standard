@@ -19,7 +19,7 @@ void Message_Task(void *pvParameters);
 
 #define Message_CONTROL_TIME_MS 1
 
-#define Message_Q_NUM    1  		    //消息队列的数量
+#define Message_Q_NUM    5  		    //消息队列的数量
 extern QueueHandle_t Message_Queue;   		//消息队列句柄
 
 #define Gimbal_Motor_Yaw_Offset_ECD 940
@@ -110,6 +110,9 @@ public:
 		Data = new Message_Data_t();
 	}
 	Message_Data_t *Data;
+	const Chassis_Velocity_t *velocity;
+	const Chassis_Ctrl_Flags_t *flags;
+	const chassis_mode_e *mode;
 };
 
 extern Message_Data_t Message_Data;

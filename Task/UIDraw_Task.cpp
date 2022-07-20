@@ -26,11 +26,14 @@ uint16_t standard_ID1, standard_ID2;
 const Chassis_Ctrl_Flags_t *chassis_flag;
 const chassis_mode_e *chassis_mode;
 const Gimbal_Data_t *Gimbal;
+const Chassis_Velocity_t *chassis_velocity;
+
 void UIDraw_Task(void *pvParameters)
 {
     usart7_DMA_init();
     chassis_flag = get_chassis_flag_control_point();
     chassis_mode = get_chassis_mode_control_point();
+    chassis_velocity = get_chassis_velocity_control_point();
     Gimbal = get_gimbal_data_point();
     while (1)
     {
@@ -116,14 +119,14 @@ void UIDraw_Task(void *pvParameters)
             Char_Painter("energy", Flase, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Orange, 3, 20, 1500, 670, Type_Flag_Energy);
         delay_ms(10);
 
-        if (Chassis.Velocity.Speed_Gear == 0)
-            Char_Painter("level", Speed_gears[Chassis.Velocity.Speed_Gear], UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Green, 3, 25, 340, 780, Type_Flag_Level);
-        else if (Chassis.Velocity.Speed_Gear == 1)
-            Char_Painter("level", Speed_gears[Chassis.Velocity.Speed_Gear], UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Cyan, 3, 25, 340, 780, Type_Flag_Level);
-        else if (Chassis.Velocity.Speed_Gear == 2)
-            Char_Painter("level", Speed_gears[Chassis.Velocity.Speed_Gear], UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Orange, 3, 25, 340, 780, Type_Flag_Level);
-        else if (Chassis.Velocity.Speed_Gear == 3)
-            Char_Painter("level", Speed_gears[Chassis.Velocity.Speed_Gear], UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Pink, 3, 25, 340, 780, Type_Flag_Level);
+        if (chassis_velocity->Speed_Gear == 0)
+            Char_Painter("level", Speed_gears[chassis_velocity->Speed_Gear], UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Green, 3, 25, 340, 780, Type_Flag_Level);
+        else if (chassis_velocity->Speed_Gear == 1)
+            Char_Painter("level", Speed_gears[chassis_velocity->Speed_Gear], UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Cyan, 3, 25, 340, 780, Type_Flag_Level);
+        else if (chassis_velocity->Speed_Gear == 2)
+            Char_Painter("level", Speed_gears[chassis_velocity->Speed_Gear], UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Orange, 3, 25, 340, 780, Type_Flag_Level);
+        else if (chassis_velocity->Speed_Gear == 3)
+            Char_Painter("level", Speed_gears[chassis_velocity->Speed_Gear], UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Pink, 3, 25, 340, 780, Type_Flag_Level);
 
         if (chassis_flag->Speed_Up_Flag == 1)
             Char_Painter("power", null, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Pink, 3, 25, 340, 720, Type_Flag_Speed_up);
@@ -179,9 +182,11 @@ void UIDraw_Task(void *pvParameters)
         Graph_Painter("L2", UI_Graph_ADD, UI_Graph_Line, standard_ID1, standard_ID2, 3, Graphic_Color_White, 2, 960, 413, 1000, 413, NULL, NULL, NULL);
         Graph_Painter("L3", UI_Graph_ADD, UI_Graph_Line, standard_ID1, standard_ID2, 3, Graphic_Color_White, 2, 960, 405, 1000, 405, NULL, NULL, NULL);
         Graph_Painter("15", UI_Graph_ADD, UI_Graph_Rectangle, standard_ID1, standard_ID2, 3, Graphic_Color_White, 2, 910, 580, 1010, 500, NULL, NULL, NULL);
+        
         // #if INCLUDE_uxTaskGetStackHighWaterMark
         //         UserTaskStack = uxTaskGetStackHighWaterMark(NULL);
         // #endif
+        
         xQueueSend(Message_Queue, &(Message_Data.Data_ID = UIdraw), 0);
         vTaskDelay(10);
     }

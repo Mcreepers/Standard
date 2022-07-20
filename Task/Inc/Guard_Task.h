@@ -37,7 +37,6 @@ struct SG_Data_t
 class Guard_Ctrl
 {
 public:
-	Guard_Ctrl() {}
 	void Guard_Start(void);
 	void Guard_Init(ID_t *Name, uint32_t MaxValue, void(*errcb)(void));
 	void Guard_Scan(void);
