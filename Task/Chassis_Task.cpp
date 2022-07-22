@@ -133,7 +133,6 @@ void Chassis_Ctrl::chassis_behaviour_mode_set(void)
 	{
 		if (read_key_count(&Key.C)==1)
 		{
-			// key_C.count=0;//标志位清零等待下一次按下
 			Chassis.Mode = CHASSIS_NO_MOVE;//底盘保持不动
 		}
 		if (read_key_count(&Key.X)==1)
@@ -182,7 +181,7 @@ void Chassis_Ctrl::chassis_behaviour_mode_set(void)
 			if ((Chassis.Flags.Vision_Flag == 1)&&(Chassis.Flags.Energy_Flag == 0))
 				Chassis.Flags.Energy_Flag = 1;
 			else if ((Chassis.Flags.Vision_Flag == 1)&&(Chassis.Flags.Energy_Flag == 1))
-				Chassis.Flags.Energy_Flag = 1;
+				Chassis.Flags.Energy_Flag = 0;
 		}
 		//预测开关
 		if (Chassis.Flags.Vision_Flag == 1)

@@ -135,28 +135,32 @@ uint8_t read_key_count(count_num_key *temp_count)
     else return 0;
 }
 //按键单点赋值
-void read_key_single(count_num_key *temp_count,bool *temp_bool)
+bool read_key_single(count_num_key *temp_count,bool *temp_bool)
 {
     if ((temp_count->count >= 1) && *temp_bool == 0)
     {
         temp_count->count = 0;
         *temp_bool = true;
+		return true;
     }
     else if ((temp_count->count == 0) && *temp_bool == 1)
     {
         *temp_bool = false;
+		return false;
     }
 }
 //按键长按赋值
-void read_key_even(count_num_key *temp_count,bool *temp_bool)
+bool read_key_even(count_num_key *temp_count,bool *temp_bool)
 {
     if ((temp_count->key_flag == 1)&&*temp_bool==0)
     {
         *temp_bool = true;
+		return true;
     }
     else if ((temp_count->key_flag == 1)&&*temp_bool==1)
     {
         *temp_bool = false;
+		return false;
     }
 }
 
