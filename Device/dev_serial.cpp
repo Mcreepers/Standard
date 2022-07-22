@@ -1,6 +1,7 @@
 #include "dev_serial.h"
 
 #include "Message_Task.h"
+#include "protocol_judgement.h"
 
 Serialctrl Serial3(USART3, Serial3_Buffer_Size, Serial3_Data_Header, Serial3_Data_tail);
 Serialctrl Serial6(USART6, Serial6_Buffer_Size, Serial6_Data_Header, Serial6_Data_tail);
@@ -19,6 +20,10 @@ void Serialctrl::IRQHandler(void)
         uint8_t c = USART_ReceiveData(USARTx);
         Buffer_Write(&_rx_buffer, c);
         Hook();
+        if (USART_Function)
+        {
+            USART_Function();
+        }
         USART_ClearITPendingBit(USARTx, USART_IT_RXNE);
     }
 }
@@ -107,6 +112,7 @@ void Serialctrl::Hook(void)
         Message_Data.Data_Ptr = &usart;
     }
 }
+
 extern "C"{
     void USART3_IRQHandler(void)
     {
@@ -121,7 +127,8 @@ extern "C"{
     void UART7_IRQHandler(void)
     {
         Message_Data.Data_ID = serial7;
-        Serial7.IRQHandler();
+        xQueueSendFromISR(Message_Queue, &Message_Data.Data_ID, 0);
+        // Serial7.IRQHandler();
     }
     // void UART8_IRQHandler(void)
     // {

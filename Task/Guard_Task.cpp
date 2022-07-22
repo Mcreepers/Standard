@@ -8,8 +8,8 @@ Error_Flags_t Error_Flag;
 //警戒任务
 void Guard_Task(void *pvParameters)
 {
-    IWDG_Init(4, 100);
-    Guard.Guard_Start();
+//    IWDG_Init(4, 100);
+//    Guard.Guard_Start();
 
     while (1)
     {
@@ -30,7 +30,7 @@ void Guard_Ctrl::Guard_Start(void)
     Guard_Init(serial6, 100, &Error_Enable);
     // Guard_Init(serial7 ,100, &Error_Send);
     // Guard_Init(serial8 ,100, &Error_Send);
-    Guard_Init(RC_ctrl, 200, &System_RESET);
+    // Guard_Init(RC_ctrl, 200, &System_RESET);
 }
 //警戒任务初始化
 void Guard_Ctrl::Guard_Init(ID_t Name, uint32_t MaxValue, void(*errcb)(uint8_t id))

@@ -27,18 +27,19 @@ const Chassis_Ctrl_Flags_t *chassis_flag;
 const chassis_mode_e *chassis_mode;
 const Gimbal_Data_t *Gimbal_UI;
 const Chassis_Velocity_t *chassis_velocity;
-
+const robo_data_t *robo_data_UI;
 void UIDraw_Task(void *pvParameters)
 {
-    usart7_DMA_init();
     chassis_flag = get_chassis_flag_control_point();
     chassis_mode = get_chassis_mode_control_point();
     chassis_velocity = get_chassis_velocity_control_point();
+	robo_data_UI=get_robo_data_Point();
     Gimbal_UI = get_gimbal_data_point();
     while (1)
     {
-        standard_ID1 = game_robot_state_t.robot_id;
-        standard_ID2 = 0x100 + uint32_t(game_robot_state_t.robot_id);
+		uart7_dma_get();
+        standard_ID1 = robo_data_UI->robo_ID;
+        standard_ID2 = 0x100 + uint32_t(robo_data_UI->robo_ID);
         
         while (uisend > 1)
         {
@@ -61,13 +62,13 @@ void UIDraw_Task(void *pvParameters)
             Num_Painter("li", UI_Graph_ADD, UI_Graph_Int, standard_ID1, standard_ID2, 3, Graphic_Color_White, 3, 1600, 370, 20, NULL, 0, NULL);
             Graph_Painter(" ", UI_Graph_ADD, UI_Graph_Line, standard_ID1, standard_ID2, 3, Graphic_Color_White, 10, 500, 100, 500, 100, NULL, NULL, NULL);
 
-            //敌我场地血量
-            Num_Painter("outpost_red", UI_Graph_ADD, UI_Graph_Int, standard_ID1, standard_ID2, 3, Graphic_Color_White, 3, 10, 770, 20, NULL, game_robot_HP_t.red_outpost_HP, NULL);
-            Num_Painter("outpost_blue", UI_Graph_ADD, UI_Graph_Int, standard_ID1, standard_ID2, 4, Graphic_Color_White, 3, 100, 770, 20, NULL, game_robot_HP_t.blue_outpost_HP, NULL);
-            Num_Painter("sentry_red", UI_Graph_ADD, UI_Graph_Int, standard_ID1, standard_ID2, 3, Graphic_Color_White, 3, 10, 730, 20, NULL, game_robot_HP_t.red_7_robot_HP, NULL);
-            Num_Painter("sentry_blue", UI_Graph_ADD, UI_Graph_Int, standard_ID1, standard_ID2, 4, Graphic_Color_White, 3, 100, 730, 20, NULL, game_robot_HP_t.blue_7_robot_HP, NULL);
-            Num_Painter("base_red", UI_Graph_ADD, UI_Graph_Int, standard_ID1, standard_ID2, 3, Graphic_Color_White, 3, 10, 690, 20, NULL, game_robot_HP_t.red_base_HP, NULL);
-            Num_Painter("base_blue", UI_Graph_ADD, UI_Graph_Int, standard_ID1, standard_ID2, 4, Graphic_Color_White, 3, 100, 690, 20, NULL, game_robot_HP_t.blue_base_HP, NULL);
+            // //敌我场地血量
+            // Num_Painter("outpost_red", UI_Graph_ADD, UI_Graph_Int, standard_ID1, standard_ID2, 3, Graphic_Color_White, 3, 10, 770, 20, NULL, game_robot_HP_t.red_outpost_HP, NULL);
+            // Num_Painter("outpost_blue", UI_Graph_ADD, UI_Graph_Int, standard_ID1, standard_ID2, 4, Graphic_Color_White, 3, 100, 770, 20, NULL, game_robot_HP_t.blue_outpost_HP, NULL);
+            // Num_Painter("sentry_red", UI_Graph_ADD, UI_Graph_Int, standard_ID1, standard_ID2, 3, Graphic_Color_White, 3, 10, 730, 20, NULL, game_robot_HP_t.red_7_robot_HP, NULL);
+            // Num_Painter("sentry_blue", UI_Graph_ADD, UI_Graph_Int, standard_ID1, standard_ID2, 4, Graphic_Color_White, 3, 100, 730, 20, NULL, game_robot_HP_t.blue_7_robot_HP, NULL);
+            // Num_Painter("base_red", UI_Graph_ADD, UI_Graph_Int, standard_ID1, standard_ID2, 3, Graphic_Color_White, 3, 10, 690, 20, NULL, game_robot_HP_t.red_base_HP, NULL);
+            // Num_Painter("base_blue", UI_Graph_ADD, UI_Graph_Int, standard_ID1, standard_ID2, 4, Graphic_Color_White, 3, 100, 690, 20, NULL, game_robot_HP_t.blue_base_HP, NULL);
 
             //底盘相对角度
             Graph_Painter("Li1", UI_Graph_ADD, UI_Graph_Line, standard_ID1, standard_ID2, 3, Graphic_Color_White, 10, 960, 540, 960, 540, NULL, NULL, NULL);
@@ -88,19 +89,16 @@ void UIDraw_Task(void *pvParameters)
         }
 
         Char_Painter("friesp", Chassis_Mode[*chassis_mode], UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Green, 3, 20, 1500, 790, Type_Flag_Frie_Speed);
-        delay_ms(10);
 
         if (chassis_flag->Vision_Flag == 1)
             Char_Painter("aim", Ture, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Green, 3, 20, 1500, 750, Type_Flag_Auto_Aiming);
         else if (chassis_flag->Vision_Flag == 0)
             Char_Painter("aim", Flase, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Orange, 3, 20, 1500, 750, Type_Flag_Auto_Aiming);
-        delay_ms(10);
 
         if (chassis_flag->Fric_Flag == 1)
             Char_Painter("shoot", Ture, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Green, 3, 20, 1500, 550, Type_Flag_Shoot_Mode);
         else if (chassis_flag->Fric_Flag == 0)
             Char_Painter("shoot", Flase, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Orange, 3, 20, 1500, 550, Type_Flag_Shoot_Mode);
-        delay_ms(10);
 
         if (Gimbal_UI->goal == 1)
             Graph_Painter("cir", UI_Graph_Change, UI_Graph_Circle, standard_ID1, standard_ID2, 3, Graphic_Color_Green, 10, 960, 540, NULL, NULL, 50, NULL, NULL);
@@ -111,13 +109,11 @@ void UIDraw_Task(void *pvParameters)
             Char_Painter("predict", Ture, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Green, 3, 20, 1500, 710, Type_Flag_Predict);
         else if (chassis_flag->Predict_Flag == 0)
             Char_Painter("predict", Flase, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Orange, 3, 20, 1500, 710, Type_Flag_Predict);
-        delay_ms(10);
 
         if (chassis_flag->Energy_Flag == 1)
             Char_Painter("energy", Ture, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Green, 3, 20, 1500, 670, Type_Flag_Energy);
         else if (chassis_flag->Energy_Flag == 0)
             Char_Painter("energy", Flase, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Orange, 3, 20, 1500, 670, Type_Flag_Energy);
-        delay_ms(10);
 
         if (chassis_velocity->Speed_Gear == 0)
             Char_Painter("level", Speed_gears[chassis_velocity->Speed_Gear], UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Green, 3, 25, 340, 780, Type_Flag_Level);
@@ -132,18 +128,18 @@ void UIDraw_Task(void *pvParameters)
             Char_Painter("power", null, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Pink, 3, 25, 340, 720, Type_Flag_Speed_up);
         else if (chassis_flag->Speed_Up_Flag == 0) Char_Painter("power", null, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Green, 3, 25, 340, 720, Type_Flag_Speed_up);
 
-        Num_Painter("outpost_red", UI_Graph_Change, UI_Graph_Int, standard_ID1, standard_ID2, 3, Graphic_Color_Purplish_red, 3, 10, 840, 20, NULL, game_robot_HP_t.red_outpost_HP, NULL);
-        delay_ms(10);
-        Num_Painter("outpost_blue", UI_Graph_Change, UI_Graph_Int, standard_ID1, standard_ID2, 4, Graphic_Color_Cyan, 3, 100, 840, 20, NULL, game_robot_HP_t.blue_outpost_HP, NULL);
-        delay_ms(10);
-        Num_Painter("sentry_red", UI_Graph_Change, UI_Graph_Int, standard_ID1, standard_ID2, 3, Graphic_Color_Purplish_red, 3, 10, 810, 20, NULL, game_robot_HP_t.red_7_robot_HP, NULL);
-        delay_ms(10);
-        Num_Painter("sentry_blue", UI_Graph_Change, UI_Graph_Int, standard_ID1, standard_ID2, 4, Graphic_Color_Cyan, 3, 100, 810, 20, NULL, game_robot_HP_t.blue_7_robot_HP, NULL);
-        delay_ms(10);
-        Num_Painter("base_red", UI_Graph_Change, UI_Graph_Int, standard_ID1, standard_ID2, 3, Graphic_Color_Purplish_red, 3, 10, 780, 20, NULL, game_robot_HP_t.red_base_HP, NULL);
-        delay_ms(10);
-        Num_Painter("base_blue", UI_Graph_Change, UI_Graph_Int, standard_ID1, standard_ID2, 4, Graphic_Color_Cyan, 3, 100, 780, 20, NULL, game_robot_HP_t.blue_base_HP, NULL);
-        delay_ms(10);
+        // Num_Painter("outpost_red", UI_Graph_Change, UI_Graph_Int, standard_ID1, standard_ID2, 3, Graphic_Color_Purplish_red, 3, 10, 840, 20, NULL, game_robot_HP_t.red_outpost_HP, NULL);
+        // delay_ms(10);
+        // Num_Painter("outpost_blue", UI_Graph_Change, UI_Graph_Int, standard_ID1, standard_ID2, 4, Graphic_Color_Cyan, 3, 100, 840, 20, NULL, game_robot_HP_t.blue_outpost_HP, NULL);
+        // delay_ms(10);
+        // Num_Painter("sentry_red", UI_Graph_Change, UI_Graph_Int, standard_ID1, standard_ID2, 3, Graphic_Color_Purplish_red, 3, 10, 810, 20, NULL, game_robot_HP_t.red_7_robot_HP, NULL);
+        // delay_ms(10);
+        // Num_Painter("sentry_blue", UI_Graph_Change, UI_Graph_Int, standard_ID1, standard_ID2, 4, Graphic_Color_Cyan, 3, 100, 810, 20, NULL, game_robot_HP_t.blue_7_robot_HP, NULL);
+        // delay_ms(10);
+        // Num_Painter("base_red", UI_Graph_Change, UI_Graph_Int, standard_ID1, standard_ID2, 3, Graphic_Color_Purplish_red, 3, 10, 780, 20, NULL, game_robot_HP_t.red_base_HP, NULL);
+        // delay_ms(10);
+        // Num_Painter("base_blue", UI_Graph_Change, UI_Graph_Int, standard_ID1, standard_ID2, 4, Graphic_Color_Cyan, 3, 100, 780, 20, NULL, game_robot_HP_t.blue_base_HP, NULL);
+        // delay_ms(10);
 
         //超级电容
         // if(USART8_RX_BUF[1]<12)

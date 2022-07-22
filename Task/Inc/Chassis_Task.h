@@ -35,7 +35,7 @@ extern "C" {
 #define CHANNEL_LEFT  1
 #define CHANNEL_RIGHT  0
 //选择遥控器控制模式下切换移动或射击
-#define MOVE_OR_SHOOT 0
+#define MOVE_OR_SHOOT 1
 //遥控器前进摇杆（max 660）转化成车体前进速度（m/s）的比例
 #define CHASSIS_VX_RC_SEN 0.0015f
 //遥控器左右摇杆（max 660）转化成车体左右速度（m/s）的比例

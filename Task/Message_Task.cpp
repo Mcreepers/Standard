@@ -3,7 +3,6 @@
 #include "Guard_Task.h"
 #include "queue.h"
 #include "device.h"
-
 union I int_data;
 
 Usart_Data_t Usart3( Serial3_Buffer_Size, Serial3_Data_Header, Serial3_Data_tail );
@@ -18,16 +17,14 @@ Gimbal_Data_t Gimbal;
 rc_key_v_t Key;
 rc_press_t Press;
 
+extern void uart7_dma_get(void);
 void Message_Task(void *pvParameters)
 {
 	while (1)
     {
         if (xQueueReceive(Message_Queue, &Message_ID, portMAX_DELAY))
 		{
-			if (Message_Data.Data_Ptr != NULL)
-			{
-				Message.Hook(&Message_Data.Data_Ptr);
-			}
+			Message.Hook(Message_Data.Data_Ptr);
 			Guard.Guard_Feed(&Message_ID);
 		}
 	}
@@ -35,6 +32,7 @@ void Message_Task(void *pvParameters)
 //消息处理
 void Message_Ctrl::Hook(void *ptr)
 {
+	ptr=Message_Data.Data_Ptr;
 	switch (Message_ID)
 	{
 	case CanData1:
@@ -50,7 +48,7 @@ void Message_Ctrl::Hook(void *ptr)
 		Usart6_Hook((Usart_Data_t *)ptr);
 		break;
 	case serial7:
-		// Usart7_Hook((Usart_Data_t *)ptr);
+		Usart7_Hook((Usart_Data_t *)ptr);
 		break;
 	case serial8:
 		// Usart8_Hook((Usart_Data_t *)ptr);
@@ -88,8 +86,7 @@ void Message_Ctrl::Usart6_Hook(Usart_Data_t *Usart6)
 
 void Message_Ctrl::Usart7_Hook(Usart_Data_t *Usart7)
 {
-
-
+	uart7_dma_get();
 }
 
 void Message_Ctrl::Usart8_Hook(Usart_Data_t *Usart8)

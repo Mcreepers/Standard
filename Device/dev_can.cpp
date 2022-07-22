@@ -85,11 +85,10 @@ void CANctrl::IRQHandler( void )
         CAN_Receive(CANx, CAN_FIFO0, &Rx_Message);
         if (xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID), 0))
         {
-            Message_Data.Data_Ptr=&Rx_Message;
+			Message_Data.Data_Ptr=&Rx_Message;
         }
         // if( CAN_Function )
         // {
-
         //  CAN_Function(&Rx_Message);
 		// 	}
     }

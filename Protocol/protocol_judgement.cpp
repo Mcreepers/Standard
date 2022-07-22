@@ -25,18 +25,45 @@ uint8_t rx7_buf[RX_BUF_NUM];
 uint8_t	TX7_buf[TX_BUF_NUM];
 
 static void referee_data_solve(void);
+uint8_t temp;
+uint16_t UART7_DataLength;
+
+void uart7_dma_get(void)
+{
+	if (UART7->SR & (1 << 4))//检测到线路空闲
+	{
+		//软件序列清除IDLE标志位
+		temp = UART7->DR;
+		temp = UART7->SR;
+
+
+		DMA_Cmd(DMA1_Stream3, DISABLE); //先停止DMA，暂停接收 
+		DMA_ClearFlag(DMA1_Stream3, DMA_FLAG_TCIF2 | DMA_FLAG_HTIF2);
+		USART_DMACmd(UART7, USART_DMAReq_Rx, DISABLE); //先停止串口7的DMA接收		
+		UART7_DataLength = RX_BUF_NUM - DMA_GetCurrDataCounter(DMA1_Stream3);
+
+		referee_data_solve();
+
+		DMA_SetCurrDataCounter(DMA1_Stream3, RX_BUF_NUM); //DMA通道的DMA缓存的大小
+		DMA_Cmd(DMA1_Stream3, ENABLE); //使能USART7 TX DMA1 所指示的通道 
+		USART_DMACmd(UART7, USART_DMAReq_Rx, ENABLE); //使能串口7的DMA接收
+		DMA_Cmd(DMA1_Stream3, ENABLE);
+
+	}
+
+}
 
 void usart7_DMA_init(void)
 {
-	usart7_TxDMA.dmaInit(PTM_CR_SGSG_DS, (uint32_t *)(UART7->DR), (uint32_t *)rx7_buf, RX_BUF_NUM,
+	usart7_RxDMA.dmaInit(PTM_CR_SGSG_DS, (uint32_t *)&(UART7->DR), (uint32_t *)rx7_buf, RX_BUF_NUM,
 		DMA_PeripheralInc_Disable, DMA_MemoryInc_Enable, DMA_PeripheralDataSize_Byte,
 		DMA_MemoryDataSize_Byte, DMA_Priority_VeryHigh,
 		DMA_FIFOThreshold_1QuarterFull);
-	usart7_RxDMA.dmaInit(MTP_NM_SGSG_DS, (uint32_t *)(UART7->DR), (uint32_t *)TX7_buf, TX_BUF_NUM,
+	usart7_TxDMA.dmaInit(MTP_NM_SGSG_DS, (uint32_t *)&(UART7->DR), (uint32_t *)TX7_buf, TX_BUF_NUM,
 		DMA_PeripheralInc_Disable, DMA_MemoryInc_Enable, DMA_PeripheralDataSize_Byte,
 		DMA_MemoryDataSize_Byte, DMA_Priority_High,
 		DMA_FIFOThreshold_Full);
-	usart7_TxDMA.InterruptConfig(referee_data_solve);
+//	usart7_RxDMA.InterruptConfig(referee_data_solve);
 }
 
 //开启一次DMA传输
@@ -155,6 +182,7 @@ void Usart_SendBuff(u8 *buf, u16 len)
 		usart7_send_char(*buf++);
 	}
 }
+
 
 //串口8发送1个字符 
 //c:要发送的字符

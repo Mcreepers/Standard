@@ -325,7 +325,7 @@ typedef  struct
 	uint16_t        CRC16;
 	uint16_t        CRC16_2;
 }FRAME;
-//英雄感兴趣裁判系统数据结构
+//裁判系统数据结构
 typedef struct
 {
 	uint8_t  robo_level;//机器人当前等级
@@ -406,4 +406,6 @@ void Usart_SendBuff(uint8_t *buf, uint16_t len);
 void chassis_to_judgeui(uint16_t txlen);
 const robo_data_t *get_robo_data_Point();
 void usart7_DMA_init(void);
+void uart7_dma_get(void);
+
 #endif /* __PROTOCOL_JUDGEMENT_H */

@@ -79,7 +79,8 @@ void Serialdev::Serial_Init( uint32_t BaudRate, SERIAL_Config Config, uint8_t Pr
         GPIO_AF_USARTx = GPIO_AF_UART7;
         RCC_AHB1Periph_GPIOx = RCC_AHB1Periph_GPIOE;
         RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART7, ENABLE);
-    }
+//        ItChannel = UART7_IRQn;
+	}
 		else if(USARTx == UART8)
     {
         Tx_Pin = GPIO_Pin_1;

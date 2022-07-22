@@ -24,6 +24,7 @@ extern "C" {
 extern QueueHandle_t Message_Queue;   		//消息队列句柄
 
 #define Gimbal_Motor_Yaw_Offset_ECD 940
+#define RX_BUF_NUM   1000u
 
 union I
 {
@@ -51,7 +52,6 @@ struct Message_Data_t
 	ID_t Data_ID;
 	uint32_t DataValue;
 	void *Data_Ptr;
-	Message_Data_t() {}
 };
 
 struct Gimbal_Data_t
