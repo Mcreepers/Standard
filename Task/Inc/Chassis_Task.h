@@ -37,9 +37,9 @@ extern "C" {
 //选择遥控器控制模式下切换移动或射击
 #define MOVE_OR_SHOOT 1
 //遥控器前进摇杆（max 660）转化成车体前进速度（m/s）的比例
-#define CHASSIS_VX_RC_SEN 0.0015f
+#define CHASSIS_VX_RC_SEN 0.003f//0.0015f
 //遥控器左右摇杆（max 660）转化成车体左右速度（m/s）的比例
-#define CHASSIS_VY_RC_SEN 0.0015f
+#define CHASSIS_VY_RC_SEN 0.003f//0.0015f
 //跟随底盘yaw模式下，遥控器的yaw遥杆（max 660）增加到车体角度的比例
 #define CHASSIS_ANGLE_Z_RC_SEN 0.000002f
 //不跟随云台的时候 遥控器的yaw遥杆（max 660）转化成车体旋转速度的比例
@@ -126,7 +126,7 @@ extern "C" {
 #define SWING_MOVE_ANGLE 0.5f
 
 //底盘电机速度环PID
-#define M3505_MOTOR_SPEED_PID_KP 1500.0f
+#define M3505_MOTOR_SPEED_PID_KP 15000.0f
 #define M3505_MOTOR_SPEED_PID_KI 10.0f
 #define M3505_MOTOR_SPEED_PID_KD 0.0f
 #define M3505_MOTOR_SPEED_PID_MAX_OUT MAX_MOTOR_CAN_CURRENT
@@ -134,10 +134,10 @@ extern "C" {
 
 #if useSteering
 //底盘6020ecd偏差值
-#define MOTOR_6020_1_offset 6758
-#define MOTOR_6020_2_offset 5520
-#define MOTOR_6020_3_offset 1342
-#define MOTOR_6020_4_offset 58
+#define MOTOR_6020_1_offset 2082
+#define MOTOR_6020_2_offset 719
+#define MOTOR_6020_3_offset 7511
+#define MOTOR_6020_4_offset 3450
 
 //底盘6020电机角度环PID
 #define M6020_MOTOR_ANGLE_PID_KP 10.0f
@@ -153,11 +153,11 @@ extern "C" {
 #define M6020_MOTOR_SPEED_PID_MAX_IOUT 2000.0f
 #endif
 //底盘旋转跟随PID
-#define CHASSIS_FOLLOW_GIMBAL_PID_KP 1.1f
-#define CHASSIS_FOLLOW_GIMBAL_PID_KI 0.0001f
+#define CHASSIS_FOLLOW_GIMBAL_PID_KP 0.5f
+#define CHASSIS_FOLLOW_GIMBAL_PID_KI 0.001f
 #define CHASSIS_FOLLOW_GIMBAL_PID_KD 0.0f
 #define CHASSIS_FOLLOW_GIMBAL_PID_MAX_OUT 2000.0f
-#define CHASSIS_FOLLOW_GIMBAL_PID_MAX_IOUT 10.0f
+#define CHASSIS_FOLLOW_GIMBAL_PID_MAX_IOUT 1000.0f
 
 
 typedef struct
@@ -170,23 +170,31 @@ typedef struct
 
 } Chassis_Motor_t;//底盘接收编码器数据
 
+
 #if useSteering
+struct Steering_Data_t
+{
+  fp32 angle;
+  fp32 angle_last;
+  int8_t angle_round;
+
+  fp32 angle_set;
+  fp32 angle_set_last;
+  int8_t angle_set_round;
+};
+
 typedef struct
 {
   const motor_measure_t *chassis_motor_measure;
+  Steering_Data_t data;
 
   fp32 accel;
   fp32 speed;
   fp32 speed_set;
 
-  fp32 angle;
-  fp32 angle_last;
-  int8_t angle_round;
+  uint32_t offset_ecd;
+  
   fp32 angle_real;
-
-  fp32 angle_set;
-  fp32 angle_set_last;
-  int8_t angle_set_round;
   fp32 angle_set_real;
 
   int16_t give_current;
@@ -255,8 +263,8 @@ class Chassis_Ctrl
 {
   public:
   const RC_ctrl_t *RC_Ptr;
-  const float *chassis_yaw_relative_angle;   //底盘使用到yaw云台电机的相对角度来计算底盘的欧拉角
-  float chassis_relative_angle;   //底盘使用到yaw云台电机的相对角度来计算底盘的欧拉角
+  const fp32 *chassis_yaw_relative_angle;   //底盘使用到yaw云台电机的相对角度来计算底盘的欧拉角
+  fp32 chassis_relative_angle;   //底盘使用到yaw云台电机的相对角度来计算底盘的欧拉角
 
   Chassis_Motor_t Motor[Chassis_Motor_Numbers];
 
@@ -278,7 +286,7 @@ class Chassis_Ctrl
   void Feedback_Update(void);
   void Control(void);
   void chassis_behaviour_mode_set(void);
-  fp32 motor_angle_to_set_change(uint16_t angle, uint16_t offset_ecd);
+  fp32 motor_ecd_to_relative_ecd(uint16_t angle, uint16_t offset_ecd);
   void chassis_control_loop(void);
   void error_behaviour_control_set(void);
 #if useSteering

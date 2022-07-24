@@ -38,8 +38,8 @@ extern "C" {
 #include "stdlib.h"
 #include "stdbool.h"
 
-#define useMecanum 1
-#define useSteering 0
+#define useMecanum 0
+#define useSteering 1
 #if useMecanum&&useSteering
 #error "不能同时使用麦克纳姆轮和舵轮"
 #elif !(useMecanum||useSteering)

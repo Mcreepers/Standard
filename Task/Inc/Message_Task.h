@@ -23,7 +23,7 @@ extern "C" {
 #define Message_Q_NUM    1  		    //消息队列的数量
 extern QueueHandle_t Message_Queue;   		//消息队列句柄
 
-#define Gimbal_Motor_Yaw_Offset_ECD 940
+#define Gimbal_Motor_Yaw_Offset_ECD 3243
 #define RX_BUF_NUM   1000u
 
 union I

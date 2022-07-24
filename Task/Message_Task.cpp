@@ -36,10 +36,10 @@ void Message_Ctrl::Hook(void *ptr)
 	switch (Message_ID)
 	{
 	case CanData1:
-		CAN1_Ctrl.Hook((CanRxMsg *)ptr);
+//		CAN1_Ctrl.Hook((CanRxMsg *)ptr);
 		break;
 	case CanData2:
-		CAN2_Ctrl.Hook((CanRxMsg *)ptr);
+//		CAN2_Ctrl.Hook((CanRxMsg *)ptr);
 		break;
 	case serial3:
 		// Usart3_Hook((Usart_Data_t *)ptr);
@@ -72,16 +72,22 @@ void Message_Ctrl::Usart6_Hook(Usart_Data_t *Usart6)
 
 	int_data.s[0] = Usart6->Data[1];
 	int_data.s[1] = Usart6->Data[2];
-	Gimbal.ECD = Chassis.motor_angle_to_set_change(int_data.d, Gimbal_Motor_Yaw_Offset_ECD);
+	Gimbal.ECD = -Chassis.motor_ecd_to_relative_ecd(int_data.d, Gimbal_Motor_Yaw_Offset_ECD);
 	Gimbal.gimbal_grade = Usart6->Data[3];
 	Gimbal.compensation_state = Usart6->Data[4];
 	Gimbal.follow_on = Usart6->Data[5];
 	Gimbal.goal = Usart6->Data[6];
 	Gimbal.energy_state = Usart6->Data[7];
 	//	Gimbal.predict = Usart6->Data[8];
-	if (Gimbal.ECD > 8192 || Gimbal.gimbal_grade > 3) Error_Flag.Gimbal = 1;
+	if (Gimbal.ECD > 8192 || Gimbal.gimbal_grade > 3)
+	{
+		Error_Flag.Gimbal = 1;
+	}
 	if (Gimbal.compensation_state > 2 || Gimbal.follow_on > 1 || Gimbal.energy_state > 1 || Gimbal.goal > 1
-		|| Gimbal.predict > 1) Error_Flag.Visual = 1;
+		|| Gimbal.predict > 1)
+	{
+		Error_Flag.Visual = 1;
+	}
 }
 
 void Message_Ctrl::Usart7_Hook(Usart_Data_t *Usart7)
@@ -148,6 +154,7 @@ bool read_key_single(count_num_key *temp_count,bool *temp_bool)
         *temp_bool = false;
 		return false;
     }
+	return false;
 }
 //按键长按赋值
 bool read_key_even(count_num_key *temp_count,bool *temp_bool)
@@ -162,6 +169,7 @@ bool read_key_even(count_num_key *temp_count,bool *temp_bool)
         *temp_bool = false;
 		return false;
     }
+	return false;
 }
 
 //更新按键

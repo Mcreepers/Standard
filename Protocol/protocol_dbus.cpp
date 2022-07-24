@@ -113,8 +113,10 @@ extern"C"
 								SBUS_TO_RC(SBUS_rx_buf[0], &rc_ctrl);
                                 Message_Data.Data_ID = RC_ctrl;
                                 //发送消息更新按键
-                                xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID=RC_ctrl), 0);
-                                Message_Data.Data_Ptr = &rc_ctrl;
+                                if(xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID=RC_ctrl), 0))
+								{
+									Message_Data.Data_Ptr = &rc_ctrl;
+								}
                             }
 					}
 					else
@@ -131,8 +133,10 @@ extern"C"
 							{
 								SBUS_TO_RC(SBUS_rx_buf[1], &rc_ctrl);
                                 //发送消息更新按键
-                                xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID=RC_ctrl), 0);
-                                Message_Data.Data_Ptr = &rc_ctrl;
+                                if(xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID=RC_ctrl), 0))
+								{
+									Message_Data.Data_Ptr = &rc_ctrl;
+								}
 							}
 					}
 			}

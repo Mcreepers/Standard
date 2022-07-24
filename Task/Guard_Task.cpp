@@ -24,7 +24,7 @@ void Guard_Ctrl::Guard_Start(void)
 {
     Guard_Init(chassis, 100, &System_RESET);
     // Guard_Init(UIdraw ,100, &System_RESET);
-    // Guard_Init(CanData1 ,100, &System_RESET);
+    Guard_Init(CanData1 ,100, &System_RESET);
     Guard_Init(CanData2, 100, &System_RESET);
     // Guard_Init(serial3 ,100, &Error_Send);
     Guard_Init(serial6, 100, &Error_Enable);
