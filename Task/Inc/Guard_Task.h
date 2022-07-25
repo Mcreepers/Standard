@@ -28,7 +28,7 @@ struct Error_Flags_t
 
 struct SG_Data_t
 {
-	ID_t Name;//名称
+	ID_e Name;//名称
 	uint8_t Enable;//使能开关
 	uint32_t Time;//计数器
 	uint32_t MaxValue;//最大超时值
@@ -40,11 +40,11 @@ class Guard_Ctrl
 {
 public:
 	void Guard_Start(void);
-	void Guard_Init(ID_t Name, uint32_t MaxValue, void(*errcb)(uint8_t name));
+	void Guard_Init(ID_e Name, uint32_t MaxValue, void(*errcb)(uint8_t name));
 	void Guard_Scan(void);
-	void Guard_Feed(ID_t *Name);
+	void Guard_Feed(ID_e *Name);
 	void Guard_Enable(void);
-	ID_t ID;
+	ID_e ID;
 private:
 	SG_Data_t SG_Structure[GUARD_TOTAL_NUM];
 };
@@ -56,7 +56,7 @@ void System_RESET(uint8_t id);
 void Guard_Return(uint8_t id);
 
 extern QueueHandle_t Guard_Queue;
-extern ID_t Guard_ID;
+extern ID_e Guard_ID;
 extern Guard_Ctrl Guard;
 extern Error_Flags_t Error_Flag;
 #endif

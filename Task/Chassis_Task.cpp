@@ -108,7 +108,9 @@ void Chassis_Ctrl::Feedback_Update( void )
         //更新电机速度，加速度是速度的PID微分
         Motor[i].speed = CHASSIS_MOTOR_RPM_TO_VECTOR_SEN * Motor[i].chassis_motor_measure->speed_rpm;
         Motor[i].accel = Speed_Pid[i].Dbuf[0] * CHASSIS_CONTROL_FREQUENCE;
-    }
+	}
+	chassis_relative_ECD = *(chassis_yaw_relative_angle);//相对云台角度
+	chassis_relative_RAD = chassis_relative_ECD * ECD_TO_PI;
 #if useMecanum
     //更新底盘前进速度 x，平移速度y，旋转速度wz，坐标系为右手系
     Velocity.vx = (-Motor[0].speed + Motor[1].speed + Motor[2].speed - Motor[3].speed) * MOTOR_SPEED_TO_CHASSIS_SPEED_VX;
@@ -135,11 +137,11 @@ void Chassis_Ctrl::chassis_behaviour_mode_set(void)
 	//按键控制
 	if (Flags.RC_Flag == true)
 	{
-		if (read_key_count(&Key.C)==1)
+		if (read_key(&Key.C,single))
 		{
 			Mode = CHASSIS_NO_MOVE;//底盘保持不动
 		}
-		if (read_key_count(&Key.X)==1)
+		if (read_key(&Key.X,single))
 		{
 			if (Mode == CHASSIS_NO_MOVE||Mode == CHASSIS_FOLLOW_YAW)
 			{
@@ -154,30 +156,35 @@ void Chassis_Ctrl::chassis_behaviour_mode_set(void)
 				Mode=CHASSIS_FOLLOW_YAW;//底盘跟随云台
 			}			
 		}
-		if (read_key_count(&Key.G) == 1)
+		if (read_key(&Key.G,single))
 		{//开启小陀螺
-			if (Mode != CHASSIS_LITTLE_TOP)
+			if (Mode != CHASSIS_LITTLE_TOP&&Mode != CHASSIS_NO_MOVE)
 			{
 				Mode = CHASSIS_LITTLE_TOP;
-			}else{
+			}
+			else if (Mode != CHASSIS_NO_MOVE)
+			{
 				Mode = CHASSIS_NO_FOLLOW_YAW;
 			}
 		}
 		//速度选择
-		if (read_key_count(&Key.shift)==1)
+		if (read_key(&Key.shift,single))
 		{//加速  SHIFT
 			if (Velocity.Speed_Gear < 3)
 				Velocity.Speed_Gear++;
 		}
-		else if (read_key_count(&Key.ctrl)==1)
+		else if (read_key(&Key.ctrl, single))
 		{//减速  CTRL
 			if (Velocity.Speed_Gear > 0)
 				Velocity.Speed_Gear--;
 		}
 		//视觉开关
-		read_key_single(&Press.R, &Flags.Vision_Flag);
+		if (read_key(&Press.R, single, &Flags.Vision_Flag))
+		{//预测开关
+			read_key(&Key.E, single, &Flags.Predict_Flag);
+		}
 		//UI添加
-		if (read_key_count(&Key.B) == 1)
+		if (read_key(&Key.B, single))
 		{
 			UIsend = 10;
 			//能量机关开关
@@ -190,22 +197,17 @@ void Chassis_Ctrl::chassis_behaviour_mode_set(void)
 				Flags.Energy_Flag = 0;
 			}
 		}
-		//预测开关
-		if (Flags.Vision_Flag == 1)
-			read_key_single(&Key.E, &Flags.Predict_Flag);
 		//装弹开关
-		read_key_single(&Key.V, &Flags.Looding_Flag);
+		read_key(&Key.V, single, &Flags.Looding_Flag);
 		//摩擦轮开关
-		read_key_single(&Key.R, &Flags.Fric_Flag);
-		//拨弹轮开关
-		if (Flags.Fric_Flag == true)
-		{
-			read_key_even(&Press.L, &Flags.Shoot_Flag);
+		if (read_key(&Key.R, single, &Flags.Fric_Flag))
+		{//拨弹轮开关
+			read_key(&Press.L, even, &Flags.Shoot_Flag);
 		}else{
 			Flags.Shoot_Flag = 0;
 		}
-			//提速开关
-		read_key_single(&Key.F, &Flags.Speed_Up_Flag);
+		//提速开关
+		read_key(&Key.F, single, &Flags.Speed_Up_Flag);
 	}
 	//遥控控制模式切换
 	if (switch_is_down(RC_Ptr->rc.s[CHANNEL_RIGHT]))
@@ -346,15 +348,14 @@ void Chassis_Ctrl::chassis_behaviour_control_set(fp32 *vx_set, fp32 *vy_set, fp3
 	{
 		chassis_rc_to_control_vector(vx_set, vy_set);//将遥控值转换为底盘设定量
 
-		chassis_relative_angle = *(chassis_yaw_relative_angle);//相对云台角度
-		if (chassis_relative_angle > 30)// 最大到800
+		if (chassis_relative_ECD > 30)// 最大到800
 		{
-			PID_Calc(&Follow_Gimbal_Pid, chassis_relative_angle, 50, 0);
+			PID_Calc(&Follow_Gimbal_Pid, chassis_relative_ECD, 50, 0);
 			vw_set = Follow_Gimbal_Pid.out * 0.001f;
 		}
-		else if (chassis_relative_angle < -30)
+		else if (chassis_relative_ECD < -30)
 		{
-			PID_Calc(&Follow_Gimbal_Pid, chassis_relative_angle, -50, 0);
+			PID_Calc(&Follow_Gimbal_Pid, chassis_relative_ECD, -50, 0);
 			vw_set = Follow_Gimbal_Pid.out * 0.001f;
 		}else{
 			vw_set = 0;
@@ -376,31 +377,25 @@ void Chassis_Ctrl::chassis_behaviour_control_set(fp32 *vx_set, fp32 *vy_set, fp3
 void Chassis_Ctrl::Control(void)
 {
    //设置速度
-	fp32 vx_set = 0.0f, vy_set = 0.0f, angle_set = 0.0f, relative_angle = 0.0f;
+	fp32 vx_set = 0.0f, vy_set = 0.0f, angle_set = 0.0f;
 	fp32 sin_yaw = 0.0f, cos_yaw = 0.0f;
 	chassis_behaviour_control_set(&vx_set, &vy_set, &angle_set);
 
    //跟随云台模式
     if (Mode == CHASSIS_FOLLOW_YAW)
     {
-		chassis_relative_angle=*(chassis_yaw_relative_angle);//相对云台角度
-		relative_angle=chassis_relative_angle*ECD_TO_PI;
-        sin_yaw = arm_sin_f32(-relative_angle);
-        cos_yaw = arm_cos_f32(-relative_angle);
+        sin_yaw = arm_sin_f32(-chassis_relative_RAD);
+        cos_yaw = arm_cos_f32(-chassis_relative_RAD);
         Velocity.vx_set = cos_yaw * vx_set - sin_yaw * vy_set;
         Velocity.vy_set = sin_yaw * vx_set + cos_yaw * vy_set;
         Velocity.wz_set = angle_set;
     }
 	//不跟随云台模式
     else if (Mode == CHASSIS_NO_FOLLOW_YAW)
-    {
-		//不跟随云台模式
-		chassis_relative_angle=*(chassis_yaw_relative_angle);//相对云台角度
-		relative_angle=chassis_relative_angle*ECD_TO_PI;
-			
+    {			
         //旋转控制底盘速度方向，保证前进方向是云台方向
-        sin_yaw = arm_sin_f32(-relative_angle);
-		cos_yaw = arm_cos_f32(-relative_angle);
+        sin_yaw = arm_sin_f32(-chassis_relative_RAD);
+		cos_yaw = arm_cos_f32(-chassis_relative_RAD);
 		
 		if (1)//底盘前进方向为云台正方向
 		{
@@ -417,11 +412,9 @@ void Chassis_Ctrl::Control(void)
 	}
 	else if (Mode == CHASSIS_LITTLE_TOP)
 	{
-		chassis_relative_angle=*(chassis_yaw_relative_angle);//相对云台角度
-		relative_angle=chassis_relative_angle*ECD_TO_PI;		
         //旋转控制底盘速度方向，保证前进方向是云台方向，有利于运动平稳
-        sin_yaw = arm_sin_f32(-relative_angle);
-        cos_yaw = arm_cos_f32(-relative_angle);
+        sin_yaw = arm_sin_f32(-chassis_relative_RAD);
+        cos_yaw = arm_cos_f32(-chassis_relative_RAD);
 		Velocity.vx_set = cos_yaw * vx_set - sin_yaw * vy_set;
 		Velocity.vy_set = sin_yaw * vx_set + cos_yaw * vy_set;
 
@@ -440,32 +433,23 @@ void Chassis_Ctrl::Control(void)
 	}
 }
 
+
+void Chassis_Ctrl::chassis_vector_to_wheel_speed(fp32 *vx_set,fp32 *vy_set,fp32 *wz_set)
+{
+
+	fp32 vx_temp = *vx_set;
+	fp32 vy_temp = *vy_set;
+	fp32 wz_temp = *wz_set;
 #if useMecanum
-void Chassis_Ctrl::chassis_vector_to_wheel_speed(fp32 *vx_set,fp32 *vy_set,fp32 *wz_set)
-{
-	fp32 vx_temp = *vx_set;
-	fp32 vy_temp = *vy_set;
-	fp32 wz_temp = *wz_set;
 	//旋转的时候， 由于云台靠前，所以是前面两轮 0 ，1 旋转的速度变慢， 后面两轮 2,3 旋转的速度变快
-	Motor[0].speed_set =  vx_temp - vy_temp +  MOTOR_DISTANCE_TO_CENTER * wz_temp;
+	Motor[0].speed_set = vx_temp - vy_temp + MOTOR_DISTANCE_TO_CENTER * wz_temp;
 	Motor[1].speed_set = -vx_temp - vy_temp +  MOTOR_DISTANCE_TO_CENTER * wz_temp;
-	Motor[2].speed_set =  vx_temp + vy_temp +  MOTOR_DISTANCE_TO_CENTER * wz_temp;
+	Motor[2].speed_set = vx_temp + vy_temp +  MOTOR_DISTANCE_TO_CENTER * wz_temp;
 	Motor[3].speed_set = -vx_temp + vy_temp +  MOTOR_DISTANCE_TO_CENTER * wz_temp;
-}
 #elif useSteering
-
-fp32 vx_aaa;fp32 vy_aaa;
-void Chassis_Ctrl::chassis_vector_to_wheel_speed(fp32 *vx_set,fp32 *vy_set,fp32 *wz_set)
-{
 	uint8_t i = 0;
-	fp32 vx_temp = *vx_set;
-	fp32 vy_temp = *vy_set;
-	fp32 wz_temp = *wz_set;
-
-	vx_aaa=vx_temp;
-	vy_aaa=vy_temp;
-	fp32 vx_mid[2],vy_mid[2];
 	fp32 wheel_speed[4], wheel_angle[4];
+	fp32 vx_mid[2],vy_mid[2];
 	fp32 vz_mid = sin45 * wz_temp;
 	
 	if (vx_temp != 0 && vy_temp != 0)
@@ -494,103 +478,8 @@ void Chassis_Ctrl::chassis_vector_to_wheel_speed(fp32 *vx_set,fp32 *vy_set,fp32 
 		Motor[i].speed_set = -wheel_speed[i];
 		Steering[i].data.angle_set = -wheel_angle[i]* PI_TO_ECD;
 	}
-}
-//根据底盘模式控制舵轮行为
-void Chassis_Ctrl::steering_mode_control_set(void)
-{
-	if (Mode == CHASSIS_NO_MOVE)
-	{
-		Steering_Mode = STEERING_STOP;
-	}
-	else if (Mode == CHASSIS_FOLLOW_YAW)
-	{
-		Steering_Mode = STEERING_LIMIT;
-	}
-	else if (Mode == CHASSIS_NO_FOLLOW_YAW)
-	{
-		Steering_Mode = STEERING_NORMAL;
-	}
-	else if (Mode == CHASSIS_LITTLE_TOP)
-	{
-		Steering_Mode = STEERING_LITTLE_TOP;
-	}
-}
-//舵轮模式控制
-void Chassis_Ctrl::steering_behaviour_control_set(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set)
-{
-	uint8_t i = 0;
-	
-	steering_mode_control_set();
-	if(ABS(*vx_set) > 0.01f || ABS(*vy_set) > 0.01f || ABS(*wz_set) > 0.01f)
-	{
-		//舵轮解算
-		chassis_vector_to_wheel_speed(vx_set, vy_set, wz_set);
-	}
-	else 
-	{
-		if (Steering_Mode == STEERING_NORMAL)
-		{
-			Steering_Mode = STEERING_VECTOR_NO_FOLLOW;
-		}
-		for(i=0;i<4;i++)
-		{
-			Motor[i].speed_set=0;
-		}
-	}
-
-	switch (Steering_Mode)
-	{
-		case STEERING_STOP:
-			for (i = 0;i < 4;i++){
-				Steering[i].data.angle_set = Steering[i].data.angle;
-				Motor[i].speed_set = 0;	
-			}
-			break;
-		case STEERING_FOLLOW_GIMBAL:
-			for (i = 0;i < 4;i++){
-				Steering[i].data.angle_set = chassis_relative_angle;
-			}
-				break;
-		case STEERING_FOLLOW_CHASSIS:
-			for (i = 0;i < 4;i++){
-				Steering[i].data.angle_set = 0;
-			}
-				break;
-		case STEERING_VECTOR_NO_FOLLOW:
-			for (i = 0;i < 4;i++){
-				Steering[i].data.angle_set = Steering[i].data.angle_set_last;
-			}
-				break;
-		case STEERING_LIMIT:
-			for (i = 0;i < 4;i++){
-				if (Steering[i].data.angle_set < -2972)//非对称非特殊角度
-				{
-					Steering[i].data.angle_set += 4096;
-					Motor[i].speed_set = -Motor[i].speed_set;
-				}
-				else if (Steering[i].data.angle_set > 1124)
-				{
-					Steering[i].data.angle_set -= 4096;
-					Motor[i].speed_set = -Motor[i].speed_set;
-				}
-			}
-			break;
-		case STEERING_LITTLE_TOP:
-			if ((vx_set != 0 || vy_set != 0) && wz_set != 0)
-			{
-				//小陀螺状态降低速度
-				*vx_set *= 0.7f;
-				*vy_set *= 0.7f;
-				*wz_set *= 0.3f;
-			}
-			break;
-		default:
-			break;
-		
-	}
-}
 #endif
-
+}
 //底盘控制计算
 void Chassis_Ctrl::chassis_control_loop(void)
 {
@@ -628,47 +517,9 @@ void Chassis_Ctrl::chassis_control_loop(void)
     }
 #endif
 }
-#if useSteering
-//带圈数的完整角度计算
-void Chassis_Ctrl::chassis_round_calc(void)
-{
-    int16_t relative_angle_round=0;	
-	for(int i=0;i<4;i++)
-	{
-		//实际角度完整计算
-		relative_angle_round = Steering[i].data.angle - Steering[i].data.angle_last;
-		if(relative_angle_round>4096) 
-		{
-			Steering[i].data.angle_round--;
-		}
-		else if(relative_angle_round<-4096) 
-		{
-			Steering[i].data.angle_round++;
-		}
-		Steering[i].angle_real = 
-			Steering[i].data.angle_round*8191 + Steering[i].data.angle;
-		//设定角度完整计算
-		relative_angle_round=Steering[i].data.angle_set-Steering[i].data.angle_set_last;
-		if(relative_angle_round>4096) 
-		{
-			Steering[i].data.angle_set_round--;
-		}
-		else if(relative_angle_round<-4096) 
-		{
-			Steering[i].data.angle_set_round++;
-		}
-		Steering[i].angle_set_real = 
-			Steering[i].data.angle_set_round*8191 + Steering[i].data.angle_set;
-		//优化旋转的范围
-//		Steering[i].data.angle_round +=
-//			(uint16_t)((Steering[i].angle_set_real - Steering[i].angle_real) / 8192);
-			if(Steering[i].angle_set_real-Steering[i].angle_real>4096) Steering[i].data.angle_set_round--;
-			else if(Steering[i].angle_set_real-Steering[i].angle_real<-4096) Steering[i].data.angle_set_round++;
-	}
-}
-#endif
-//规整ECD
-fp32 Chassis_Ctrl::motor_ecd_to_relative_ecd(uint16_t angle, uint16_t offset_ecd)
+
+//规整ECD(范围±4096)
+fp32 motor_ecd_to_relative_ecd(uint16_t angle, uint16_t offset_ecd)
 {
     int32_t relative_angle_change = angle - offset_ecd;
     if (relative_angle_change > 4096)
@@ -704,3 +555,136 @@ void System_Reset(void)
         (SCB->AIRCR & SCB_AIRCR_PRIGROUP_Msk) |
         SCB_AIRCR_SYSRESETREQ_Msk);
 }
+
+/*------------------------------以下舵轮专属------------------------------*/
+#if useSteering
+//根据底盘模式控制舵轮行为
+void Chassis_Ctrl::steering_mode_control_set(void)
+{
+	if (Mode == CHASSIS_NO_MOVE)
+	{
+		Steering_Mode = STEERING_STOP;
+	}
+	else if (Mode == CHASSIS_FOLLOW_YAW)
+	{
+		Steering_Mode = STEERING_LIMIT;
+	}
+	else if (Mode == CHASSIS_NO_FOLLOW_YAW)
+	{
+		Steering_Mode = STEERING_NORMAL;
+	}
+	else if (Mode == CHASSIS_LITTLE_TOP)
+	{
+		Steering_Mode = STEERING_LITTLE_TOP;
+	}
+}
+//舵轮模式控制
+void Chassis_Ctrl::steering_behaviour_control_set(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set)
+{
+	uint8_t i = 0;
+	
+	steering_mode_control_set();
+	//死区限制
+	if (ABS(*vx_set) > 0.01f || ABS(*vy_set) > 0.01f || ABS(*wz_set) > 0.01f)
+	{
+		//舵轮解算
+		chassis_vector_to_wheel_speed(vx_set, vy_set, wz_set);
+	}
+	else 
+	{
+		if (Steering_Mode == STEERING_NORMAL)
+		{//无速度输入时进入舵轮不旋转状态
+			Steering_Mode = STEERING_VECTOR_NO_FOLLOW;
+		}
+		for(i=0;i<4;i++)
+		{//立即停止
+			Motor[i].speed_set=0;
+		}
+	}
+
+	switch (Steering_Mode)
+	{
+	case STEERING_STOP:
+		for (i = 0;i < 4;i++){
+			Steering[i].data.angle_set = Steering[i].data.angle;
+			Motor[i].speed_set = 0;	
+		}
+		break;
+	case STEERING_FOLLOW_GIMBAL:
+		for (i = 0;i < 4;i++){
+			Steering[i].data.angle_set = chassis_relative_ECD;
+		}
+			break;
+	case STEERING_FOLLOW_CHASSIS:
+		for (i = 0;i < 4;i++){
+			Steering[i].data.angle_set = 0;
+		}
+			break;
+	case STEERING_VECTOR_NO_FOLLOW:
+		for (i = 0;i < 4;i++){
+			Steering[i].data.angle_set = Steering[i].data.angle_set_last;
+		}
+			break;
+	case STEERING_LIMIT:
+		for (i = 0;i < 4;i++){
+			if (Steering[i].data.angle_set < -2972)//非对称非特殊角度
+			{
+				Steering[i].data.angle_set += 4096;
+				Motor[i].speed_set = -Motor[i].speed_set;
+			}
+			else if (Steering[i].data.angle_set > 1124)
+			{
+				Steering[i].data.angle_set -= 4096;
+				Motor[i].speed_set = -Motor[i].speed_set;
+			}
+		}
+		break;
+	case STEERING_LITTLE_TOP:
+		if ((vx_set != 0 || vy_set != 0) && wz_set != 0)
+		{
+			//小陀螺状态降低速度
+			*vx_set *= 0.7f;
+			*vy_set *= 0.7f;
+			*wz_set *= 0.3f;
+		}
+		break;
+	default:
+		break;
+	}
+}
+//带圈数的完整角度计算
+void Chassis_Ctrl::chassis_round_calc(void)
+{
+    int16_t relative_angle_round=0;	
+	for(int i=0;i<4;i++)
+	{
+		//实际角度完整计算
+		relative_angle_round = Steering[i].data.angle - Steering[i].data.angle_last;
+		if(relative_angle_round>4096) 
+		{
+			Steering[i].data.angle_round--;
+		}
+		else if(relative_angle_round<-4096) 
+		{
+			Steering[i].data.angle_round++;
+		}
+		Steering[i].angle_real = 
+			Steering[i].data.angle_round*8191 + Steering[i].data.angle;
+		//设定角度完整计算
+		relative_angle_round=Steering[i].data.angle_set-Steering[i].data.angle_set_last;
+		if(relative_angle_round>4096) 
+		{
+			Steering[i].data.angle_set_round--;
+		}
+		else if(relative_angle_round<-4096) 
+		{
+			Steering[i].data.angle_set_round++;
+		}
+		Steering[i].angle_set_real = 
+			Steering[i].data.angle_set_round*8191 + Steering[i].data.angle_set;
+		//优化旋转的范围
+		if(Steering[i].angle_set_real-Steering[i].angle_real>4096) Steering[i].data.angle_set_round--;
+		else if(Steering[i].angle_set_real-Steering[i].angle_real<-4096) Steering[i].data.angle_set_round++;
+	}
+}
+#endif

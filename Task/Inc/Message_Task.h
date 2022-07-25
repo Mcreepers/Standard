@@ -4,7 +4,8 @@
 #include "dev_system.h"
 
 #include "queue.h"
-#include "Chassis_Task.h"
+#include "protocol_dbus.h"
+// #include "Chassis_Task.h"
 // #include "dev_serial.h"
 // #include <vector>
 
@@ -45,11 +46,11 @@ typedef enum
 	UIdraw,
 	fault,
 	ID_t_count
-}ID_t;
+}ID_e;
 
 struct Message_Data_t
 {
-	ID_t Data_ID;
+	ID_e Data_ID;
 	uint32_t DataValue;
 	void *Data_Ptr;
 };
@@ -72,9 +73,15 @@ typedef struct
 	u8  last_count;
 }count_num_key;
 
+typedef enum
+{
+	single = 0,
+	even,
+}key_count_e;
+
 struct rc_key_v_t
 {
-	//°´¼ü
+	//¼üÅÌ
 	count_num_key W;
 	count_num_key S;
 	count_num_key A;
@@ -95,18 +102,34 @@ struct rc_key_v_t
 
 struct rc_press_t
 {
-	//°´¼ü
+	//Êó±ê
 	count_num_key L;
 	count_num_key R;
 };
+
+class rc_key_c
+{
+public:
+	rc_key_v_t Key;
+	rc_press_t Press;
+	
+	void rc_key_v_set(RC_ctrl_t *RC);
+	bool read_key(count_num_key *temp_count, key_count_e mode);
+	bool read_key(count_num_key *temp_count, key_count_e mode, bool *temp_bool);
+private:
+	bool read_key_single(count_num_key *temp_count);
+	bool read_key_single(count_num_key *temp_count, bool *temp_bool);
+	bool read_key_even(count_num_key *temp_count);
+	bool read_key_even(count_num_key *temp_count, bool *temp_bool);
+	void sum_key_count(int16_t key_num, count_num_key *temp_count);
+	void clear_key_count(count_num_key *temp_count);
+};
+
 
 class Message_Ctrl
 {
 public:
 	Message_Data_t *Data;
-	const Chassis_Velocity_t *velocity;
-	const Chassis_Ctrl_Flags_t *flags;
-	const chassis_mode_e *mode;
 	void Hook(void *ptr);
 private:
 	void Usart3_Hook(Usart_Data_t *Usart3);
@@ -117,13 +140,6 @@ private:
 
 extern Message_Data_t Message_Data;
 extern Message_Ctrl Message;
-extern rc_key_v_t Key;
-extern rc_press_t Press;
 
 const Gimbal_Data_t *get_gimbal_data_point(void);
-uint8_t read_key_count(count_num_key *temp_count);
-bool read_key_single(count_num_key *temp_count, bool *temp_bool);
-bool read_key_even(count_num_key *temp_count, bool *temp_bool);
-void rc_key_v_set(RC_ctrl_t *RC);
-
 #endif

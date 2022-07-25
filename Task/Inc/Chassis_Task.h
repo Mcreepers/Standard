@@ -1,3 +1,4 @@
+
 #ifndef __CHASSIS_TASK_H
 #define __CHASSIS_TASK_H
 
@@ -5,6 +6,7 @@
 #include "protocol_dbus.h"
 
 #include "app_motor.h"
+#include "Message_Task.h"
 
 #include "algorithm_pid.h"
 #include "algorithm_user_lib.h"
@@ -259,13 +261,14 @@ typedef struct
   fp32    Speed_Set[4];//底盘速度
 } Chassis_Velocity_t;
 
-class Chassis_Ctrl
+class Chassis_Ctrl : public rc_key_c
 {
   public:
   const RC_ctrl_t *RC_Ptr;
   const fp32 *chassis_yaw_relative_angle;   //底盘使用到yaw云台电机的相对角度来计算底盘的欧拉角
-  fp32 chassis_relative_angle;   //底盘使用到yaw云台电机的相对角度来计算底盘的欧拉角
-
+  fp32 chassis_relative_ECD;   //底盘使用到yaw云台电机的相对角度来计算底盘的欧拉角
+  fp32 chassis_relative_RAD;
+  
   Chassis_Motor_t Motor[Chassis_Motor_Numbers];
 
   PidTypeDef  Speed_Pid[Chassis_Motor_Numbers];
@@ -286,7 +289,6 @@ class Chassis_Ctrl
   void Feedback_Update(void);
   void Control(void);
   void chassis_behaviour_mode_set(void);
-  fp32 motor_ecd_to_relative_ecd(uint16_t angle, uint16_t offset_ecd);
   void chassis_control_loop(void);
   void error_behaviour_control_set(void);
 #if useSteering
@@ -300,18 +302,16 @@ class Chassis_Ctrl
   void chassis_rc_to_control_vector(fp32 *vx_set, fp32 *vy_set);
   void chassis_behaviour_control_set(fp32 *vx_set, fp32 *vy_set, fp32 *angle_set);
   void chassis_vector_to_wheel_speed(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set);
-  void rc_key_v_set(void);
 #if  useSteering
   void steering_behaviour_control_set(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set);
   void chassis_round_calc(void);
   void steering_mode_control_set(void);
-
 #endif
 };
 
 extern void System_Reset(void);
 extern Chassis_Ctrl Chassis;
-
+extern fp32 motor_ecd_to_relative_ecd(uint16_t angle, uint16_t offset_ecd);
 extern const Chassis_Ctrl_Flags_t *get_chassis_flag_control_point(void);
 extern const chassis_mode_e *get_chassis_mode_control_point(void);
 extern const Chassis_Velocity_t *get_chassis_velocity_control_point(void);

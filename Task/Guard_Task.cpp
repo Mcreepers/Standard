@@ -33,7 +33,7 @@ void Guard_Ctrl::Guard_Start(void)
     // Guard_Init(RC_ctrl, 200, &System_RESET);
 }
 //警戒任务初始化
-void Guard_Ctrl::Guard_Init(ID_t Name, uint32_t MaxValue, void(*errcb)(uint8_t id))
+void Guard_Ctrl::Guard_Init(ID_e Name, uint32_t MaxValue, void(*errcb)(uint8_t id))
 {
     SG_Structure[Name].Name = Name;
     SG_Structure[Name].Enable = 0;//默认关闭
@@ -70,7 +70,7 @@ void Guard_Ctrl::Guard_Scan(void)
     }
 }
 //警戒任务喂狗
-void Guard_Ctrl::Guard_Feed(ID_t *Name)
+void Guard_Ctrl::Guard_Feed(ID_e *Name)
 {
     if (Name == NULL||*Name==fault)
     {

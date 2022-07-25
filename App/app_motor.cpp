@@ -50,30 +50,6 @@ static void CAN1_Hook( CanRxMsg *Rx_Message )
 #elif useSteering
   switch (Rx_Message->StdId)
   {
-    default:
-    {
-      break;
-    }
-  }
-#endif
-}
-
-static void CAN_Hook( CanRxMsg *Rx_Message )
-{
-  switch( Rx_Message->StdId )
-  {
-    case CAN_3508_M1_ID:
-    case CAN_3508_M2_ID:
-    case CAN_3508_M3_ID:
-    case CAN_3508_M4_ID:
-    {
-        static uint8_t i = 0;
-        //处理电机ID号
-        i = Rx_Message->StdId - CAN_3508_M1_ID;
-        //处理电机数据宏函数
-        get_motor_measure(&CAN_Cmd.Chassis.Chassis_Measure[i], Rx_Message);
-        break;
-    }
     case CAN_6020_M1_ID:
     case CAN_6020_M2_ID:
     case CAN_6020_M3_ID:
@@ -88,9 +64,10 @@ static void CAN_Hook( CanRxMsg *Rx_Message )
     }
     default:
     {
-        break;
+      break;
     }
   }
+#endif
 }
 
 void CAN_ALL_Init(void)
@@ -99,6 +76,6 @@ void CAN_ALL_Init(void)
 	CAN1_Ctrl.CANx_Init();
 	CAN2_Ctrl.CANx_Init();
 	
-	CAN1_Ctrl.attachInterrupt( CAN_Hook );
-	CAN2_Ctrl.attachInterrupt( CAN_Hook );
+	CAN1_Ctrl.attachInterrupt( CAN1_Hook );
+	CAN2_Ctrl.attachInterrupt( CAN2_Hook );
 }
