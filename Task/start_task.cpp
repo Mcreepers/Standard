@@ -88,12 +88,12 @@ void Start_Task(void *pvParameters){
                 (UBaseType_t)Guard_Task_PRIO,
                 (TaskHandle_t *)&GuardTask_Handler);						
 
-//			 xTaskCreate((TaskFunction_t)Correspondence_Task,//创建通信任务
-//                (const char *)"Correspondence_Task",
-//                (uint16_t)Correspondenced_STK_SIZE,
-//                (void *)NULL,
-//                (UBaseType_t)Correspondence_TASK_PRIO,
-//                (TaskHandle_t *)&CorrespondenceTask_Handler);						
+			 xTaskCreate((TaskFunction_t)Correspondence_Task,//创建通信任务
+               (const char *)"Correspondence_Task",
+               (uint16_t)Correspondenced_STK_SIZE,
+               (void *)NULL,
+               (UBaseType_t)Correspondence_TASK_PRIO,
+               (TaskHandle_t *)&CorrespondenceTask_Handler);						
             
             vTaskDelete(StartTask_Handler); //删除开始任务
 	        taskEXIT_CRITICAL();            //退出临界区

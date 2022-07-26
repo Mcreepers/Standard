@@ -1,15 +1,11 @@
 #include "Message_Task.h"
 #include "Chassis_Task.h"
 #include "Guard_Task.h"
+#include "Correspondence_Task.h"
 #include "queue.h"
 #include "device.h"
 
 union I int_data;
-
-Usart_Data_t Usart3( Serial3_Buffer_Size, Serial3_Data_Header, Serial3_Data_tail );
-Usart_Data_t Usart6( Serial6_Buffer_Size, Serial6_Data_Header, Serial6_Data_tail );
-Usart_Data_t Usart7( Serial7_Buffer_Size, Serial7_Data_Header, Serial7_Data_tail );
-Usart_Data_t Usart8( Serial8_Buffer_Size, Serial8_Data_Header, Serial8_Data_tail );
 
 Message_Data_t Message_Data;
 Message_Ctrl Message;
@@ -41,16 +37,16 @@ void Message_Ctrl::Hook(void *ptr)
 		CAN2_Ctrl.Hook((CanRxMsg *)ptr);
 		break;
 	case serial3:
-		// Usart3_Hook((Usart_Data_t *)ptr);
+		// Usart3_Hook();
 		break;
 	case serial6:
-		Usart6_Hook((Usart_Data_t *)ptr);
+		Usart6_Hook();
 		break;
 	case serial7:
-		Usart7_Hook((Usart_Data_t *)ptr);
+		Usart7_Hook();
 		break;
 	case serial8:
-		// Usart8_Hook((Usart_Data_t *)ptr);
+		// Usart8_Hook();
 		break;
 	case RC_ctrl:
 		Chassis.rc_key_v_set((RC_ctrl_t *)ptr);
@@ -61,40 +57,44 @@ void Message_Ctrl::Hook(void *ptr)
 
 }
 
-void Message_Ctrl::Usart3_Hook(Usart_Data_t *Usart3)
+void Message_Ctrl::Usart3_Hook()
 {
 
 }
 
-void Message_Ctrl::Usart6_Hook(Usart_Data_t *Usart6)
+void Message_Ctrl::Usart6_Hook()
 {
+	uint8_t i;
+	for (i = 0;i < Usart6.Len ;i++)
+	{
+		Usart6.Data[i] = Serial6.read();
+	}
 
-	int_data.s[0] = Usart6->Data[1];
-	int_data.s[1] = Usart6->Data[2];
+	int_data.s[0] = Usart6.Data[1];
+	int_data.s[1] = Usart6.Data[2];
 	Gimbal.ECD = -motor_ecd_to_relative_ecd(int_data.d, Gimbal_Motor_Yaw_Offset_ECD);
-	Gimbal.gimbal_grade = Usart6->Data[3];
-	Gimbal.compensation_state = Usart6->Data[4];
-	Gimbal.follow_on = Usart6->Data[5];
-	Gimbal.goal = Usart6->Data[6];
-	Gimbal.energy_state = Usart6->Data[7];
-	//	Gimbal.predict = Usart6->Data[8];
+	Gimbal.gimbal_grade = Usart6.Data[3];
+	Gimbal.compensation_state = Usart6.Data[4];
+	Gimbal.follow_on = Usart6.Data[5];
+	Gimbal.goal = Usart6.Data[6];
+	Gimbal.energy_state = Usart6.Data[7];
+	//	Gimbal.predict = Usart6.Data[8];
 	if (Gimbal.ECD > 8192 || Gimbal.gimbal_grade > 3)
 	{
 		Error_Flag.Gimbal = 1;
 	}
-	if (Gimbal.compensation_state > 2 || Gimbal.follow_on > 1 || Gimbal.energy_state > 1 || Gimbal.goal > 1
-		|| Gimbal.predict > 1)
+	if (Gimbal.compensation_state > 2 || Gimbal.follow_on > 1 || Gimbal.energy_state > 1
+		|| Gimbal.goal > 1|| Gimbal.predict > 1)
 	{
 		Error_Flag.Visual = 1;
 	}
 }
 
-void Message_Ctrl::Usart7_Hook(Usart_Data_t *Usart7)
+void Message_Ctrl::Usart7_Hook()
 {
-	uart7_dma_get();
 }
 
-void Message_Ctrl::Usart8_Hook(Usart_Data_t *Usart8)
+void Message_Ctrl::Usart8_Hook()
 {
 
 }

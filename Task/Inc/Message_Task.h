@@ -44,8 +44,9 @@ typedef enum
 	RC_ctrl,
 	chassis,
 	UIdraw,
+	correspondence,
 	fault,
-	ID_t_count
+	ID_e_count
 }ID_e;
 
 struct Message_Data_t
@@ -132,10 +133,10 @@ public:
 	Message_Data_t *Data;
 	void Hook(void *ptr);
 private:
-	void Usart3_Hook(Usart_Data_t *Usart3);
-	void Usart6_Hook(Usart_Data_t *Usart6);
-	void Usart7_Hook(Usart_Data_t *Usart7);
-	void Usart8_Hook(Usart_Data_t *Usart8);
+	void Usart3_Hook();
+	void Usart6_Hook();
+	void Usart7_Hook();
+	void Usart8_Hook();
 };
 
 extern Message_Data_t Message_Data;

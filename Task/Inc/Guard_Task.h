@@ -17,7 +17,7 @@ extern void Guard_Scan_Time(TimerHandle_t xTimer);
 }
 #endif
 
-#define GUARD_TOTAL_NUM ID_t_count
+#define GUARD_TOTAL_NUM ID_e_count
 
 struct Error_Flags_t
 {
