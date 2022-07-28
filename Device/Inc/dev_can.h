@@ -27,7 +27,7 @@ public:
 
 	void IRQHandler(void);
 	
-	void Hook(CanRxMsg *Rx_Message);
+	CanRxMsg Rx_Message;
 private:
 	uint32_t StdId;
 };

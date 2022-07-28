@@ -19,7 +19,7 @@ void Correspondence_Task(void *pvParameters)
         corres.Corres_Send();
 
         
-        xQueueSend(Message_Queue, &(Message_Data.Data_ID = correspondence), 0);
+//        xQueueSend(Message_Queue, &(Message_Data.Data_ID = correspondence), 0);
         vTaskDelay(2);
     }
 }
@@ -64,7 +64,7 @@ void Serial3_Hook(void)
     }
     else if ((Serial3.peek() == Usart3.Tail||Usart3.Tail==NULL) && Usart3.Num == 0)
     {
-        xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID=serial3), 0);
+//        xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID=serial3), 0);
     }
 }
 
@@ -80,7 +80,7 @@ void Serial6_Hook(void)
     }
     else if ((Serial6.peek() == Usart6.Tail||Usart6.Tail==NULL) && Usart6.Num == 0)
     {
-        xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID=serial6), 0);
+//        xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID=serial6), 0);
     }
 }
 

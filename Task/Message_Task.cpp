@@ -31,10 +31,10 @@ void Message_Ctrl::Hook()
 	switch (Message_ID)
 	{
 	case CanData1:
-		CAN1_Ctrl.Hook((CanRxMsg *)ptr);
+		CAN1_Hook((CanRxMsg *)ptr);
 		break;
 	case CanData2:
-		CAN2_Ctrl.Hook((CanRxMsg *)ptr);
+		CAN2_Hook((CanRxMsg *)ptr);
 		break;
 	case serial3:
 		// Usart3_Hook();

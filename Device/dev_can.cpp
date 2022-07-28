@@ -77,43 +77,25 @@ void CANctrl::SendData( int16_t data1 )
 
 void CANctrl::IRQHandler( void )
 {
-    static CanRxMsg Rx_Message;
-
     if (CAN_GetITStatus(CANx, CAN_IT_FMP0) != RESET)
     {
         CAN_ClearITPendingBit( CANx, CAN_IT_FMP0 );
         CAN_Receive(CANx, CAN_FIFO0, &Rx_Message);
-        // if( CAN_Function )
-        // {
-        //     CAN_Function(&Rx_Message);
-        // }
-       if (xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID), 0))
-       {
-			Message_Data.Data_Ptr[Message_Data.Data_ID]=&Rx_Message;
-       }
+        if( CAN_Function )
+        {
+            CAN_Function(&Rx_Message);
+        }
     }
 }
-
-void CANctrl::Hook(CanRxMsg *Rx_Message)
-{
-    if (CAN_Function)
-    {
-        CAN_Function(Rx_Message);
-    }
-}
-
 
 extern"C"
 {
 	void CAN1_RX0_IRQHandler(void)
     {
-        Message_Data.Data_ID = CanData1;
         CAN1_Ctrl.IRQHandler();
     }
     void CAN2_RX0_IRQHandler(void)
     {
-        Message_Data.Data_ID = CanData2;
         CAN2_Ctrl.IRQHandler();
     }
-
 }

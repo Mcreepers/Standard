@@ -21,7 +21,7 @@ extern "C" {
 
 #define Message_CONTROL_TIME_MS 1
 
-#define Message_Q_NUM    1  		    //消息队列的数量
+#define Message_Q_NUM    40  		    //消息队列的数量
 extern QueueHandle_t Message_Queue;   		//消息队列句柄
 
 #define Gimbal_Motor_Yaw_Offset_ECD 3243
@@ -52,7 +52,6 @@ typedef enum
 struct Message_Data_t
 {
 	ID_e Data_ID;
-	uint32_t DataValue;
 	void *Data_Ptr[ID_e_count];
 };
 

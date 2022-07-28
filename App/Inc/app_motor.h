@@ -179,5 +179,7 @@ void CAN_ALL_Init( void );
 extern CAN_Ctrl CAN_Cmd;
 extern void CAN1_Hook(CanRxMsg *Rx_Message);
 extern void CAN2_Hook(CanRxMsg *Rx_Message);
+extern void CAN1_Send(CanRxMsg *Rx_Message);
+extern void CAN2_Send(CanRxMsg *Rx_Message);
 
 #endif /* __APP_MOTOR_H */
