@@ -19,15 +19,15 @@ void Message_Task(void *pvParameters)
     {
         if (xQueueReceive(Message_Queue, &Message_ID, portMAX_DELAY))
 		{
-			Message.Hook(Message_Data.Data_Ptr);
+			Message.Hook();
 			Guard.Guard_Feed(&Message_ID);
 		}
 	}
 }
 //消息处理
-void Message_Ctrl::Hook(void *ptr)
+void Message_Ctrl::Hook()
 {
-	ptr=Message_Data.Data_Ptr;
+	ptr=Message_Data.Data_Ptr[Message_ID];
 	switch (Message_ID)
 	{
 	case CanData1:
@@ -174,6 +174,22 @@ bool rc_key_c::read_key_even(count_num_key *temp_count)
     }else{
         return false;
     }
+}
+
+//按键多次
+uint8_t rc_key_c::read_key(count_num_key *temp_count)
+{
+	uint8_t result;
+	if (temp_count->count >= 1)
+	{
+		result = temp_count->count;
+		temp_count->count = 0;
+	}
+	else
+	{
+		temp_count->count = 0;
+	}
+	return result;
 }
 
 bool rc_key_c::read_key(count_num_key *temp_count, key_count_e mode)

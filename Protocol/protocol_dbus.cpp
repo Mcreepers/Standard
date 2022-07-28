@@ -115,7 +115,7 @@ extern"C"
                                 //发送消息更新按键
                                 if(xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID=RC_ctrl), 0))
 								{
-									Message_Data.Data_Ptr = &rc_ctrl;
+									Message_Data.Data_Ptr[RC_ctrl] = &rc_ctrl;
 								}
                             }
 					}
@@ -135,7 +135,7 @@ extern"C"
                                 //发送消息更新按键
                                 if(xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID=RC_ctrl), 0))
 								{
-									Message_Data.Data_Ptr = &rc_ctrl;
+									Message_Data.Data_Ptr[RC_ctrl] = &rc_ctrl;
 								}
 							}
 					}

@@ -405,7 +405,7 @@ void usart7_send_char(uint8_t c);
 void Usart_SendBuff(uint8_t *buf, uint16_t len);
 void chassis_to_judgeui(uint16_t txlen);
 const robo_data_t *get_robo_data_Point();
-void usart7_DMA_init(void);
+extern void usart7_DMA_init(void);
 void uart7_dma_get(void);
 
 #endif /* __PROTOCOL_JUDGEMENT_H */

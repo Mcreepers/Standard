@@ -72,4 +72,7 @@ extern usart_Data_t Usart3;
 extern usart_Data_t Usart6;
 extern usart_Data_t Usart7;
 extern usart_Data_t Usart8;
+extern void Serial3_Hook(void);
+extern void Serial6_Hook(void);
+
 #endif

@@ -35,6 +35,9 @@ void correspondence_ctrl::Corres_Init(void)
     Gimbal.Tail = GIMBAL_SERIAL_TAIL;
 
     Serial3.attachInterrupt(Serial3_Hook);
+	Serial6.attachInterrupt(Serial6_Hook);
+	
+	usart7_DMA_init();
 }
 
 void correspondence_ctrl::Corres_Send(void)
@@ -65,6 +68,21 @@ void Serial3_Hook(void)
     }
 }
 
+void Serial6_Hook(void)
+{
+    if (Serial6.peek() == Usart6.Header&&Usart6.Num==0)
+    {
+        Usart6.Num = Usart6.Len;
+    }
+    else if (Usart6.Num > 0 && Usart6.Num <= Usart6.Len)
+    {
+        Usart6.Num--;
+    }
+    else if ((Serial6.peek() == Usart6.Tail||Usart6.Tail==NULL) && Usart6.Num == 0)
+    {
+        xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID=serial6), 0);
+    }
+}
 
 
 

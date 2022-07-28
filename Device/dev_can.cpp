@@ -89,7 +89,7 @@ void CANctrl::IRQHandler( void )
         // }
        if (xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID), 0))
        {
-			Message_Data.Data_Ptr=&Rx_Message;
+			Message_Data.Data_Ptr[Message_Data.Data_ID]=&Rx_Message;
        }
     }
 }

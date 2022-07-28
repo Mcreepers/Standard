@@ -53,7 +53,7 @@ struct Message_Data_t
 {
 	ID_e Data_ID;
 	uint32_t DataValue;
-	void *Data_Ptr;
+	void *Data_Ptr[ID_e_count];
 };
 
 struct Gimbal_Data_t
@@ -115,6 +115,7 @@ public:
 	rc_press_t Press;
 	
 	void rc_key_v_set(RC_ctrl_t *RC);
+	uint8_t read_key(count_num_key *temp_count);
 	bool read_key(count_num_key *temp_count, key_count_e mode);
 	bool read_key(count_num_key *temp_count, key_count_e mode, bool *temp_bool);
 private:
@@ -131,8 +132,9 @@ class Message_Ctrl
 {
 public:
 	Message_Data_t *Data;
-	void Hook(void *ptr);
+	void Hook();
 private:
+	void *ptr;
 	void Usart3_Hook();
 	void Usart6_Hook();
 	void Usart7_Hook();

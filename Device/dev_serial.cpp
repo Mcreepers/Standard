@@ -85,23 +85,19 @@ void Serialctrl::flush(void)
 extern "C"{
     void USART3_IRQHandler(void)
     {
-        Message_Data.Data_ID = serial3;
         Serial3.IRQHandler();
     }
     void USART6_IRQHandler(void)
     {
-        Message_Data.Data_ID = serial6;
         Serial6.IRQHandler();
     }
     void UART7_IRQHandler(void)
     {
-        Message_Data.Data_ID = serial7;
-        xQueueSendFromISR(Message_Queue, &Message_Data.Data_ID, 0);
+        xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID = serial7), 0);
         // Serial7.IRQHandler();
     }
     // void UART8_IRQHandler(void)
     // {
-    //     Message_Data.Data_ID = serial8;
     // 	Serial8.IRQHandler();
     // }
 }
