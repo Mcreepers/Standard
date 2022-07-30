@@ -75,7 +75,7 @@ void CAN1_Send(CanRxMsg *Rx_Message)
 	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 	if(xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID = CanData1), &xHigherPriorityTaskWoken))
 	{
-		Message_Data.Data_Ptr[Message_Data.Data_ID] = Rx_Message;
+		Message_Data.Data_Ptr[CanData1] = Rx_Message;
 	}
 	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
@@ -85,7 +85,7 @@ void CAN2_Send(CanRxMsg *Rx_Message)
 	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 	if(xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID = CanData2), &xHigherPriorityTaskWoken))
 	{
-		Message_Data.Data_Ptr[Message_Data.Data_ID] = Rx_Message;
+		Message_Data.Data_Ptr[CanData2] = Rx_Message;
 	}
 	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }

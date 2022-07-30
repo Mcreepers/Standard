@@ -64,12 +64,6 @@ void Message_Ctrl::Usart3_Hook()
 
 void Message_Ctrl::Usart6_Hook()
 {
-	uint8_t i;
-	for (i = 0;i < Usart6.Len ;i++)
-	{
-		Usart6.Data[i] = Serial6.read();
-	}
-
 	int_data.s[0] = Usart6.Data[1];
 	int_data.s[1] = Usart6.Data[2];
 	Gimbal.ECD = -motor_ecd_to_relative_ecd(int_data.d, Gimbal_Motor_Yaw_Offset_ECD);
@@ -92,6 +86,7 @@ void Message_Ctrl::Usart6_Hook()
 
 void Message_Ctrl::Usart7_Hook()
 {
+	uart7_dma_get();
 }
 
 void Message_Ctrl::Usart8_Hook()

@@ -183,7 +183,7 @@ void UIDraw_Task(void *pvParameters)
         //         UserTaskStack = uxTaskGetStackHighWaterMark(NULL);
         // #endif
         
-//        xQueueSend(Message_Queue, &(Message_Data.Data_ID = UIdraw), 0);
+        xQueueSend(Message_Queue, &(Message_Data.Data_ID = UIdraw), 0);
         vTaskDelay(10);
     }
 }

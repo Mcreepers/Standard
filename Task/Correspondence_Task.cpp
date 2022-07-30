@@ -2,6 +2,8 @@
 #include "device.h"
 #include "Message_Task.h"
 
+union F Gimbal_Union;
+	
 correspondence_ctrl corres;
 
 usart_Data_t Usart3( Serial3_Buffer_Size, Serial3_Data_Header, Serial3_Data_tail );
@@ -19,7 +21,7 @@ void Correspondence_Task(void *pvParameters)
         corres.Corres_Send();
 
         
-//        xQueueSend(Message_Queue, &(Message_Data.Data_ID = correspondence), 0);
+        xQueueSend(Message_Queue, &(Message_Data.Data_ID = correspondence), 0);
         vTaskDelay(2);
     }
 }
@@ -42,45 +44,61 @@ void correspondence_ctrl::Corres_Init(void)
 
 void correspondence_ctrl::Corres_Send(void)
 {
-    Serial6.sendData(&Gimbal);
+    Serial6.sendData(&Gimbal,7);
 }
 
 void correspondence_ctrl::Corres_Feedback(void)
 {
-    uart7_dma_get();
+	uint8_t i;
+//    uart7_dma_get();
     
-    Gimbal.grade = robo->robo_level;
+    Gimbal.Grade = robo->robo_level;
+	Gimbal_Union.F=robo->robo_17_Speed;
+	for(i=0;i<4;i++)
+	{
+		Gimbal.Shoot[i]=Gimbal_Union.I[i];
+	}
 }
 
 void Serial3_Hook(void)
 {
-    if (Serial3.peek() == Usart3.Header&&Usart3.Num==0)
+    if (Serial3.peek() != Usart3.Header)
+	{
+		Usart3.Temp=Serial3.read();
+		return;
+	}
+	if (Serial3.available()==Usart3.Len-1)
     {
-        Usart3.Num = Usart3.Len;
-    }
-    else if (Usart3.Num > 0 && Usart3.Num <= Usart3.Len)
-    {
-        Usart3.Num--;
-    }
-    else if ((Serial3.peek() == Usart3.Tail||Usart3.Tail==NULL) && Usart3.Num == 0)
-    {
-//        xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID=serial3), 0);
+		for (uint8_t i = 0;i < Usart3.Len-1;i++)
+		{
+			Usart3.Data[i] = Serial3.read();
+		}
+		if(Usart3.Data[Usart3.Len-2]==Usart3.Tail)
+		{
+			xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID = serial3), 0);
+		}
+		Usart3.State=0;
     }
 }
 
 void Serial6_Hook(void)
 {
-    if (Serial6.peek() == Usart6.Header&&Usart6.Num==0)
+    if (Serial6.peek() != Usart6.Header)
+	{
+		Usart6.Temp=Serial6.read();
+		return;
+	}
+	if (Serial6.available()==Usart6.Len-1)
     {
-        Usart6.Num = Usart6.Len;
-    }
-    else if (Usart6.Num > 0 && Usart6.Num <= Usart6.Len)
-    {
-        Usart6.Num--;
-    }
-    else if ((Serial6.peek() == Usart6.Tail||Usart6.Tail==NULL) && Usart6.Num == 0)
-    {
-//        xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID=serial6), 0);
+		for (uint8_t i = 0;i < Usart6.Len-1;i++)
+		{
+			Usart6.Data[i] = Serial6.read();
+		}
+		if(Usart6.Data[Usart6.Len-2]==Usart6.Tail)
+		{
+			xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID = serial6), 0);
+		}
+		Usart6.State=0;
     }
 }
 

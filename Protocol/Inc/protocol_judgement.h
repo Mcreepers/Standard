@@ -325,12 +325,15 @@ typedef  struct
 	uint16_t        CRC16;
 	uint16_t        CRC16_2;
 }FRAME;
+
+/*--------------------------------接口结构体----------------------------------------------*/
 //裁判系统数据结构
 typedef struct
 {
 	uint8_t  robo_level;//机器人当前等级
 	uint8_t  robo_ID;		//机器人当前ID
 	uint16_t robo_HP;
+	float robo_17_Speed;
 	//.....................
 }robo_data_t;
 

@@ -53,7 +53,7 @@ void Chassis_Task(void *pvParameters)
 #endif
 		}
 		
-//        xQueueSend(Message_Queue, &(Message_Data.Data_ID = chassis), 0);
+        xQueueSend(Message_Queue, &(Message_Data.Data_ID = chassis), 0);
 		
 		vTaskDelay(CHASSIS_CONTROL_TIME_MS);
 	}

@@ -93,7 +93,7 @@ extern "C"{
     }
     void UART7_IRQHandler(void)
     {
-//        xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID = serial7), 0);
+        xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID = serial7), 0);
         // Serial7.IRQHandler();
     }
     // void UART8_IRQHandler(void)

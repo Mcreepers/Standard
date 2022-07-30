@@ -15,6 +15,12 @@ void Correspondence_Task(void *pvParameters);
 }
 #endif
 
+union F
+{
+    uint8_t I[4];
+    fp32 F;
+};
+
 #define GIMBAL_SERIAL_HEADER 0xff
 #define GIMBAL_SERIAL_TAIL 0xfe
 
@@ -31,7 +37,8 @@ void Correspondence_Task(void *pvParameters);
 struct gimbal_data_t
 {
     uint8_t Header;
-    uint8_t grade;
+    uint8_t Grade;
+	uint8_t Shoot[4];
     uint8_t Tail;
 };
 
@@ -40,7 +47,8 @@ struct usart_Data_t
 	uint8_t Header;
 	uint8_t Tail;
 	uint8_t Len;
-	uint8_t Num;
+	uint8_t State;
+	uint8_t Temp;
 	uint8_t Data[20];
 	usart_Data_t(uint8_t Len = 0, uint8_t Header = 0, uint8_t Tail = 0)
 	{
