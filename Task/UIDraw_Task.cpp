@@ -25,7 +25,7 @@ uint16_t standard_ID1, standard_ID2;
 
 const Chassis_Ctrl_Flags_t *chassis_flag;
 const chassis_mode_e *chassis_mode;
-const Gimbal_Data_t *Gimbal_UI;
+const Gimbal_Receive_Data_t *Gimbal_UI;
 const Chassis_Velocity_t *chassis_velocity;
 const robo_data_t *robo_data_UI;
 void UIDraw_Task(void *pvParameters)

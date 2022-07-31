@@ -5,12 +5,12 @@
 #include "queue.h"
 #include "device.h"
 
-union I int_data;
+union I ecd_data;
 
 Message_Data_t Message_Data;
 Message_Ctrl Message;
 ID_e Message_ID;
-Gimbal_Data_t Gimbal;
+Gimbal_Receive_Data_t GimbalR;
 
 extern void uart7_dma_get(void);
 void Message_Task(void *pvParameters)
@@ -64,21 +64,15 @@ void Message_Ctrl::Usart3_Hook()
 
 void Message_Ctrl::Usart6_Hook()
 {
-	int_data.s[0] = Usart6.Data[1];
-	int_data.s[1] = Usart6.Data[2];
-	Gimbal.ECD = -motor_ecd_to_relative_ecd(int_data.d, Gimbal_Motor_Yaw_Offset_ECD);
-	Gimbal.gimbal_grade = Usart6.Data[3];
-	Gimbal.compensation_state = Usart6.Data[4];
-	Gimbal.follow_on = Usart6.Data[5];
-	Gimbal.goal = Usart6.Data[6];
-	Gimbal.energy_state = Usart6.Data[7];
-	//	Gimbal.predict = Usart6.Data[8];
-	if (Gimbal.ECD > 8192 || Gimbal.gimbal_grade > 3)
+	ecd_data.s[0] = Usart6.Data[1];
+	ecd_data.s[1] = Usart6.Data[2];
+	GimbalR.ECD = -motor_ecd_to_relative_ecd(ecd_data.d, Gimbal_Motor_Yaw_Offset_ECD);
+	GimbalR.goal = Usart6.Data[3];
+	if (GimbalR.ECD > 8192)
 	{
 		Error_Flag.Gimbal = 1;
 	}
-	if (Gimbal.compensation_state > 2 || Gimbal.follow_on > 1 || Gimbal.energy_state > 1
-		|| Gimbal.goal > 1|| Gimbal.predict > 1)
+	if (GimbalR.goal > 1)
 	{
 		Error_Flag.Visual = 1;
 	}
@@ -94,9 +88,9 @@ void Message_Ctrl::Usart8_Hook()
 
 }
 
-const Gimbal_Data_t *get_gimbal_data_point(void)
+const Gimbal_Receive_Data_t *get_gimbal_data_point(void)
 {
-	return &Gimbal;
+	return &GimbalR;
 }
 
 //统计按键 按下次数：eg:  按下-松开  按下-松开  2次
@@ -171,32 +165,30 @@ bool rc_key_c::read_key_even(count_num_key *temp_count)
     }
 }
 
-//按键多次
-uint8_t rc_key_c::read_key(count_num_key *temp_count)
+uint8_t rc_key_c::read_key(count_num_key *temp_count, key_count_e mode, bool clear)
 {
 	uint8_t result;
-	if (temp_count->count >= 1)
+	if (clear == true)
 	{
-		result = temp_count->count;
-		temp_count->count = 0;
+		if (mode == single)
+		{
+			result=read_key_single(temp_count);
+		}
+		else if (mode == even)
+		{
+			result=read_key_even(temp_count);
+		}
 	}
 	else
 	{
-		temp_count->count = 0;
-	}
-	return result;
-}
-
-bool rc_key_c::read_key(count_num_key *temp_count, key_count_e mode)
-{
-	bool result;
-	if (mode == single)
-	{
-		result=read_key_single(temp_count);
-	}
-	else if (mode == even)
-	{
-		result=read_key_even(temp_count);
+		if (mode == single)
+		{
+			result = temp_count->count;
+		}
+		else if (mode == even)
+		{
+			result = temp_count->key_flag;
+		}
 	}
 	return result;
 }

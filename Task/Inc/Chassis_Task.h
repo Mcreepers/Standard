@@ -23,9 +23,6 @@ extern "C" {
 }
 #endif
 
-//任务开始空闲一段时间
-#define CHASSIS_TASK_INIT_TIME 357
-
 //前后的遥控器通道号码
 #define CHASSIS_X_CHANNEL 3
 //左右的遥控器通道号码
@@ -39,9 +36,9 @@ extern "C" {
 //选择遥控器控制模式下切换移动或射击
 #define MOVE_OR_SHOOT 0
 //遥控器前进摇杆（max 660）转化成车体前进速度（m/s）的比例
-#define CHASSIS_VX_RC_SEN 0.003f//0.0015f
+#define CHASSIS_VX_RC_SEN 0.001f//0.0015f
 //遥控器左右摇杆（max 660）转化成车体左右速度（m/s）的比例
-#define CHASSIS_VY_RC_SEN 0.003f//0.0015f
+#define CHASSIS_VY_RC_SEN 0.001f//0.0015f
 //跟随底盘yaw模式下，遥控器的yaw遥杆（max 660）增加到车体角度的比例
 #define CHASSIS_ANGLE_Z_RC_SEN 0.000002f
 //不跟随云台的时候 遥控器的yaw遥杆（max 660）转化成车体旋转速度的比例
@@ -73,27 +70,6 @@ extern "C" {
 #define POWER_FIRST 1 
 //血量优先
 #define HP_FIRST 0 
-
-#define CHASSIS_FRONT_KEY        KEY_PRESSED_OFFSET_S
-#define CHASSIS_BACK_KEY         KEY_PRESSED_OFFSET_W
-#define CHASSIS_LEFT_KEY         KEY_PRESSED_OFFSET_D
-#define CHASSIS_RIGHT_KEY        KEY_PRESSED_OFFSET_A
-
-#define CHASSIS_SPEEDUP_KEY      KEY_PRESSED_OFFSET_SHIFT
-#define CHASSIS_SPEEDDOWN_KEY    KEY_PRESSED_OFFSET_CTRL
-
-#define FOLLOW 1
-#define NOTFOLLOW 0
-#define CHASSIS_STOP_KEY         KEY_PRESSED_OFFSET_C
-#define CHASSIS_MODE_SWITH_KEY   KEY_PRESSED_OFFSET_X
-
-#define CHASSIS_SPIN_KEY         KEY_PRESSED_OFFSET_G
-#define CAPACITANCE_MODE_KEY     KEY_PRESSED_OFFSET_B   //超级电容
-#define CHASSIS_UPGRADE_KEY      KEY_PRESSED_OFFSET_Z
-
-#define CHASSIS_UI_FOLLOW_KEY    KEY_PRESSED_OFFSET_F   
-#define CHASSIS_UI_SIZE_KEY      KEY_PRESSED_OFFSET_V  
-#define CHASSIS_UI_COLOR_KEY     KEY_PRESSED_OFFSET_R
 
 #define FRONT_ECD 887
 #define BACK_ECD  4974
@@ -288,8 +264,8 @@ class Chassis_Ctrl : public rc_key_c
   void Chassis_Init(void);
   void Feedback_Update(void);
   void Control(void);
-  void chassis_behaviour_mode_set(void);
-  void chassis_control_loop(void);
+  void Behaviour_Mode(void);
+  void Control_loop(void);
   void error_behaviour_control_set(void);
 #if useSteering
   Chassis_Steering_t Steering[4];
@@ -299,13 +275,13 @@ class Chassis_Ctrl : public rc_key_c
   PidTypeDef  steering_Angle_Pid[4];
 #endif
   private:
-  void chassis_rc_to_control_vector(fp32 *vx_set, fp32 *vy_set);
-  void chassis_behaviour_control_set(fp32 *vx_set, fp32 *vy_set, fp32 *angle_set);
-  void chassis_vector_to_wheel_speed(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set);
+  void RC_to_Control(fp32 *vx_set, fp32 *vy_set);
+  void Behaviour_Control(fp32 *vx_set, fp32 *vy_set, fp32 *angle_set);
+  void Vector_to_Wheel_Speed(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set);
 #if  useSteering
-  void steering_behaviour_control_set(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set);
-  void chassis_round_calc(void);
-  void steering_mode_control_set(void);
+  void Steering_Behaviour_Control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set);
+  void Steering_Round_Calc(void);
+  void Steering_Mode_Control(void);
 #endif
 };
 

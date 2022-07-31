@@ -18,7 +18,6 @@ static tMsg_head                    judgedatahead;
 static ext_game_robot_pos_t	        game_robot_pos_t;
 //static ext_client_custom_graphic_single_t  ext_client_custom_graphic_single;
 //static draw_data_struct_t		draw_data_struct;
-static void MYDMA_Config(DMA_Stream_TypeDef *DMA_Streamx, u32 chx, u32 par, u32 mar, u16 ndtr);
 
 
 uint8_t rx7_buf[RX_BUF_NUM];
@@ -86,7 +85,6 @@ void chassis_to_judgeui(uint16_t txlen)
 	// USART_DMACmd(UART7, USART_DMAReq_Tx, ENABLE);  //使能串口8的DMA发送     
 	// MYDMA_Enable(DMA1_Stream1, txlen);     //开始一次DMA传输！
 	u16 i = 0;
-	u16 tx_len=txlen;
 	while(txlen--){
 		usart7_send_char(TX7_buf[i++]);
 	}

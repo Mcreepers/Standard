@@ -14,7 +14,7 @@ extern "C" {
 #include "drivers_serial.h"
 
 #define Serial3_Buffer_Size 7
-#define Serial6_Buffer_Size 11
+#define Serial6_Buffer_Size 6
 #define Serial7_Buffer_Size 7
 #define Serial8_Buffer_Size 7
 

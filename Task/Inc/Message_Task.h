@@ -19,6 +19,7 @@ extern "C" {
 }
 #endif
 
+//无效，信息任务为最高优先级任务，运行条件为消息队列中有消息
 #define Message_CONTROL_TIME_MS 1
 
 #define Message_Q_NUM    40  		    //消息队列的数量
@@ -55,15 +56,23 @@ struct Message_Data_t
 	void *Data_Ptr[ID_e_count];
 };
 
-struct Gimbal_Data_t
+struct Gimbal_Receive_Data_t
 {
 	fp32 ECD;
-	uint8_t gimbal_grade;
-	uint8_t compensation_state;
-	uint8_t follow_on;
 	uint8_t goal;
-	uint8_t energy_state;
-	uint8_t predict;
+};
+
+class Message_Ctrl
+{
+public:
+	Message_Data_t *Data;
+	void Hook();
+private:
+	void *ptr;
+	void Usart3_Hook();
+	void Usart6_Hook();
+	void Usart7_Hook();
+	void Usart8_Hook();
 };
 
 typedef struct
@@ -114,34 +123,19 @@ public:
 	rc_press_t Press;
 	
 	void rc_key_v_set(RC_ctrl_t *RC);
-	uint8_t read_key(count_num_key *temp_count);
-	bool read_key(count_num_key *temp_count, key_count_e mode);
+	uint8_t read_key(count_num_key *temp_count, key_count_e mode,bool clear);
 	bool read_key(count_num_key *temp_count, key_count_e mode, bool *temp_bool);
+	void clear_key_count(count_num_key *temp_count);
 private:
 	bool read_key_single(count_num_key *temp_count);
 	bool read_key_single(count_num_key *temp_count, bool *temp_bool);
 	bool read_key_even(count_num_key *temp_count);
 	bool read_key_even(count_num_key *temp_count, bool *temp_bool);
 	void sum_key_count(int16_t key_num, count_num_key *temp_count);
-	void clear_key_count(count_num_key *temp_count);
-};
-
-
-class Message_Ctrl
-{
-public:
-	Message_Data_t *Data;
-	void Hook();
-private:
-	void *ptr;
-	void Usart3_Hook();
-	void Usart6_Hook();
-	void Usart7_Hook();
-	void Usart8_Hook();
 };
 
 extern Message_Data_t Message_Data;
 extern Message_Ctrl Message;
 
-const Gimbal_Data_t *get_gimbal_data_point(void);
+const Gimbal_Receive_Data_t *get_gimbal_data_point(void);
 #endif

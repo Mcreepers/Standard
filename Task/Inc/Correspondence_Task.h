@@ -34,7 +34,21 @@ union F
 #define Serial8_Data_Header 0xff
 #define Serial8_Data_tail 0xfe
 
-struct gimbal_data_t
+#define RATE_5_HZ		5
+#define RATE_10_HZ		10
+#define RATE_25_HZ		25
+#define RATE_50_HZ		50
+#define RATE_100_HZ		100
+#define RATE_200_HZ 	200
+#define RATE_250_HZ 	250
+#define RATE_500_HZ 	500
+#define RATE_1000_HZ 	1000
+
+#define MAIN_LOOP_RATE 	RATE_500_HZ
+
+#define RATE_DO_EXECUTE(RATE_HZ, TICK) ((TICK % (MAIN_LOOP_RATE / RATE_HZ)) == 0)
+
+struct Gimbal_Send_Data_t
 {
     uint8_t Header;
     uint8_t Grade;
@@ -42,20 +56,19 @@ struct gimbal_data_t
     uint8_t Tail;
 };
 
-struct usart_Data_t
+struct Usart_Data_t
 {
 	uint8_t Header;
 	uint8_t Tail;
 	uint8_t Len;
-	uint8_t State;
 	uint8_t Temp;
-	uint8_t Data[20];
-	usart_Data_t(uint8_t Len = 0, uint8_t Header = 0, uint8_t Tail = 0)
+	uint8_t Data[max(max(Serial3_Buffer_Size,Serial6_Buffer_Size),max(Serial7_Buffer_Size,Serial8_Buffer_Size))];
+	Usart_Data_t(uint8_t Len = 0, uint8_t Header = 0, uint8_t Tail = 0)
 	{
 		this->Len = Len;
 		this->Header = Header;
-		this->Tail = Tail;
-	}
+        this->Tail = Tail;
+    }
 };
 
 class correspondence_ctrl
@@ -63,24 +76,22 @@ class correspondence_ctrl
 public:
     Chassis_Ctrl_Flags_t *flag;
     Chassis_Velocity_t *velocity;
-    const Gimbal_Data_t *gimbal;
+    const Gimbal_Receive_Data_t *gimbal;
     const robo_data_t *robo;
     
     void Corres_Init(void);
     void Corres_Send(void);
     void Corres_Feedback(void);
 private:
-    gimbal_data_t Gimbal;
+    Gimbal_Send_Data_t GimbalS;
 
     void Visual_Feedback(void);
     void Chassis_Feedback(void);
 };
 
-extern usart_Data_t Usart3;
-extern usart_Data_t Usart6;
-extern usart_Data_t Usart7;
-extern usart_Data_t Usart8;
-extern void Serial3_Hook(void);
-extern void Serial6_Hook(void);
+extern Usart_Data_t Usart3;
+extern Usart_Data_t Usart6;
+extern Usart_Data_t Usart7;
+extern Usart_Data_t Usart8;
 
 #endif

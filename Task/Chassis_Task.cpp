@@ -8,7 +8,7 @@
 #include "protocol_dbus.h"
 
 Chassis_Ctrl Chassis;
-const Gimbal_Data_t *Gimbal_chassis;
+const Gimbal_Receive_Data_t *Gimbal_chassis;
 
 u8 UIsend = 0;
 //底盘速度环pid值
@@ -31,25 +31,25 @@ void Chassis_Task(void *pvParameters)
 	
 	while (1)
 	{
-		Chassis.chassis_behaviour_mode_set();
-		if (Chassis.Mode != CHASSIS_NO_MOVE)
+		Chassis.Behaviour_Mode();
+		if (Chassis.Mode == CHASSIS_NO_MOVE)
+		{
+			CAN_Cmd.Chassis.CAN_Chassis->SendData(0, 0, 0, 0);
+#if useSteering
+			CAN_Cmd.Gimbal.CAN_Gimbal->SendData(0, 0, 0, 0);
+#endif
+		}
+		else
 		{
 			Chassis.Feedback_Update();
 			Chassis.Control();
-			Chassis.chassis_control_loop();
+			Chassis.Control_loop();
 			
 			CAN_Cmd.Chassis.CAN_Chassis->SendData(Chassis.Motor[0].give_current, Chassis.Motor[1].give_current,
 				Chassis.Motor[2].give_current, Chassis.Motor[3].give_current);
 #if useSteering
 			CAN_Cmd.Gimbal.CAN_Gimbal->SendData(Chassis.Steering[0].give_current, Chassis.Steering[1].give_current,
 				Chassis.Steering[2].give_current, Chassis.Steering[3].give_current);
-#endif
-		}
-		else
-		{
-			CAN_Cmd.Chassis.CAN_Chassis->SendData(0, 0, 0, 0);
-#if useSteering
-			CAN_Cmd.Gimbal.CAN_Gimbal->SendData(0, 0, 0, 0);
 #endif
 		}
 		
@@ -129,7 +129,7 @@ void Chassis_Ctrl::Feedback_Update( void )
 #endif
 }
 //底盘行为状态设置
-void Chassis_Ctrl::chassis_behaviour_mode_set(void)
+void Chassis_Ctrl::Behaviour_Mode(void)
 {
 	if (switch_is_up(RC_Ptr->rc.s[CHANNEL_RIGHT]))
 		Flags.RC_Flag = false;
@@ -137,26 +137,22 @@ void Chassis_Ctrl::chassis_behaviour_mode_set(void)
 	//按键控制
 	if (Flags.RC_Flag == true)
 	{
-		if (read_key(&Key.C,single))
+		if (read_key(&Key.C,single,true))
 		{
 			Mode = CHASSIS_NO_MOVE;//底盘保持不动
 		}
-		if (read_key(&Key.X,single))
+		if (read_key(&Key.X,single,true))
 		{
-			if (Mode == CHASSIS_NO_MOVE||Mode == CHASSIS_FOLLOW_YAW)
+			if (Mode == CHASSIS_NO_MOVE||Mode == CHASSIS_FOLLOW_YAW||Mode == CHASSIS_LITTLE_TOP)
 			{
 				Mode = CHASSIS_NO_FOLLOW_YAW;//底盘不跟随云台			
-			}
-			else if (Mode == CHASSIS_LITTLE_TOP)
-			{
-				Mode=CHASSIS_NO_FOLLOW_YAW;//底盘不跟随云台
 			}
 			else if (Mode == CHASSIS_NO_FOLLOW_YAW)
 			{
 				Mode=CHASSIS_FOLLOW_YAW;//底盘跟随云台
 			}			
 		}
-		if (read_key(&Key.G,single))
+		if (read_key(&Key.G,single,true))
 		{//开启小陀螺
 			if (Mode != CHASSIS_LITTLE_TOP&&Mode != CHASSIS_NO_MOVE)
 			{
@@ -168,12 +164,12 @@ void Chassis_Ctrl::chassis_behaviour_mode_set(void)
 			}
 		}
 		//速度选择
-		if (read_key(&Key.shift,single))
+		if (read_key(&Key.shift,single,true))
 		{//加速  SHIFT
 			if (Velocity.Speed_Gear < 3)
 				Velocity.Speed_Gear++;
 		}
-		else if (read_key(&Key.ctrl, single))
+		else if (read_key(&Key.ctrl, single,true))
 		{//减速  CTRL
 			if (Velocity.Speed_Gear > 0)
 				Velocity.Speed_Gear--;
@@ -184,7 +180,7 @@ void Chassis_Ctrl::chassis_behaviour_mode_set(void)
 			read_key(&Key.E, single, &Flags.Predict_Flag);
 		}
 		//UI添加
-		if (read_key(&Key.B, single))
+		if (read_key(&Key.B, single,true))
 		{
 			UIsend = 10;
 			//能量机关开关
@@ -252,7 +248,7 @@ void Chassis_Ctrl::chassis_behaviour_mode_set(void)
 }
 
 //遥控器的数据处理成底盘的前进vx速度，vy速度
-void Chassis_Ctrl::chassis_rc_to_control_vector( fp32 *vx_set, fp32 *vy_set)
+void Chassis_Ctrl::RC_to_Control( fp32 *vx_set, fp32 *vy_set)
 {
 	if ( vx_set == NULL || vy_set == NULL )
 	{
@@ -262,7 +258,7 @@ void Chassis_Ctrl::chassis_rc_to_control_vector( fp32 *vx_set, fp32 *vy_set)
 	int16_t vx_channel, vy_channel;
   	fp32 vx_set_channel, vy_set_channel;
 	
-  	if( Velocity.Speed_Gear == 0 ){ 
+  	if( Velocity.Speed_Gear == 0 ){
 	  Velocity.Speed_Set[0] = 0.5;	Velocity.Speed_Set[1] = 1; Velocity.Speed_Set[2] = 1; 
 		
 	}else if( Velocity.Speed_Gear == 1 ){ 
@@ -281,22 +277,21 @@ void Chassis_Ctrl::chassis_rc_to_control_vector( fp32 *vx_set, fp32 *vy_set)
 	if( Flags.RC_Flag == false )
 	{
 		//用WDAS控制
-		if ( RC_Ptr->key.v & CHASSIS_FRONT_KEY||RC_Ptr->key.v & CHASSIS_BACK_KEY||
-			RC_Ptr->key.v & CHASSIS_LEFT_KEY ||RC_Ptr->key.v & CHASSIS_RIGHT_KEY )
+		if (read_key(&Key.W,even,false),read_key(&Key.S,even,false),read_key(&Key.A,even,false),read_key(&Key.D,even,false))
 		{
-			if (RC_Ptr->key.v & CHASSIS_FRONT_KEY)//方向可能改动
+			if (read_key(&Key.W,even,true))//方向可能改动
 			{
 				vx_set_channel = Velocity.Speed_Set[Flags.Speed_Up_Flag];
 			}
-			else if (RC_Ptr->key.v & CHASSIS_BACK_KEY)
+			else if (read_key(&Key.S,even,true))
 			{
 				vx_set_channel = -Velocity.Speed_Set[Flags.Speed_Up_Flag];
 			}
-			else if (RC_Ptr->key.v & CHASSIS_LEFT_KEY)
+			else if (read_key(&Key.A,even,true))
 			{
 				vy_set_channel = -Velocity.Speed_Set[Flags.Speed_Up_Flag];
 			}
-			else if (RC_Ptr->key.v & CHASSIS_RIGHT_KEY)
+			else if (read_key(&Key.D,even,true))
 			{
 				vy_set_channel = Velocity.Speed_Set[Flags.Speed_Up_Flag];
 			}			
@@ -333,7 +328,7 @@ void Chassis_Ctrl::chassis_rc_to_control_vector( fp32 *vx_set, fp32 *vy_set)
     *vy_set = -vy_set_channel;
 }
 
-void Chassis_Ctrl::chassis_behaviour_control_set(fp32 *vx_set, fp32 *vy_set, fp32 *angle_set)
+void Chassis_Ctrl::Behaviour_Control(fp32 *vx_set, fp32 *vy_set, fp32 *angle_set)
 {
 
 	fp32 vw_set;
@@ -346,7 +341,7 @@ void Chassis_Ctrl::chassis_behaviour_control_set(fp32 *vx_set, fp32 *vy_set, fp3
 	}
 	else if (Mode == CHASSIS_FOLLOW_YAW)//跟随云台
 	{
-		chassis_rc_to_control_vector(vx_set, vy_set);//将遥控值转换为底盘设定量
+		RC_to_Control(vx_set, vy_set);//将遥控值转换为底盘设定量
 
 		if (chassis_relative_ECD > 30)// 最大到800
 		{
@@ -364,11 +359,11 @@ void Chassis_Ctrl::chassis_behaviour_control_set(fp32 *vx_set, fp32 *vy_set, fp3
 	}
 	else if(Mode==CHASSIS_NO_FOLLOW_YAW)
 	{
-		chassis_rc_to_control_vector(vx_set, vy_set);
+		RC_to_Control(vx_set, vy_set);
 	}
 	else if (Mode == CHASSIS_LITTLE_TOP)
 	{
-		chassis_rc_to_control_vector(vx_set, vy_set);
+		RC_to_Control(vx_set, vy_set);
 
 		*angle_set = Velocity.Speed_Set[2];
 	}
@@ -379,7 +374,7 @@ void Chassis_Ctrl::Control(void)
    //设置速度
 	fp32 vx_set = 0.0f, vy_set = 0.0f, angle_set = 0.0f;
 	fp32 sin_yaw = 0.0f, cos_yaw = 0.0f;
-	chassis_behaviour_control_set(&vx_set, &vy_set, &angle_set);
+	Behaviour_Control(&vx_set, &vy_set, &angle_set);
 
    //跟随云台模式
     if (Mode == CHASSIS_FOLLOW_YAW)
@@ -434,7 +429,7 @@ void Chassis_Ctrl::Control(void)
 }
 
 
-void Chassis_Ctrl::chassis_vector_to_wheel_speed(fp32 *vx_set,fp32 *vy_set,fp32 *wz_set)
+void Chassis_Ctrl::Vector_to_Wheel_Speed(fp32 *vx_set,fp32 *vy_set,fp32 *wz_set)
 {
 
 	fp32 vx_temp = *vx_set;
@@ -481,7 +476,7 @@ void Chassis_Ctrl::chassis_vector_to_wheel_speed(fp32 *vx_set,fp32 *vy_set,fp32 
 #endif
 }
 //底盘控制计算
-void Chassis_Ctrl::chassis_control_loop(void)
+void Chassis_Ctrl::Control_loop(void)
 {
 	uint8_t i = 0;
 #if useMecanum
@@ -498,10 +493,10 @@ void Chassis_Ctrl::chassis_control_loop(void)
     }
 #elif useSteering
 	//舵轮运动分解
-	steering_behaviour_control_set(&Velocity.vx_set, &Velocity.vy_set, &Velocity.wz_set);
+	Steering_Behaviour_Control(&Velocity.vx_set, &Velocity.vy_set, &Velocity.wz_set);
 	
     //带圈数的角度及设定值运算
-	chassis_round_calc();
+	Steering_Round_Calc();
     //计算pid
     for (i = 0; i < 4; i++)
     {
@@ -559,7 +554,7 @@ void System_Reset(void)
 /*------------------------------以下舵轮专属------------------------------*/
 #if useSteering
 //根据底盘模式控制舵轮行为
-void Chassis_Ctrl::steering_mode_control_set(void)
+void Chassis_Ctrl::Steering_Mode_Control(void)
 {
 	if (Mode == CHASSIS_NO_MOVE)
 	{
@@ -579,16 +574,16 @@ void Chassis_Ctrl::steering_mode_control_set(void)
 	}
 }
 //舵轮模式控制
-void Chassis_Ctrl::steering_behaviour_control_set(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set)
+void Chassis_Ctrl::Steering_Behaviour_Control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set)
 {
 	uint8_t i = 0;
 	
-	steering_mode_control_set();
+	Steering_Mode_Control();
 	//死区限制
 	if (ABS(*vx_set) > 0.01f || ABS(*vy_set) > 0.01f || ABS(*wz_set) > 0.01f)
 	{
 		//舵轮解算
-		chassis_vector_to_wheel_speed(vx_set, vy_set, wz_set);
+		Vector_to_Wheel_Speed(vx_set, vy_set, wz_set);
 	}
 	else 
 	{
@@ -653,7 +648,7 @@ void Chassis_Ctrl::steering_behaviour_control_set(fp32 *vx_set, fp32 *vy_set, fp
 	}
 }
 //带圈数的完整角度计算
-void Chassis_Ctrl::chassis_round_calc(void)
+void Chassis_Ctrl::Steering_Round_Calc(void)
 {
     int16_t relative_angle_round=0;	
 	for(int i=0;i<4;i++)

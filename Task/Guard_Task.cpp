@@ -15,22 +15,23 @@ void Guard_Task(void *pvParameters)
     {
         Guard.Guard_Scan();
         IWDG_Feed();
-        
+
         vTaskDelay(1);
     }
 }
 //警戒任务开始
 void Guard_Ctrl::Guard_Start(void)
 {
-    Guard_Init(chassis, 100, &System_RESET);
-    // Guard_Init(UIdraw ,100, &System_RESET);
-    Guard_Init(CanData1 ,100, &System_RESET);
+    Guard_Init(CanData1, 100, &System_RESET);
     Guard_Init(CanData2, 100, &System_RESET);
     // Guard_Init(serial3 ,100, &Error_Send);
     Guard_Init(serial6, 100, &Error_Enable);
     // Guard_Init(serial7 ,100, &Error_Send);
     // Guard_Init(serial8 ,100, &Error_Send);
     // Guard_Init(RC_ctrl, 200, &System_RESET);
+    Guard_Init(chassis, 100, &System_RESET);
+    // Guard_Init(UIdraw ,100, &System_RESET);
+    Guard_Init(correspondence, 100, &System_RESET);
 }
 //警戒任务初始化
 void Guard_Ctrl::Guard_Init(ID_e Name, uint32_t MaxValue, void(*errcb)(uint8_t id))
@@ -57,7 +58,7 @@ void Guard_Ctrl::Guard_Scan(void)
     {
         if ((SG_Structure[i].Enable == 1) && (SG_Structure[i].MaxValue != 0))
         {
-            SG_Structure[i].Error=xTaskGetTickCount()-SG_Structure[i].Time;
+            SG_Structure[i].Error = xTaskGetTickCount() - SG_Structure[i].Time;
             if (SG_Structure[i].Error > SG_Structure[i].MaxValue)
             {
                 SG_Structure[i].errcallback(i);
@@ -72,21 +73,13 @@ void Guard_Ctrl::Guard_Scan(void)
 //警戒任务喂狗
 void Guard_Ctrl::Guard_Feed(ID_e *Name)
 {
-    if (Name == NULL||*Name==fault)
+    if (Name == NULL || *Name == fault)
     {
         return;
     }
-    
-    uint8_t i;
-    for (i = 0;i < GUARD_TOTAL_NUM;i++)
-    {
-        if (Guard.SG_Structure[i].Name == *Name)
-        {
-            Guard.SG_Structure[i].Enable = 1;
-            Guard.SG_Structure[i].Time = xTaskGetTickCount();
-            break;
-        }
-    }
+
+    Guard.SG_Structure[*Name].Enable = 1;
+    Guard.SG_Structure[*Name].Time = xTaskGetTickCount();
 }
 //警戒任务使能(feed中的使能只针对已运行任务)
 void Guard_Ctrl::Guard_Enable(void)
@@ -97,53 +90,46 @@ void Guard_Ctrl::Guard_Enable(void)
         Guard.SG_Structure[i].Enable = 1;
     }
 }
-//警戒任务默认回调函数
+
 void Guard_Return(uint8_t id)
 {
     return;
 }
+
 void Error_Enable(uint8_t id)
 {
     switch (id)
     {
     case serial6:
-        Error_Flag.Gimbal = 1;
-        Error_Flag.Visual = 1;
-        break;
+    Error_Flag.Gimbal = 1;
+    Error_Flag.Visual = 1;
+    break;
     case serial7:
-        Error_Flag.Judge = 1;
-        break;
+    Error_Flag.Judge = 1;
+    break;
     default:
-        break;
+    break;
     }
 }
 
-//初始化独立看门狗
-//prer:分频数:0~7(只有低3位有效!)
-//rlr:自动重装载值,0~0XFFF.
-//分频因子=4*2^prer.但最大值只能是256!
-//rlr:重装载寄存器值:低11位有效.
-//时间计算(大概):Tout=((4*2^prer)*rlr)/32 (ms).
 void IWDG_Init(uint8_t prer, uint16_t rlr)
 {
-    IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable); //使能对IWDG->PR IWDG->RLR的写
+    IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable);
 
-    IWDG_SetPrescaler(prer); //设置IWDG分频系数
+    IWDG_SetPrescaler(prer);
 
-    IWDG_SetReload(rlr);   //设置IWDG装载值
+    IWDG_SetReload(rlr);
 
-    IWDG_ReloadCounter(); //reload
+    IWDG_ReloadCounter();
 
-    IWDG_Enable();       //使能看门狗
+    IWDG_Enable();
 }
 
-//喂独立看门狗
 void IWDG_Feed(void)
 {
     IWDG_ReloadCounter();//reload
 }
 
-//寄存器软件复位
 void System_RESET(uint8_t id)
 {
     SCB->AIRCR = (uint32_t)((0x5FAUL << SCB_AIRCR_VECTKEY_Pos) |
