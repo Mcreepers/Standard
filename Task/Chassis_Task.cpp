@@ -65,6 +65,7 @@ void Chassis_Ctrl::Chassis_Init(void)
   	RC_Ptr = get_remote_control_point();
 	Gimbal_chassis = get_gimbal_data_point();
 	chassis_yaw_relative_angle=&get_gimbal_data_point()->ECD;
+	Mode=CHASSIS_NO_MOVE;
 	
 	for ( uint8_t i = 0; i < 4; i++ )
 	{

@@ -36,9 +36,9 @@ extern "C" {
 //选择遥控器控制模式下切换移动或射击
 #define MOVE_OR_SHOOT 0
 //遥控器前进摇杆（max 660）转化成车体前进速度（m/s）的比例
-#define CHASSIS_VX_RC_SEN 0.001f//0.0015f
+#define CHASSIS_VX_RC_SEN 0.002f//0.0015f
 //遥控器左右摇杆（max 660）转化成车体左右速度（m/s）的比例
-#define CHASSIS_VY_RC_SEN 0.001f//0.0015f
+#define CHASSIS_VY_RC_SEN 0.002f//0.0015f
 //跟随底盘yaw模式下，遥控器的yaw遥杆（max 660）增加到车体角度的比例
 #define CHASSIS_ANGLE_Z_RC_SEN 0.000002f
 //不跟随云台的时候 遥控器的yaw遥杆（max 660）转化成车体旋转速度的比例
@@ -104,7 +104,7 @@ extern "C" {
 #define SWING_MOVE_ANGLE 0.5f
 
 //底盘电机速度环PID
-#define M3505_MOTOR_SPEED_PID_KP 15000.0f
+#define M3505_MOTOR_SPEED_PID_KP 5000.0f
 #define M3505_MOTOR_SPEED_PID_KI 10.0f
 #define M3505_MOTOR_SPEED_PID_KD 0.0f
 #define M3505_MOTOR_SPEED_PID_MAX_OUT MAX_MOTOR_CAN_CURRENT

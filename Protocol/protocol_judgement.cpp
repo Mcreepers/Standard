@@ -82,7 +82,7 @@ void MYDMA_Enable(DMA_Stream_TypeDef *DMA_Streamx, u16 ndtr)
 
 void chassis_to_judgeui(uint16_t txlen)
 {
-	// USART_DMACmd(UART7, USART_DMAReq_Tx, ENABLE);  //使能串口8的DMA发送     
+	// USART_DMACmd(UART7, USART_DMAReq_Tx, ENABLE);  //使能串口8的DMA发送
 	// MYDMA_Enable(DMA1_Stream1, txlen);     //开始一次DMA传输！
 	u16 i = 0;
 	while(txlen--){

@@ -88,6 +88,13 @@ typedef struct
 	int last_real_position;//上次过零处理后的电机转子位置	
 }gimbal_measure_t;
 
+typedef struct
+{
+  float supercap_voltage;//电容组电压单位V
+  float supercap_energy_percent;//根据电容组电压计算出来的剩余电量百分比（以最低电压12v计算），单位%，范围1.01到100.0 //CAN接收中断回调函数∶
+  uint8_t *ptr;
+}supercap_measure_t;
+
 class Chassis_Motor_Ctrl
 {
 public:	

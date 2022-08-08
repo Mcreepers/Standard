@@ -3,6 +3,8 @@
 #include "Guard_Task.h"
 CAN_Ctrl CAN_Cmd;
 
+supercap_measure_t SuperCap;
+
 void CAN2_Hook(CanRxMsg *Rx_Message)
 {
 	switch (Rx_Message->StdId)
@@ -60,6 +62,20 @@ void CAN1_Hook(CanRxMsg *Rx_Message)
 		i = Rx_Message->StdId - CAN_6020_M1_ID;
 		//处理电机数据宏函数
 		get_motor_measure(&CAN_Cmd.Gimbal.Steering_Measure[i], Rx_Message);
+		break;
+	}
+	case 0x301:
+	{
+		SuperCap.ptr = (uint8_t *)&SuperCap.supercap_voltage;
+		SuperCap.ptr[0] = (uint8_t)((Rx_Message)->Data[0]);
+		SuperCap.ptr[1] = (uint8_t)((Rx_Message)->Data[1]);
+		SuperCap.ptr[2] = (uint8_t)((Rx_Message)->Data[2]);
+		SuperCap.ptr[3] = (uint8_t)((Rx_Message)->Data[3]);
+		SuperCap.ptr = (uint8_t *)&SuperCap.supercap_energy_percent;
+		SuperCap.ptr[0] = (uint8_t)((Rx_Message)->Data[4]);
+		SuperCap.ptr[1] = (uint8_t)((Rx_Message)->Data[5]);
+		SuperCap.ptr[2] = (uint8_t)((Rx_Message)->Data[6]);
+		SuperCap.ptr[3] = (uint8_t)((Rx_Message)->Data[7]);
 		break;
 	}
 	default:
