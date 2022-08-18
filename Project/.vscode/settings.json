@@ -1,0 +1,7 @@
+{
+    "javascript.format.insertSpaceAfterFunctionKeywordForAnonymousFunctions": false,
+    "files.associations": {
+        "exception": "cpp",
+        "xmemory": "cpp"
+    }
+}
