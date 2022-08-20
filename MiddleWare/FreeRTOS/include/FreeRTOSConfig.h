@@ -184,7 +184,7 @@
 	#define configPRIO_BITS       		4        /* 15 priority levels */
 #endif
 #define configLIBRARY_LOWEST_INTERRUPT_PRIORITY			0xf     //中断可管理的最低优先级
-#define configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY	1       //系统可管理的最高中断优先级
+#define configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY	5       //系统可管理的最高中断优先级
 #define configKERNEL_INTERRUPT_PRIORITY 		( configLIBRARY_LOWEST_INTERRUPT_PRIORITY << (8 - configPRIO_BITS) )
 #define configMAX_SYSCALL_INTERRUPT_PRIORITY 	( configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY << (8 - configPRIO_BITS) )
 	

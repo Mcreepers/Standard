@@ -925,7 +925,6 @@ UBaseType_t uxSavedInterruptStatus;
 Queue_t * const pxQueue = ( Queue_t * ) xQueue;
 
 	configASSERT( pxQueue );
-	configASSERT(( pxQueue->uxItemSize != ( UBaseType_t ) 0U ));
 	configASSERT( !( ( pvItemToQueue == NULL ) && ( pxQueue->uxItemSize != ( UBaseType_t ) 0U ) ) );
 	configASSERT( !( ( xCopyPosition == queueOVERWRITE ) && ( pxQueue->uxLength != 1 ) ) );
 

@@ -15,7 +15,7 @@ extern "C" {
 #define SERIAL_Config_Default SERIAL_8N1
 #define USART_ITPending_Default USART_IT_RXNE
 #define USART_PreemptionPriority_Default 10
-#define USART_SubPriority_Default 1
+#define USART_SubPriority_Default 0
 
 #define USART_GetWordLength(SERIAL_x)    ((uint16_t)(SERIAL_x&0xF000))
 #define USART_GetParity(SERIAL_x)        ((uint16_t)(SERIAL_x&0x0F00))
@@ -61,7 +61,7 @@ public:
     void Serial_Init( uint32_t BaudRate );
 protected:
 	  typedef void(*USART_CallbackFunction_t)(void);
-  
+   
 		USART_TypeDef *USARTx;
 		USART_CallbackFunction_t USART_Function;
     uint16_t USART_ITPending;

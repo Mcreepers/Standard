@@ -18,9 +18,6 @@
 .\objects\controllerfunctions.o: D:\study\STM32\mdk1\arm\ARM\CMSIS\5.8.0\CMSIS\DSP\Source\ControllerFunctions\arm_pid_reset_q15.c
 .\objects\controllerfunctions.o: D:\study\STM32\mdk1\arm\ARM\CMSIS\5.8.0\CMSIS\DSP\Source\ControllerFunctions\arm_pid_reset_q31.c
 .\objects\controllerfunctions.o: D:\study\STM32\mdk1\arm\ARM\CMSIS\5.8.0\CMSIS\DSP\Source\ControllerFunctions\arm_sin_cos_f32.c
-.\objects\controllerfunctions.o: ..\MiddleWare\DSP\Include\arm_common_tables.h
-.\objects\controllerfunctions.o: ..\MiddleWare\DSP\Include\arm_math.h
-.\objects\controllerfunctions.o: ..\Core\core_cm4.h
-.\objects\controllerfunctions.o: ..\Core\core_cmInstr.h
-.\objects\controllerfunctions.o: ..\Core\core_cmFunc.h
-.\objects\controllerfunctions.o: ..\Core\core_cm4_simd.h
+.\objects\controllerfunctions.o: D:\study\STM32\mdk1\arm\ARM\CMSIS\5.8.0\CMSIS\DSP\Include\arm_common_tables.h
+.\objects\controllerfunctions.o: D:\study\STM32\mdk1\arm\ARM\CMSIS\5.8.0\CMSIS\DSP\Include\dsp/fast_math_functions.h
+.\objects\controllerfunctions.o: D:\study\STM32\mdk1\arm\ARM\CMSIS\5.8.0\CMSIS\DSP\Source\ControllerFunctions\arm_sin_cos_q31.c

@@ -1,6 +1,5 @@
 #include "protocol_dbus.h"
 
-#include "Message_Task.h"
 //遥控器出错数据上限
 #define RC_CHANNAL_ERROR_VALUE 700
 
@@ -110,14 +109,9 @@ extern"C"
 							DMA_Cmd(DMA2_Stream2, ENABLE);
 							if(this_time_rx_len == RC_FRAME_LENGTH)
 							{
-								SBUS_TO_RC(SBUS_rx_buf[0], &rc_ctrl);
-                                Message_Data.Data_ID = RC_ctrl;
-                                //发送消息更新按键
-                                if(xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID=RC_ctrl), 0))
-								{
-									Message_Data.Data_Ptr[RC_ctrl] = &rc_ctrl;
-								}
-                            }
+									//处理遥控器数据
+									SBUS_TO_RC(SBUS_rx_buf[0], &rc_ctrl);
+							}
 					}
 					else
 					{
@@ -131,12 +125,8 @@ extern"C"
 							DMA_Cmd(DMA2_Stream2, ENABLE);
 							if(this_time_rx_len == RC_FRAME_LENGTH)
 							{
-								SBUS_TO_RC(SBUS_rx_buf[1], &rc_ctrl);
-                                //发送消息更新按键
-                                if(xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID=RC_ctrl), 0))
-								{
-									Message_Data.Data_Ptr[RC_ctrl] = &rc_ctrl;
-								}
+									//处理遥控器数据
+									SBUS_TO_RC(SBUS_rx_buf[1], &rc_ctrl);			
 							}
 					}
 			}

@@ -38,23 +38,12 @@ extern "C" {
 #include "stdlib.h"
 #include "stdbool.h"
 
-#define useMecanum 0
-#define useSteering 1
-#if useMecanum&&useSteering
-#error "不能同时使用麦克纳姆轮和舵轮"
-#elif !(useMecanum||useSteering)
-#error "不能不选择运动逻辑"
-#endif
-
 #define PI 3.1415926535897932384626433832795f
 #define HALF_PI 1.5707963267948966192313216916398f
 #define TWO_PI 6.283185307179586476925286766559f
 #define DEG_TO_RAD 0.017453292519943295769236907684886f
 #define RAD_TO_DEG 57.295779513082320876798154814105f
 #define EULER 2.718281828459045235360287471352f
-#define PI_TO_ECD 1303.7972938088065906186957895476f
-#define ECD_TO_PI 0.00076699039394282061485904379474597f
-#define sin45 0.70710678118654752440084436210485f
 
 #define SERIAL  0x0
 #define DISPLAY 0x1
@@ -126,6 +115,7 @@ void shiftOut(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint8_t value
 uint32_t shiftIn(uint8_t dataPin, uint8_t clockPin, uint32_t bitOrder);
 uint32_t pulseIn(uint32_t Pin, uint32_t State, uint32_t Timeout);
 
-template<typename T> T fmap(T x, T in_min, T in_max, T out_min, T out_max);
+long map(long x, long in_min, long in_max, long out_min, long out_max);
+double fmap(double x, double in_min, double in_max, double out_min, double out_max);
 
 #endif /* __DEV_SYSTEM_H */

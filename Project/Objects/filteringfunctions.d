@@ -107,9 +107,11 @@
 .\objects\filteringfunctions.o: D:\study\STM32\mdk1\arm\ARM\CMSIS\5.8.0\CMSIS\DSP\Source\FilteringFunctions\arm_lms_norm_f32.c
 .\objects\filteringfunctions.o: D:\study\STM32\mdk1\arm\ARM\CMSIS\5.8.0\CMSIS\DSP\Source\FilteringFunctions\arm_lms_norm_init_f32.c
 .\objects\filteringfunctions.o: D:\study\STM32\mdk1\arm\ARM\CMSIS\5.8.0\CMSIS\DSP\Source\FilteringFunctions\arm_lms_norm_init_q15.c
-.\objects\filteringfunctions.o: ..\MiddleWare\DSP\Include\arm_common_tables.h
-.\objects\filteringfunctions.o: ..\MiddleWare\DSP\Include\arm_math.h
-.\objects\filteringfunctions.o: ..\Core\core_cm4.h
-.\objects\filteringfunctions.o: ..\Core\core_cmInstr.h
-.\objects\filteringfunctions.o: ..\Core\core_cmFunc.h
-.\objects\filteringfunctions.o: ..\Core\core_cm4_simd.h
+.\objects\filteringfunctions.o: D:\study\STM32\mdk1\arm\ARM\CMSIS\5.8.0\CMSIS\DSP\Include\arm_common_tables.h
+.\objects\filteringfunctions.o: D:\study\STM32\mdk1\arm\ARM\CMSIS\5.8.0\CMSIS\DSP\Source\FilteringFunctions\arm_lms_norm_init_q31.c
+.\objects\filteringfunctions.o: D:\study\STM32\mdk1\arm\ARM\CMSIS\5.8.0\CMSIS\DSP\Source\FilteringFunctions\arm_lms_norm_q15.c
+.\objects\filteringfunctions.o: D:\study\STM32\mdk1\arm\ARM\CMSIS\5.8.0\CMSIS\DSP\Source\FilteringFunctions\arm_lms_norm_q31.c
+.\objects\filteringfunctions.o: D:\study\STM32\mdk1\arm\ARM\CMSIS\5.8.0\CMSIS\DSP\Source\FilteringFunctions\arm_lms_q15.c
+.\objects\filteringfunctions.o: D:\study\STM32\mdk1\arm\ARM\CMSIS\5.8.0\CMSIS\DSP\Source\FilteringFunctions\arm_lms_q31.c
+.\objects\filteringfunctions.o: D:\study\STM32\mdk1\arm\ARM\CMSIS\5.8.0\CMSIS\DSP\Source\FilteringFunctions\arm_levinson_durbin_f32.c
+.\objects\filteringfunctions.o: D:\study\STM32\mdk1\arm\ARM\CMSIS\5.8.0\CMSIS\DSP\Source\FilteringFunctions\arm_levinson_durbin_q31.c

@@ -85,14 +85,13 @@ typedef __packed struct
 } RC_ctrl_t;
 
 /* ----------------------- Internal Data ----------------------------------- */
-extern RC_ctrl_t rc_ctrl;
-extern uint8_t SBUS_rx_buf[2][SBUS_RX_BUF_NUM];
+
 extern void remote_control_init(void);
 extern const RC_ctrl_t *get_remote_control_point(void);
 extern uint8_t RC_data_is_error(void);
 extern void slove_RC_lost(void);
 extern void slove_data_error(void);
-extern void SBUS_TO_RC(volatile const uint8_t *sbus_buf, RC_ctrl_t *rc_ctrl);
+	
 #ifdef __cplusplus
 }
 #endif

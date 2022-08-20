@@ -51,12 +51,6 @@ typedef enum
     CAN_3508_M3_ID = 0x203,
     CAN_3508_M4_ID = 0x204,
 	
-  	CAN_steering_ALL_ID = 0x1FF,
-    CAN_6020_M1_ID = 0x205,
-    CAN_6020_M2_ID = 0x206,
-    CAN_6020_M3_ID = 0x207,
-    CAN_6020_M4_ID = 0x208,
-
     CAN_YAW_MOTOR_ID = 0x205,
     CAN_FRIC_MOTOR_ID = 0x202,
     CAN_GIMBAL_ALL_ID = 0x1FF,
@@ -88,13 +82,6 @@ typedef struct
 	int last_real_position;//上次过零处理后的电机转子位置	
 }gimbal_measure_t;
 
-typedef struct
-{
-  float supercap_voltage;//电容组电压单位V
-  float supercap_energy_percent;//根据电容组电压计算出来的剩余电量百分比（以最低电压12v计算），单位%，范围1.01到100.0 //CAN接收中断回调函数∶
-  uint8_t *ptr;
-}supercap_measure_t;
-
 class Chassis_Motor_Ctrl
 {
 public:	
@@ -107,31 +94,19 @@ public:
 	  return &Chassis_Measure[(i & 0x03)];
 	}
 };
-//舵轮中使用云台电机处理函数平替舵向电机
+
 class Gimbal_Motor_Ctrl
 {
-#if useSteering
-  public:
-    CANctrl *CAN_Gimbal;
-    motor_measure_t Steering_Measure[Chassis_Motor_Numbers];
-
-    Gimbal_Motor_Ctrl() : CAN_Gimbal( &CAN_Gimbal_CAN ){}
-    const motor_measure_t *Get_Motor_Measure_Pointer( uint8_t i )
-    {
-      return &Steering_Measure[(i & 0x03)];
-    }
-#else
-  public:
-    CANctrl *CAN_Gimbal;
-    motor_measure_t Yaw_Measure;
-    //  motor_measure_t Motor_Pitch;
-    
-    Gimbal_Motor_Ctrl() : CAN_Gimbal( &CAN_Gimbal_CAN ){}
-    const motor_measure_t *Get_Motor_Measure_Pointer( void )
-    {
-      return &Yaw_Measure;
-    }
-#endif
+public:
+  CANctrl *CAN_Gimbal;
+	motor_measure_t Yaw_Measure;
+  //  motor_measure_t Motor_Pitch;
+	
+  Gimbal_Motor_Ctrl() : CAN_Gimbal( &CAN_Gimbal_CAN ){}
+  const motor_measure_t *Get_Motor_Measure_Pointer( void )
+	{
+	  return &Yaw_Measure;
+	}
 };
 
 class Fric_Motor_Ctrl
@@ -184,9 +159,5 @@ public:
 void CAN_ALL_Init( void );
 
 extern CAN_Ctrl CAN_Cmd;
-extern void CAN1_Hook(CanRxMsg *Rx_Message);
-extern void CAN2_Hook(CanRxMsg *Rx_Message);
-extern void CAN1_Send(CanRxMsg *Rx_Message);
-extern void CAN2_Send(CanRxMsg *Rx_Message);
 
 #endif /* __APP_MOTOR_H */

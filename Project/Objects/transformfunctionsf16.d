@@ -25,5 +25,4 @@
 .\objects\transformfunctionsf16.o: D:\study\STM32\mdk1\arm\ARM\CMSIS\5.8.0\CMSIS\DSP\Source\TransformFunctions\arm_cfft_radix8_f16.c
 .\objects\transformfunctionsf16.o: D:\study\STM32\mdk1\arm\ARM\CMSIS\5.8.0\CMSIS\DSP\Source\TransformFunctions\arm_bitreversal_f16.c
 .\objects\transformfunctionsf16.o: D:\study\STM32\mdk1\arm\ARM\CMSIS\5.8.0\CMSIS\DSP\Source\TransformFunctions\arm_cfft_radix2_init_f16.c
-.\objects\transformfunctionsf16.o: ..\MiddleWare\DSP\Include\arm_common_tables.h
 .\objects\transformfunctionsf16.o: D:\study\STM32\mdk1\arm\ARM\CMSIS\5.8.0\CMSIS\DSP\Source\TransformFunctions\arm_cfft_radix4_init_f16.c

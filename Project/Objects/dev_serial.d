@@ -59,15 +59,3 @@
 .\objects\dev_serial.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\dev_serial.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\string.h
 .\objects\dev_serial.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\dev_serial.o: ..\Task\Inc\Message_Task.h
-.\objects\dev_serial.o: ..\Device\Inc\dev_system.h
-.\objects\dev_serial.o: ..\Device\Inc\device.h
-.\objects\dev_serial.o: ..\Device\Inc\dev_can.h
-.\objects\dev_serial.o: ..\ModuleDrivers\Inc\drivers_can.h
-.\objects\dev_serial.o: ..\ModuleDrivers\Inc\drivers_remote.h
-.\objects\dev_serial.o: ..\ModuleDrivers\Inc\drivers_led.h
-.\objects\dev_serial.o: ..\ModuleDrivers\Inc\drivers_dma.h
-.\objects\dev_serial.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdbool.h
-.\objects\dev_serial.o: ..\MiddleWare\FreeRTOS\include\queue.h
-.\objects\dev_serial.o: ..\Protocol\Inc\protocol_dbus.h
-.\objects\dev_serial.o: ..\Protocol\Inc\protocol_judgement.h

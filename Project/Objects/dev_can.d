@@ -68,6 +68,3 @@
 .\objects\dev_can.o: ..\ModuleDrivers\Inc\drivers_led.h
 .\objects\dev_can.o: ..\ModuleDrivers\Inc\drivers_dma.h
 .\objects\dev_can.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdbool.h
-.\objects\dev_can.o: ..\MiddleWare\FreeRTOS\include\queue.h
-.\objects\dev_can.o: ..\Task\Inc\Message_Task.h
-.\objects\dev_can.o: ..\Protocol\Inc\protocol_dbus.h

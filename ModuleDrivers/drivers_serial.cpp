@@ -56,7 +56,7 @@ void Serialdev::Serial_Init( uint32_t BaudRate, SERIAL_Config Config, uint8_t Pr
         GPIOx = GPIOD;
         GPIO_AF_USARTx = GPIO_AF_USART3;
         RCC_AHB1Periph_GPIOx = RCC_AHB1Periph_GPIOD;
-        RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
+        RCC_APB2PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
 #if defined (STM32F40_41xxx) || defined (STM32F427_437xx) || defined (STM32F429_439xx)
         ItChannel = USART3_IRQn;
 #endif
@@ -68,7 +68,7 @@ void Serialdev::Serial_Init( uint32_t BaudRate, SERIAL_Config Config, uint8_t Pr
         GPIOx = GPIOG;
         GPIO_AF_USARTx = GPIO_AF_USART6;
         RCC_AHB1Periph_GPIOx = RCC_AHB1Periph_GPIOG;
-        RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART6, ENABLE);
+        RCC_APB1PeriphClockCmd(RCC_APB2Periph_USART6, ENABLE);
         ItChannel = USART6_IRQn;
     }
     else if(USARTx == UART7)
@@ -79,9 +79,8 @@ void Serialdev::Serial_Init( uint32_t BaudRate, SERIAL_Config Config, uint8_t Pr
         GPIO_AF_USARTx = GPIO_AF_UART7;
         RCC_AHB1Periph_GPIOx = RCC_AHB1Periph_GPIOE;
         RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART7, ENABLE);
-        ItChannel = UART7_IRQn;
-	}
-	else if(USARTx == UART8)
+    }
+		else if(USARTx == UART8)
     {
         Tx_Pin = GPIO_Pin_1;
         Rx_Pin = GPIO_Pin_0;

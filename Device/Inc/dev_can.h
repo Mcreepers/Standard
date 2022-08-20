@@ -25,9 +25,7 @@ public:
 	void SendData( int16_t data1, int16_t data2 );
 	void SendData( int16_t data1 );
 
-	void IRQHandler(void);
-	
-	CanRxMsg Rx_Message;
+	void IRQHandler( void );
 private:
 	uint32_t StdId;
 };

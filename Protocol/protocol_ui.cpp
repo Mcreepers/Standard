@@ -19,15 +19,15 @@ char* Char_Splicing(char * dest,char * src)
 	
 	while(* dest!='\0')      
 	{                        
-		dest++;
+		dest++;             
 	}
-	* dest = *src;
+	* dest = *src;           
 	while(* src != '\0')     
 	{
 		* dest++ = *src++;    
 	
 	}
-		*src++ = '\0';
+		*src++ = '\0';       
 	return ret;	
 
 }
@@ -113,7 +113,7 @@ void Graph_Painter(char name[3], uint32_t Operate_tpye, uint32_t Graphic_tpye, u
 	
 	Append_CRC16_Check_Sum((uint8_t*)&graph_data_struct,sizeof(graph_data_struct));    
 	memcpy(&tx7_buf[0], (uint8_t *)&graph_data_struct, sizeof(graph_data_struct));
-  	Usart_SendBuff((uint8_t *)&tx7_buf,sizeof(graph_data_struct));
+  Usart_SendBuff((uint8_t *)&tx7_buf,sizeof(graph_data_struct));
 	
 	memcpy(tx7_buf,"\0", sizeof(tx7_buf));
 	memset(&graph_data_struct,0,sizeof(graph_data_struct));
@@ -193,46 +193,16 @@ void Char_Painter(char name[3], char msg[], uint32_t Operate_tpye, uint16_t Send
 			UI_Seq = 0x07;
 			break;
 		}
-		case Type_Flag_Predict:
+		case Type_Flag_Chassis_Speed:
 		{
-			strcpy(tx7_instruction_buf,"predict:");	
+			strcpy(tx7_instruction_buf,"Speed:");	
 			Char_Splicing(tx7_instruction_buf, msg);
-			for(i=7+sizeof(msg);i<30;i++)
+			for(i=5+sizeof(msg);i<30;i++)
 					tx7_instruction_buf[i]=' ';
 			memcpy((void *)&char_data_struct.data,(void *)&tx7_instruction_buf, sizeof(tx7_instruction_buf));
-			UI_Seq = 0x0c;
+			UI_Seq = 0x08;
 			break;
-		}		
-		case Type_Flag_Energy:
-		{
-			strcpy(tx7_instruction_buf,"energy:");	
-			Char_Splicing(tx7_instruction_buf, msg);
-			for(i=6+sizeof(msg);i<30;i++)
-					tx7_instruction_buf[i]=' ';
-			memcpy((void *)&char_data_struct.data,(void *)&tx7_instruction_buf, sizeof(tx7_instruction_buf));
-			UI_Seq = 0x0d;
-			break;
-		}		
-		case Type_Flag_Speed_up:
-		{
-			strcpy(tx7_instruction_buf,"power");	
-			Char_Splicing(tx7_instruction_buf, msg);
-			for(i=1+sizeof(msg);i<30;i++)
-					tx7_instruction_buf[i]=' ';
-			memcpy((void *)&char_data_struct.data,(void *)&tx7_instruction_buf, sizeof(tx7_instruction_buf));
-			UI_Seq = 0x0e;
-			break;
-		}		
-		case Type_Flag_Buff:
-		{
-			strcpy(tx7_instruction_buf,"Buff:");	
-			Char_Splicing(tx7_instruction_buf, msg);
-			for(i=2+sizeof(msg);i<30;i++)
-					tx7_instruction_buf[i]=' ';
-			memcpy((void *)&char_data_struct.data,(void *)&tx7_instruction_buf, sizeof(tx7_instruction_buf));
-			UI_Seq = 0x0e;
-			break;
-		}		
+		}
 		default: break;
 	}
 	
@@ -248,7 +218,7 @@ void Char_Painter(char name[3], char msg[], uint32_t Operate_tpye, uint16_t Send
 	char_data_struct.CharUI_header_id.sender_ID   = Sender_ID;		 
 	char_data_struct.CharUI_header_id.receiver_ID = Receiver_ID;    
 	
- 	for(src=0;src<3&&name[src]!='\0';src++)
+  for(src=0;src<3&&name[src]!='\0';src++)
       char_data_struct.char_data.graphic_name[2-src]=name[src];
 	
 	char_data_struct.char_data.operate_tpye = Operate_tpye;
@@ -266,7 +236,7 @@ void Char_Painter(char name[3], char msg[], uint32_t Operate_tpye, uint16_t Send
 	
 	Append_CRC16_Check_Sum((uint8_t*)&char_data_struct,sizeof(char_data_struct));    
 	memcpy(&tx7_buf[0], (uint8_t *)&char_data_struct, sizeof(char_data_struct));
-  	Usart_SendBuff((uint8_t *)&tx7_buf,sizeof(char_data_struct));
+  Usart_SendBuff((uint8_t *)&tx7_buf,sizeof(char_data_struct));
 	
 	memcpy(tx7_buf,"\0", sizeof(tx7_buf));
 	memset(&char_data_struct,0,sizeof(char_data_struct));
@@ -278,7 +248,7 @@ void Num_Painter(char name[3], uint32_t Operate_tpye, uint32_t Graphic_tpye,
 {
 	uint8_t src;
 	
-	switch(Graphic_tpye)
+		switch(Graphic_tpye)
 	{
 		case UI_Graph_Int:
 		{
@@ -453,7 +423,7 @@ void UI_Map(uint16_t Target_Robot_ID,float Target_Position_x,float Target_Positi
 	
 	Append_CRC16_Check_Sum((uint8_t*)&map_data_struct,sizeof(map_data_struct));    
 	memcpy(&map_buf[0], (uint8_t *)&map_data_struct, sizeof(map_data_struct));
-  	Usart_SendBuff((uint8_t *)&map_buf,sizeof(map_data_struct));
+  Usart_SendBuff((uint8_t *)&map_buf,sizeof(map_data_struct));
 	
 	memcpy(map_buf,"\0", sizeof(map_buf));
 	memset(&map_data_struct,0, sizeof(map_data_struct));

@@ -1,9 +1,7 @@
 #include "dev_can.h"
 #include "app_motor.h"
-#include "queue.h"
-#include "Message_Task.h"
 
-CANctrl CAN1_Ctrl(CAN1, CAN_GIMBAL_ALL_ID);
+CANctrl CAN1_Ctrl( CAN1, CAN_GIMBAL_ALL_ID  );
 CANctrl CAN2_Ctrl( CAN2, CAN_CHASSIS_ALL_ID );
 
 void CANctrl::attachInterrupt( CAN_CallbackFunction_t Function )
@@ -77,25 +75,27 @@ void CANctrl::SendData( int16_t data1 )
 
 void CANctrl::IRQHandler( void )
 {
+    static CanRxMsg Rx_Message;
+
     if (CAN_GetITStatus(CANx, CAN_IT_FMP0) != RESET)
     {
         CAN_ClearITPendingBit( CANx, CAN_IT_FMP0 );
-        CAN_Receive(CANx, CAN_FIFO0, &Rx_Message);
+        CAN_Receive( CANx, CAN_FIFO0, &Rx_Message );
         if( CAN_Function )
-        {
-            CAN_Function(&Rx_Message);
-        }
+				{
+				   CAN_Function( &Rx_Message );
+				}
     }
 }
 
 extern"C"
 {
-	void CAN1_RX0_IRQHandler(void)
+    void CAN1_RX0_IRQHandler(void)
     {
-        CAN1_Ctrl.IRQHandler();
+      CAN1_Ctrl.IRQHandler();
     }
     void CAN2_RX0_IRQHandler(void)
     {
-        CAN2_Ctrl.IRQHandler();
-    }
+      CAN2_Ctrl.IRQHandler();
+    }	
 }
