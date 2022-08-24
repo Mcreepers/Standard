@@ -100,44 +100,48 @@ extern"C"
 
 					if(DMA_GetCurrentMemoryTarget(DMA2_Stream2) == 0)
 					{
-							//重新设置DMA
-							DMA_Cmd(DMA2_Stream2, DISABLE);
-							this_time_rx_len = SBUS_RX_BUF_NUM - DMA_GetCurrDataCounter(DMA2_Stream2);
-							DMA_SetCurrDataCounter(DMA2_Stream2, SBUS_RX_BUF_NUM);
-							DMA2_Stream2->CR |= DMA_SxCR_CT;
-							//清DMA中断标志
-							DMA_ClearFlag(DMA2_Stream2, DMA_FLAG_TCIF2 | DMA_FLAG_HTIF2);
-							DMA_Cmd(DMA2_Stream2, ENABLE);
-							if(this_time_rx_len == RC_FRAME_LENGTH)
+						//重新设置DMA
+						DMA_Cmd(DMA2_Stream2, DISABLE);
+						this_time_rx_len = SBUS_RX_BUF_NUM - DMA_GetCurrDataCounter(DMA2_Stream2);
+						DMA_SetCurrDataCounter(DMA2_Stream2, SBUS_RX_BUF_NUM);
+						DMA2_Stream2->CR |= DMA_SxCR_CT;
+						//清DMA中断标志
+						DMA_ClearFlag(DMA2_Stream2, DMA_FLAG_TCIF2 | DMA_FLAG_HTIF2);
+						DMA_Cmd(DMA2_Stream2, ENABLE);
+						if(this_time_rx_len == RC_FRAME_LENGTH)
+						{
+							SBUS_TO_RC(SBUS_rx_buf[0], &rc_ctrl);
+							Message_Data.Data_ID = RC_ctrl;
+							//发送消息更新按键
+							BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+							if(xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID=RC_ctrl), &xHigherPriorityTaskWoken))
 							{
-								SBUS_TO_RC(SBUS_rx_buf[0], &rc_ctrl);
-                                Message_Data.Data_ID = RC_ctrl;
-                                //发送消息更新按键
-                                if(xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID=RC_ctrl), 0))
-								{
-									Message_Data.Data_Ptr[RC_ctrl] = &rc_ctrl;
-								}
-                            }
+								Message_Data.Data_Ptr[RC_ctrl] = &rc_ctrl;
+							}
+							portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+						}
 					}
 					else
 					{
-							//重新设置DMA
-							DMA_Cmd(DMA2_Stream2, DISABLE);
-							this_time_rx_len = SBUS_RX_BUF_NUM - DMA_GetCurrDataCounter(DMA2_Stream2);
-							DMA_SetCurrDataCounter(DMA2_Stream2, SBUS_RX_BUF_NUM);
-							DMA2_Stream2->CR &= ~(DMA_SxCR_CT);
-							//清DMA中断标志
-							DMA_ClearFlag(DMA2_Stream2, DMA_FLAG_TCIF2 | DMA_FLAG_HTIF2);
-							DMA_Cmd(DMA2_Stream2, ENABLE);
-							if(this_time_rx_len == RC_FRAME_LENGTH)
+						//重新设置DMA
+						DMA_Cmd(DMA2_Stream2, DISABLE);
+						this_time_rx_len = SBUS_RX_BUF_NUM - DMA_GetCurrDataCounter(DMA2_Stream2);
+						DMA_SetCurrDataCounter(DMA2_Stream2, SBUS_RX_BUF_NUM);
+						DMA2_Stream2->CR &= ~(DMA_SxCR_CT);
+						//清DMA中断标志
+						DMA_ClearFlag(DMA2_Stream2, DMA_FLAG_TCIF2 | DMA_FLAG_HTIF2);
+						DMA_Cmd(DMA2_Stream2, ENABLE);
+						if(this_time_rx_len == RC_FRAME_LENGTH)
+						{
+							SBUS_TO_RC(SBUS_rx_buf[1], &rc_ctrl);
+							//发送消息更新按键
+							BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+							if(xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID=RC_ctrl), &xHigherPriorityTaskWoken))
 							{
-								SBUS_TO_RC(SBUS_rx_buf[1], &rc_ctrl);
-                                //发送消息更新按键
-                                if(xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID=RC_ctrl), 0))
-								{
-									Message_Data.Data_Ptr[RC_ctrl] = &rc_ctrl;
-								}
+								Message_Data.Data_Ptr[RC_ctrl] = &rc_ctrl;
 							}
+							portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+						}
 					}
 			}
 			/* 退出临界段 */

@@ -136,7 +136,7 @@ void Chassis_Ctrl::Behaviour_Mode(void)
 		Flags.RC_Flag = false;
 	else Flags.RC_Flag = true;
 	//按键控制
-	if (Flags.RC_Flag == true)
+	if (Flags.RC_Flag == false)
 	{
 		if (read_key(&Key.C,single,true))
 		{
@@ -223,7 +223,10 @@ void Chassis_Ctrl::Behaviour_Mode(void)
 		Mode = CHASSIS_LITTLE_TOP;
 	}
 #else
-	else Mode = CHASSIS_NO_FOLLOW_YAW;
+	else if(switch_is_mid(RC_Ptr->rc.s[CHANNEL_RIGHT]))
+	{
+		Mode = CHASSIS_NO_FOLLOW_YAW;
+	}
 	if (switch_is_mid(RC_Ptr->rc.s[CHANNEL_RIGHT]) && switch_is_down(RC_Ptr->rc.s[CHANNEL_LEFT]))
 	{
 		Flags.Shoot_Flag=0;
@@ -256,8 +259,8 @@ void Chassis_Ctrl::RC_to_Control( fp32 *vx_set, fp32 *vy_set)
 			return;
 	}
 	//遥控器原始通道值
-	int16_t vx_channel, vy_channel;
-  	fp32 vx_set_channel, vy_set_channel;
+	static int16_t vx_channel, vy_channel;
+  	static fp32 vx_set_channel, vy_set_channel;
 	
   	if( Velocity.Speed_Gear == 0 ){
 	  Velocity.Speed_Set[0] = 0.5;	Velocity.Speed_Set[1] = 1; Velocity.Speed_Set[2] = 1; 
@@ -278,24 +281,25 @@ void Chassis_Ctrl::RC_to_Control( fp32 *vx_set, fp32 *vy_set)
 	if( Flags.RC_Flag == false )
 	{
 		//用WDAS控制
-		if (read_key(&Key.W,even,false),read_key(&Key.S,even,false),read_key(&Key.A,even,false),read_key(&Key.D,even,false))
+		if (Chassis.RC_Ptr->key.v & KEY_PRESSED_OFFSET_W||Chassis.RC_Ptr->key.v & KEY_PRESSED_OFFSET_S
+			||Chassis.RC_Ptr->key.v & KEY_PRESSED_OFFSET_A||Chassis.RC_Ptr->key.v & KEY_PRESSED_OFFSET_D)
 		{
-			if (read_key(&Key.W,even,true))//方向可能改动
+			if(Chassis.RC_Ptr->key.v & KEY_PRESSED_OFFSET_W)
 			{
 				vx_set_channel = Velocity.Speed_Set[Flags.Speed_Up_Flag];
 			}
-			else if (read_key(&Key.S,even,true))
+			if(Chassis.RC_Ptr->key.v & KEY_PRESSED_OFFSET_S)
 			{
 				vx_set_channel = -Velocity.Speed_Set[Flags.Speed_Up_Flag];
 			}
-			else if (read_key(&Key.A,even,true))
+			if(Chassis.RC_Ptr->key.v & KEY_PRESSED_OFFSET_A)
 			{
 				vy_set_channel = -Velocity.Speed_Set[Flags.Speed_Up_Flag];
 			}
-			else if (read_key(&Key.D,even,true))
+			if(Chassis.RC_Ptr->key.v & KEY_PRESSED_OFFSET_D)
 			{
 				vy_set_channel = Velocity.Speed_Set[Flags.Speed_Up_Flag];
-			}			
+			}
 		}
 		else//无WSAD输入则一直静止
 		{
@@ -306,11 +310,11 @@ void Chassis_Ctrl::RC_to_Control( fp32 *vx_set, fp32 *vy_set)
 	else
 	{
 		//将遥控器的数据处理死区 int16_t yaw_channel,pitch_channel
-		rc_deadline_limit( RC_Ptr->rc.ch[CHASSIS_Y_CHANNEL], vy_channel, CHASSIS_RC_DEADLINE  );
 		rc_deadline_limit( RC_Ptr->rc.ch[CHASSIS_X_CHANNEL], vx_channel, CHASSIS_RC_DEADLINE  );
+		rc_deadline_limit( RC_Ptr->rc.ch[CHASSIS_Y_CHANNEL], vy_channel, CHASSIS_RC_DEADLINE  );
  
 		vx_set_channel = vx_channel * CHASSIS_VX_RC_SEN;
-		vy_set_channel = vy_channel * CHASSIS_VY_RC_SEN ;
+		vy_set_channel = vy_channel * CHASSIS_VY_RC_SEN;
 	}
 		 
 		
@@ -447,27 +451,21 @@ void Chassis_Ctrl::Vector_to_Wheel_Speed(fp32 *vx_set,fp32 *vy_set,fp32 *wz_set)
 	fp32 wheel_speed[4], wheel_angle[4];
 	fp32 vx_mid[2],vy_mid[2];
 	fp32 vz_mid = sin45 * wz_temp;
-	
-	if (vx_temp != 0 && vy_temp != 0)
-	{
-		vx_temp *=  0.7f;
-		vy_temp *=  0.7f;
-	}
-	
+		
 	vx_mid[0] = vx_temp - vz_mid;
 	vx_mid[1] = vx_temp + vz_mid;
 	vy_mid[0] = vy_temp - vz_mid;
 	vy_mid[1] = vy_temp + vz_mid;
 	
-	wheel_speed[0] = sq(sq(vx_mid[0]) + sq(vy_mid[0]));
-	wheel_speed[1] = sq(sq(vx_mid[1]) + sq(vy_mid[0]));
-	wheel_speed[2] = sq(sq(vx_mid[1]) + sq(vy_mid[1]));
-	wheel_speed[3] = sq(sq(vx_mid[0]) + sq(vy_mid[1]));
+	wheel_speed[0] = sqrt(sq(vx_mid[0]) + sq(vy_mid[0]));
+	wheel_speed[1] = sqrt(sq(vx_mid[1]) + sq(vy_mid[0]));
+	wheel_speed[2] = sqrt(sq(vx_mid[1]) + sq(vy_mid[1]));
+	wheel_speed[3] = sqrt(sq(vx_mid[0]) + sq(vy_mid[1]));
 	
-	wheel_angle[0] = atan2(vy_mid[1], vx_mid[0]);
-	wheel_angle[1] = atan2(vy_mid[0], vx_mid[0]);
-	wheel_angle[2] = atan2(vy_mid[0], vx_mid[1]);
-	wheel_angle[3] = atan2(vy_mid[1], vx_mid[1]);
+	wheel_angle[0] = atan2f(vy_mid[1], vx_mid[0]);
+	wheel_angle[1] = atan2f(vy_mid[0], vx_mid[0]);
+	wheel_angle[2] = atan2f(vy_mid[0], vx_mid[1]);
+	wheel_angle[3] = atan2f(vy_mid[1], vx_mid[1]);
 
 	for(i=0;i<4;i++)
 	{		
@@ -481,7 +479,7 @@ void Chassis_Ctrl::Control_loop(void)
 {
 	uint8_t i = 0;
 #if useMecanum
-	chassis_vector_to_wheel_speed(&Velocity.vx_set, &Velocity.vy_set, &Velocity.wz_set);
+	Vector_to_Wheel_Speed(&Velocity.vx_set, &Velocity.vy_set, &Velocity.wz_set);
     //计算pid
     for (i = 0; i < 4; i++)
     {
@@ -602,7 +600,7 @@ void Chassis_Ctrl::Steering_Behaviour_Control(fp32 *vx_set, fp32 *vy_set, fp32 *
 	{
 	case STEERING_STOP:
 		for (i = 0;i < 4;i++){
-			Steering[i].data.angle_set = Steering[i].data.angle;
+			Steering[i].data.angle_set = Steering[i].data.angle_set_last;
 			Motor[i].speed_set = 0;	
 		}
 		break;
