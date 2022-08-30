@@ -20,7 +20,7 @@ void SoftWareInit(void)
 	Serial3.Serial_Init(115200);
 	Serial8.Serial_Init( 115200, SERIAL_8N1 );
 	Serial6.Serial_Init(115200, 6, 2);
-	Serial7.Serial_Init( 115200, SERIAL_8N1, 6, 2 ); //哪种初始化方式都可以
+//	Serial7.Serial_Init( 115200, SERIAL_8N1, 6, 2 ); //哪种初始化方式都可以
 //Serial7.Serial_Init( 115200, 6,2);
 	for (uint8_t i = POWER1_CTRL_SWITCH; i < POWER4_CTRL_SWITCH + 1; i++)
 	{

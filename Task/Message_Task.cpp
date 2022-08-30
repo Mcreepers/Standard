@@ -144,14 +144,14 @@ bool rc_key_c::read_key_single(count_num_key *temp_count)
 //按键长按赋值
 bool rc_key_c::read_key_even(count_num_key *temp_count,bool *temp_bool)
 {
-    if ((temp_count->key_flag == 1)&&*temp_bool==0)
-    {
-        *temp_bool = true;
-    }
-    else if ((temp_count->key_flag == 1)&&*temp_bool==1)
-    {
-        *temp_bool = false;
-    }
+	if (temp_count->key_flag == 1)
+	{
+		*temp_bool = true;
+	}
+	else if (temp_count->key_flag == 0)
+	{
+		*temp_bool = false;
+	}
 	return *temp_bool;
 }
 //按键长按
@@ -209,82 +209,82 @@ bool rc_key_c::read_key(count_num_key *temp_count, key_count_e mode, bool *temp_
 //更新按键
 void rc_key_c::rc_key_v_set(RC_ctrl_t *RC)
 {
-	if (RC->key.v == KEY_PRESSED_OFFSET_W){
+	if (RC->key.v  &  KEY_PRESSED_OFFSET_W){
 		sum_key_count(1,&Key.W);
 	}else{
 		sum_key_count(0,&Key.W);
 	}
-	if(RC->key.v==KEY_PRESSED_OFFSET_S){
+	if(RC->key.v & KEY_PRESSED_OFFSET_S){
 		sum_key_count(1,&Key.S);
 	}else{
 		sum_key_count(0,&Key.S);
 	}
-	if(RC->key.v==KEY_PRESSED_OFFSET_A){
+	if(RC->key.v & KEY_PRESSED_OFFSET_A){
 		sum_key_count(1,&Key.A);
 	}else{
 		sum_key_count(0,&Key.A);
 	}
-	if(RC->key.v==KEY_PRESSED_OFFSET_D){
+	if(RC->key.v & KEY_PRESSED_OFFSET_D){
 		sum_key_count(1,&Key.D);
 	}else{
 		sum_key_count(0,&Key.D);
 	}
-	if(RC->key.v==KEY_PRESSED_OFFSET_SHIFT){
+	if(RC->key.v & KEY_PRESSED_OFFSET_SHIFT){
 		sum_key_count(1,&Key.shift);
 	}else{
 		sum_key_count(0,&Key.shift);
 	}
-	if(RC->key.v==KEY_PRESSED_OFFSET_CTRL){
+	if(RC->key.v & KEY_PRESSED_OFFSET_CTRL){
 		sum_key_count(1,&Key.ctrl);
 	}else{
 		sum_key_count(0,&Key.ctrl);
 	}
-	if(RC->key.v==KEY_PRESSED_OFFSET_Q){
+	if(RC->key.v & KEY_PRESSED_OFFSET_Q){
 		sum_key_count(1,&Key.Q);
 	}else{
 		sum_key_count(0,&Key.Q);
 	}
-	if(RC->key.v==KEY_PRESSED_OFFSET_E){
+	if(RC->key.v & KEY_PRESSED_OFFSET_E){
 		sum_key_count(1,&Key.E);
 	}else{
 		sum_key_count(0,&Key.E);
 	}
-	if(RC->key.v==KEY_PRESSED_OFFSET_R){
+	if(RC->key.v & KEY_PRESSED_OFFSET_R){
 		sum_key_count(1,&Key.R);
 	}else{
 		sum_key_count(0,&Key.R);
 	}
-	if(RC->key.v==KEY_PRESSED_OFFSET_F){
+	if(RC->key.v & KEY_PRESSED_OFFSET_F){
 		sum_key_count(1,&Key.F);
 	}else{
 		sum_key_count(0,&Key.F);
 	}
-	if(RC->key.v==KEY_PRESSED_OFFSET_G){
+	if(RC->key.v & KEY_PRESSED_OFFSET_G){
 		sum_key_count(1,&Key.G);
 	}else{
 		sum_key_count(0,&Key.G);
 	}
-	if(RC->key.v==KEY_PRESSED_OFFSET_Z){
+	if(RC->key.v & KEY_PRESSED_OFFSET_Z){
 		sum_key_count(1,&Key.Z);
 	}else{
 		sum_key_count(0,&Key.Z);
 	}
-	if(RC->key.v==KEY_PRESSED_OFFSET_X){
+	if(RC->key.v & KEY_PRESSED_OFFSET_X){
 		sum_key_count(1,&Key.X);
 	}else{
 		sum_key_count(0,&Key.X);
 	}
-	if(RC->key.v==KEY_PRESSED_OFFSET_C){
+	if(RC->key.v & KEY_PRESSED_OFFSET_C){
 		sum_key_count(1,&Key.C);
 	}else{
 		sum_key_count(0,&Key.C);
 	}
-	if(RC->key.v==KEY_PRESSED_OFFSET_V){
+	if(RC->key.v & KEY_PRESSED_OFFSET_V){
 		sum_key_count(1,&Key.V);
 	}else{
 		sum_key_count(0,&Key.V);
 	}
-	if(RC->key.v==KEY_PRESSED_OFFSET_B){
+	if(RC->key.v & KEY_PRESSED_OFFSET_B){
 		sum_key_count(1,&Key.B);
 	}else{
 		sum_key_count(0,&Key.B);

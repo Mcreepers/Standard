@@ -206,6 +206,10 @@ void Chassis_Ctrl::Behaviour_Mode(void)
 		//提速开关
 		read_key(&Key.F, single, &Flags.Speed_Up_Flag);
 	}
+	else
+	{
+		Velocity.Speed_Gear=0;
+	}
 	//遥控控制模式切换
 	if (switch_is_down(RC_Ptr->rc.s[CHANNEL_RIGHT]))
 	{
@@ -229,16 +233,20 @@ void Chassis_Ctrl::Behaviour_Mode(void)
 	}
 	if (switch_is_mid(RC_Ptr->rc.s[CHANNEL_RIGHT]) && switch_is_down(RC_Ptr->rc.s[CHANNEL_LEFT]))
 	{
-		Flags.Shoot_Flag=0;
-		Flags.Fric_Flag=0;
+		Flags.Shoot_Flag=false;
+		Flags.Fric_Flag=false;
+		Mode = CHASSIS_NO_FOLLOW_YAW;
 	}
 	else if (switch_is_mid(RC_Ptr->rc.s[CHANNEL_RIGHT]) && switch_is_mid(RC_Ptr->rc.s[CHANNEL_LEFT]))
 	{
-		Flags.Shoot_Flag = 1;
+		Flags.Shoot_Flag = false;
+		Flags.Fric_Flag=false;
+		Mode = CHASSIS_LITTLE_TOP;
 	}
 	else if (switch_is_mid(RC_Ptr->rc.s[CHANNEL_RIGHT]) && switch_is_up(RC_Ptr->rc.s[CHANNEL_LEFT]))
 	{
-		Flags.Fric_Flag = 1;
+		Flags.Fric_Flag = true;
+		Flags.Shoot_Flag = true;
 	}
 #endif
 	else if (switch_is_up(RC_Ptr->rc.s[CHANNEL_RIGHT]) && switch_is_up(RC_Ptr->rc.s[CHANNEL_LEFT]))
@@ -281,24 +289,31 @@ void Chassis_Ctrl::RC_to_Control( fp32 *vx_set, fp32 *vy_set)
 	if( Flags.RC_Flag == false )
 	{
 		//用WDAS控制
-		if (Chassis.RC_Ptr->key.v & KEY_PRESSED_OFFSET_W||Chassis.RC_Ptr->key.v & KEY_PRESSED_OFFSET_S
-			||Chassis.RC_Ptr->key.v & KEY_PRESSED_OFFSET_A||Chassis.RC_Ptr->key.v & KEY_PRESSED_OFFSET_D)
+		if (read_key(&Key.W,even,false)||read_key(&Key.S,even,false)||read_key(&Key.A,even,false)||read_key(&Key.D,even,false))
 		{
-			if(Chassis.RC_Ptr->key.v & KEY_PRESSED_OFFSET_W)
+			if (read_key(&Key.W,even,true))//方向可能改动
 			{
 				vx_set_channel = Velocity.Speed_Set[Flags.Speed_Up_Flag];
 			}
-			if(Chassis.RC_Ptr->key.v & KEY_PRESSED_OFFSET_S)
+			else if (read_key(&Key.S,even,true))
 			{
 				vx_set_channel = -Velocity.Speed_Set[Flags.Speed_Up_Flag];
 			}
-			if(Chassis.RC_Ptr->key.v & KEY_PRESSED_OFFSET_A)
+			else
+			{
+				vx_set_channel = 0;
+			}
+			if (read_key(&Key.A, even, true))
 			{
 				vy_set_channel = -Velocity.Speed_Set[Flags.Speed_Up_Flag];
 			}
-			if(Chassis.RC_Ptr->key.v & KEY_PRESSED_OFFSET_D)
+			else if (read_key(&Key.D,even,true))
 			{
 				vy_set_channel = Velocity.Speed_Set[Flags.Speed_Up_Flag];
+			}
+			else
+			{
+				vy_set_channel = 0;
 			}
 		}
 		else//无WSAD输入则一直静止
