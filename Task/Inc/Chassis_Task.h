@@ -17,7 +17,7 @@
 extern "C" {
 #endif
 
-  void Chassis_Task(void *pvParameters);
+void Chassis_Task(void *pvParameters);
 
 #ifdef __cplusplus
 }
@@ -239,7 +239,7 @@ typedef struct
 
 class Chassis_Ctrl : public rc_key_c
 {
-  public:
+public:
   const RC_ctrl_t *RC_Ptr;
   const fp32 *chassis_yaw_relative_angle;   //底盘使用到yaw云台电机的相对角度来计算底盘的欧拉角
   fp32 chassis_relative_ECD;   //底盘使用到yaw云台电机的相对角度来计算底盘的欧拉角
@@ -266,7 +266,6 @@ class Chassis_Ctrl : public rc_key_c
   void Control(void);
   void Behaviour_Mode(void);
   void Control_loop(void);
-  void error_behaviour_control_set(void);
 #if useSteering
   Chassis_Steering_t Steering[4];
   chassis_steering_mode_e Steering_Mode;
@@ -274,7 +273,9 @@ class Chassis_Ctrl : public rc_key_c
   PidTypeDef  steering_Speed_Pid[4];
   PidTypeDef  steering_Angle_Pid[4];
 #endif
-  private:
+private:
+  Message_Ctrl *Chassis_Message;
+  
   void RC_to_Control(fp32 *vx_set, fp32 *vy_set);
   void Behaviour_Control(fp32 *vx_set, fp32 *vy_set, fp32 *angle_set);
   void Vector_to_Wheel_Speed(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set);
@@ -285,11 +286,9 @@ class Chassis_Ctrl : public rc_key_c
 #endif
 };
 
+extern void rc_key_v_fresh(RC_ctrl_t *RC);
 extern void System_Reset(void);
-extern Chassis_Ctrl Chassis;
 extern fp32 motor_ecd_to_relative_ecd(uint16_t angle, uint16_t offset_ecd);
-extern const Chassis_Ctrl_Flags_t *get_chassis_flag_control_point(void);
-extern const chassis_mode_e *get_chassis_mode_control_point(void);
-extern const Chassis_Velocity_t *get_chassis_velocity_control_point(void);
+Chassis_Ctrl *get_chassis_ctrl_pointer(void);
 
 #endif /* __CHASSIS_TASK_H */

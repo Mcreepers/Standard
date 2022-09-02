@@ -93,18 +93,18 @@
       <flags>2</flags>
       <showCmd>3</showCmd>
       <MinPosition>
-        <xPos>-1</xPos>
-        <yPos>-1</yPos>
+        <xPos>-32000</xPos>
+        <yPos>-32000</yPos>
       </MinPosition>
       <MaxPosition>
         <xPos>-1</xPos>
         <yPos>-1</yPos>
       </MaxPosition>
       <NormalPosition>
-        <Top>167</Top>
+        <Top>174</Top>
         <Left>1978</Left>
         <Right>2954</Right>
-        <Bottom>945</Bottom>
+        <Bottom>952</Bottom>
       </NormalPosition>
     </WindowPosition>
     <MDIClientArea>
@@ -3606,9 +3606,9 @@
       <ActiveTab>0</ActiveTab>
       <Doc>
         <Name>..\Task\Chassis_Task.cpp</Name>
-        <ColumnNumber>29</ColumnNumber>
-        <TopLine>174</TopLine>
-        <CurrentLine>211</CurrentLine>
+        <ColumnNumber>13</ColumnNumber>
+        <TopLine>159</TopLine>
+        <CurrentLine>191</CurrentLine>
         <Folding>1</Folding>
         <ContractedFolders></ContractedFolders>
         <PaneID>0</PaneID>

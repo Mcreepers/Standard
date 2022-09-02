@@ -10,7 +10,6 @@ union I ecd_data;
 Message_Data_t Message_Data;
 Message_Ctrl Message;
 ID_e Message_ID;
-Gimbal_Receive_Data_t GimbalR;
 
 extern void uart7_dma_get(void);
 void Message_Task(void *pvParameters)
@@ -20,10 +19,21 @@ void Message_Task(void *pvParameters)
         if (xQueueReceive(Message_Queue, &Message_ID, portMAX_DELAY))
 		{
 			Message.Hook();
-			Guard.Guard_Feed(&Message_ID);
+			Message.Feed(&Message_ID);
 		}
 	}
 }
+
+void Message_Ctrl::Init()
+{
+	Message_Guard = get_guard_ctrl_pointer();
+}
+
+void Message_Ctrl::Feed(ID_e *ID)
+{
+	Message_Guard->Guard_Feed(ID);
+}
+
 //消息处理
 void Message_Ctrl::Hook()
 {
@@ -49,7 +59,7 @@ void Message_Ctrl::Hook()
 		// Usart8_Hook();
 		break;
 	case RC_ctrl:
-		Chassis.rc_key_v_set((RC_ctrl_t *)ptr);
+	rc_key_v_fresh((RC_ctrl_t *)ptr);
 		break;
 	default:
 		break;
@@ -70,11 +80,9 @@ void Message_Ctrl::Usart6_Hook()
 	GimbalR.goal = Usart6.Data[3];
 	if (GimbalR.ECD > 8192)
 	{
-		Error_Flag.Gimbal = 1;
 	}
 	if (GimbalR.goal > 1)
 	{
-		Error_Flag.Visual = 1;
 	}
 }
 
@@ -88,9 +96,9 @@ void Message_Ctrl::Usart8_Hook()
 
 }
 
-const Gimbal_Receive_Data_t *get_gimbal_data_point(void)
+Message_Ctrl *get_message_ctrl_pointer(void)
 {
-	return &GimbalR;
+	return &Message;
 }
 
 //统计按键 按下次数：eg:  按下-松开  按下-松开  2次

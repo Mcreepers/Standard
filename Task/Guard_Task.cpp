@@ -1,6 +1,7 @@
 #include "Guard_Task.h"
 #include "Message_Task.h"
 #include "timers.h"
+#include "Chassis_Task.h"
 
 Guard_Ctrl Guard;
 Error_Flags_t Error_Flag;
@@ -8,38 +9,45 @@ Error_Flags_t Error_Flag;
 //警戒任务
 void Guard_Task(void *pvParameters)
 {
-//    IWDG_Init(4, 100);
-//    Guard.Guard_Start();
+    Guard.Guard_Start();
+    vTaskDelay(300);
+    //    IWDG_Init(4, 100);
 
     while (1)
-    {
+    {//scan才会检查任务运行
         Guard.Guard_Scan();
         IWDG_Feed();
 
-        vTaskDelay(1);
+        vTaskDelay(2);
     }
 }
 //警戒任务开始
 void Guard_Ctrl::Guard_Start(void)
 {
-    Guard_Init(CanData1, 100, &System_RESET);
-    Guard_Init(CanData2, 100, &System_RESET);
-    // Guard_Init(serial3 ,100, &Error_Send);
-    Guard_Init(serial6, 100, &Error_Enable);
-    // Guard_Init(serial7 ,100, &Error_Send);
-    // Guard_Init(serial8 ,100, &Error_Send);
-    // Guard_Init(RC_ctrl, 200, &System_RESET);
-    Guard_Init(chassis, 100, &System_RESET);
-    // Guard_Init(UIdraw ,100, &System_RESET);
-    Guard_Init(correspondence, 100, &System_RESET);
+    Guard_Chassis = get_chassis_ctrl_pointer();
+    Guard_Message = get_message_ctrl_pointer();
+
+    Guard_Init(CanData1, false, 1000, 100, &System_RESET);
+    Guard_Init(CanData2, false, 1000 , 100, &System_RESET);
+    // Guard_Init(serial3, false, 1000  ,100, &Error_Send);
+    Guard_Init(serial6, false, 1000 , 100, &Error_Enable);
+    // Guard_Init(serial7, false, 1000 , false, 1000  ,100, &Error_Send);
+    // Guard_Init(serial8, false, 1000  ,100, &Error_Send);
+    // Guard_Init(RC_ctrl, false, 1000 , 200, &System_RESET);
+    Guard_Init(chassis, false, 1000 , 100, &System_RESET);
+    // Guard_Init(UIdraw, false, 1000  ,100, &System_RESET);
+    Guard_Init(correspondence, false, 1000 , 100, &System_RESET);
 }
 //警戒任务初始化
-void Guard_Ctrl::Guard_Init(ID_e Name, uint32_t MaxValue, void(*errcb)(uint8_t id))
+void Guard_Ctrl::Guard_Init(ID_e Name, bool close, uint32_t StartValue, uint32_t MaxValue, void(*errcb)(uint8_t id))
 {
     SG_Structure[Name].Name = Name;
-    SG_Structure[Name].Enable = 0;//默认关闭
+    SG_Structure[Name].Enable = false;//默认关闭
+    SG_Structure[Name].start = false;
+    SG_Structure[Name].close = close;
     SG_Structure[Name].Time = 0;
     SG_Structure[Name].Error = 0;
+    SG_Structure[Name].StartValue = StartValue;
     SG_Structure[Name].MaxValue = MaxValue;
     if (errcb == NULL)
     {
@@ -56,16 +64,27 @@ void Guard_Ctrl::Guard_Scan(void)
     uint8_t i;
     for (i = 0;i < GUARD_TOTAL_NUM;i++)
     {
-        if ((SG_Structure[i].Enable == 1) && (SG_Structure[i].MaxValue != 0))
+        if (SG_Structure[i].start == false)
         {
-            SG_Structure[i].Error = xTaskGetTickCount() - SG_Structure[i].Time;
+            SG_Structure[i].Error=xTaskGetTickCount()-SG_Structure[i].Time;
+            if (SG_Structure[i].Error > SG_Structure[i].StartValue)
+            {
+                SG_Structure[i].errcallback(i);
+            }
+        }
+        else if ((SG_Structure[i].Enable == true) && (SG_Structure[i].MaxValue != 0))
+        {
+            SG_Structure[i].Error=xTaskGetTickCount()-SG_Structure[i].Time;
             if (SG_Structure[i].Error > SG_Structure[i].MaxValue)
             {
                 SG_Structure[i].errcallback(i);
             }
-            if ((int16_t)(SG_Structure[i].Error - SG_Structure[i].MaxValue) > 100)
+            if (SG_Structure[i].close == true)
             {
-                SG_Structure[i].Enable = 0;
+                if ((int16_t)(SG_Structure[i].Error - SG_Structure[i].MaxValue) > 100)
+                {
+                    SG_Structure[i].Enable = 0;
+                }
             }
         }
     }
@@ -78,8 +97,28 @@ void Guard_Ctrl::Guard_Feed(ID_e *Name)
         return;
     }
 
-    Guard.SG_Structure[*Name].Enable = 1;
+    Guard.SG_Structure[*Name].Enable = true;
+    Guard.SG_Structure[*Name].start = true;
     Guard.SG_Structure[*Name].Time = xTaskGetTickCount();
+}
+
+void Error_Enable(uint8_t id)
+{
+    switch (id)
+    {
+    case serial6:
+    {
+
+    }
+    break;
+    case serial7:
+    {
+        
+    }
+    break;
+    default:
+    break;
+    }
 }
 //警戒任务使能(feed中的使能只针对已运行任务)
 void Guard_Ctrl::Guard_Enable(void)
@@ -96,20 +135,9 @@ void Guard_Return(uint8_t id)
     return;
 }
 
-void Error_Enable(uint8_t id)
+Guard_Ctrl *get_guard_ctrl_pointer()
 {
-    switch (id)
-    {
-    case serial6:
-    Error_Flag.Gimbal = 1;
-    Error_Flag.Visual = 1;
-    break;
-    case serial7:
-    Error_Flag.Judge = 1;
-    break;
-    default:
-    break;
-    }
+    return &Guard;
 }
 
 void IWDG_Init(uint8_t prer, uint16_t rlr)

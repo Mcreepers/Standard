@@ -8,9 +8,8 @@
 #include "protocol_dbus.h"
 
 Chassis_Ctrl Chassis;
-const Gimbal_Receive_Data_t *Gimbal_chassis;
 
-u8 UIsend = 0;
+uint8_t UIsend = 0;
 //底盘速度环pid值
 const static fp32 Motor_Speed_Pid[3] = {M3505_MOTOR_SPEED_PID_KP, M3505_MOTOR_SPEED_PID_KI, M3505_MOTOR_SPEED_PID_KD};
 //底盘旋转环pid值
@@ -62,10 +61,10 @@ void Chassis_Task(void *pvParameters)
 //底盘初始化
 void Chassis_Ctrl::Chassis_Init(void)
 {
-  	RC_Ptr = get_remote_control_point();
-	Gimbal_chassis = get_gimbal_data_point();
-	chassis_yaw_relative_angle=&get_gimbal_data_point()->ECD;
-	Mode=CHASSIS_NO_MOVE;
+	RC_Ptr = get_remote_control_point();
+	Chassis_Message = get_message_ctrl_pointer();
+	chassis_yaw_relative_angle = &get_message_ctrl_pointer()->GimbalR.ECD;
+	Mode = CHASSIS_NO_MOVE;
 	
 	for ( uint8_t i = 0; i < 4; i++ )
 	{
@@ -542,19 +541,14 @@ fp32 motor_ecd_to_relative_ecd(uint16_t angle, uint16_t offset_ecd)
     return relative_angle_change;
 }
 
-const Chassis_Ctrl_Flags_t *get_chassis_flag_control_point(void)
+void rc_key_v_fresh(RC_ctrl_t *RC)
 {
-    return &Chassis.Flags;
+	Chassis.rc_key_v_set(RC);
 }
 
-const chassis_mode_e *get_chassis_mode_control_point(void)
+Chassis_Ctrl *get_chassis_ctrl_pointer(void)
 {
-	return &Chassis.Mode;
-}
-
-const Chassis_Velocity_t *get_chassis_velocity_control_point(void)
-{
-	return &Chassis.Velocity;
+    return &Chassis;
 }
 
 //寄存器软件复位

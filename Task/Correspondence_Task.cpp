@@ -29,10 +29,9 @@ void Correspondence_Task(void *pvParameters)
 
 void correspondence_ctrl::Corres_Init(void)
 {
-    flag = &Chassis.Flags;
-    velocity = &Chassis.Velocity;
-    gimbal = get_gimbal_data_point();
-    robo = get_robo_data_Point();
+	robo = get_robo_data_Point();
+	Corres_Message = get_message_ctrl_pointer();
+	Corres_Chassis = get_chassis_ctrl_pointer();
 
     GimbalS.Header = GIMBAL_SERIAL_HEADER;
     GimbalS.Tail = GIMBAL_SERIAL_TAIL;

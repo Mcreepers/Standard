@@ -29,10 +29,13 @@ struct Error_Flags_t
 struct SG_Data_t
 {
 	ID_e Name;//名称
-	uint8_t Enable;//使能开关
+	bool Enable;//使能开关
+	bool start;//初始化等待完成标志位
+	bool close;//任务异常次数过多关闭标志位(触发次数超过100次//200ms关闭该id警戒任务)
 	uint32_t Time;//计数器
+	uint32_t StartValue;//初始化等待时间
 	uint32_t MaxValue;//最大超时值
-	uint32_t Error;
+	uint32_t Error;//时间差
 	void (*errcallback)(uint8_t id);//异常回调函数
 };
 	
@@ -40,12 +43,15 @@ class Guard_Ctrl
 {
 public:
 	void Guard_Start(void);
-	void Guard_Init(ID_e Name, uint32_t MaxValue, void(*errcb)(uint8_t name));
+	void Guard_Init(ID_e Name, bool close, uint32_t StartValue, uint32_t MaxValue, void(*errcb)(uint8_t id));
 	void Guard_Scan(void);
 	void Guard_Feed(ID_e *Name);
 	void Guard_Enable(void);
 	ID_e ID;
 private:
+	Chassis_Ctrl *Guard_Chassis;
+	Message_Ctrl *Guard_Message;
+
 	SG_Data_t SG_Structure[GUARD_TOTAL_NUM];
 };
 
@@ -55,8 +61,6 @@ void Error_Enable(uint8_t name);
 void System_RESET(uint8_t id);
 void Guard_Return(uint8_t id);
 
-extern QueueHandle_t Guard_Queue;
+Guard_Ctrl *get_guard_ctrl_pointer();
 extern ID_e Guard_ID;
-extern Guard_Ctrl Guard;
-extern Error_Flags_t Error_Flag;
 #endif

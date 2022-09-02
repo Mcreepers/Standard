@@ -67,14 +67,21 @@ class Message_Ctrl
 {
 public:
 	Message_Data_t *Data;
+	Gimbal_Receive_Data_t GimbalR;
+	
 	void Hook();
+	void Init();
+	void Feed(ID_e *Name);
 private:
+	Guard_Ctrl *Message_Guard;
 	void *ptr;
 	void Usart3_Hook();
 	void Usart6_Hook();
 	void Usart7_Hook();
 	void Usart8_Hook();
 };
+
+Message_Ctrl * get_message_ctrl_pointer(void);
 
 typedef struct
 {
@@ -136,7 +143,4 @@ private:
 };
 
 extern Message_Data_t Message_Data;
-extern Message_Ctrl Message;
-
-const Gimbal_Receive_Data_t *get_gimbal_data_point(void);
 #endif

@@ -3,6 +3,7 @@
 
 #include "dev_system.h"
 #include "Chassis_Task.h"
+#include "Message_Task.h"
 #include "protocol_judgement.h"
 
 #ifdef __cplusplus
@@ -74,15 +75,14 @@ struct Usart_Data_t
 class correspondence_ctrl
 {
 public:
-    Chassis_Ctrl_Flags_t *flag;
-    Chassis_Velocity_t *velocity;
-    const Gimbal_Receive_Data_t *gimbal;
     const robo_data_t *robo;
-    
+
     void Corres_Init(void);
     void Corres_Send(void);
     void Corres_Feedback(void);
 private:
+    Message_Ctrl *Corres_Message;
+    Chassis_Ctrl *Corres_Chassis;
     Gimbal_Send_Data_t GimbalS;
 
     void Visual_Feedback(void);

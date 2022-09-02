@@ -67,7 +67,7 @@ void Start_Task(void *pvParameters){
                 (UBaseType_t)Message_TASK_PRIO,
                 (TaskHandle_t *)&MessageTask_Handler);
 				
-			 xTaskCreate((TaskFunction_t)Chassis_Task,//创建底盘主任务任务
+			 xTaskCreate((TaskFunction_t)Chassis_Task,//创建底盘主任务
                 (const char *)"Chassis_Task",
                 (uint16_t)Chassis_STK_SIZE,
                 (void *)NULL,
