@@ -21,16 +21,71 @@ Target DLL:      CMSIS_AGDI.dll V1.33.0.0
 Dialog DLL:      TCM.DLL V1.53.0.0
  
 <h2>Project:</h2>
-E:\a-ma\standard\infantry\chassis\Project\HERO_CHASSIS.uvprojx
+E:\A-MA\standard\infantry\chassis\Project\HERO_CHASSIS.uvprojx
 Project File Date:  07/28/2022
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'D:\study\STM32\mdk1\ARM\ARMCC\Bin'
 Build target 'HERO_CHASSIS'
+compiling app_motor.cpp...
+..\Task\Inc\Message_Task.h(76): error:  #20: identifier "Guard_Ctrl" is undefined
+  	Guard_Ctrl *Message_Guard;
+..\Task\Inc\Guard_Task.h(52): error:  #20: identifier "Chassis_Ctrl" is undefined
+  	Chassis_Ctrl *Guard_Chassis;
+..\App\app_motor.cpp: 0 warnings, 2 errors
+compiling main.cpp...
+..\Task\Inc\Message_Task.h(76): error:  #20: identifier "Guard_Ctrl" is undefined
+  	Guard_Ctrl *Message_Guard;
+..\App\main.cpp: 0 warnings, 1 error
 compiling start_task.cpp...
-linking...
-Program Size: Code=32266 RO-data=6238 RW-data=424 ZI-data=139576  
-".\Objects\HERO_CHASSIS.axf" - 0 Error(s), 0 Warning(s).
+..\Task\Inc\Message_Task.h(76): error:  #20: identifier "Guard_Ctrl" is undefined
+  	Guard_Ctrl *Message_Guard;
+..\Task\start_task.cpp: 0 warnings, 1 error
+compiling Message_Task.cpp...
+..\Task\Inc\Message_Task.h(76): error:  #20: identifier "Guard_Ctrl" is undefined
+  	Guard_Ctrl *Message_Guard;
+..\Task\Message_Task.cpp: 0 warnings, 1 error
+compiling Correspondence_Task.cpp...
+..\Task\Inc\Message_Task.h(76): error:  #20: identifier "Guard_Ctrl" is undefined
+  	Guard_Ctrl *Message_Guard;
+..\Task\Correspondence_Task.cpp: 0 warnings, 1 error
+compiling Guard_Task.cpp...
+..\Task\Inc\Message_Task.h(76): error:  #20: identifier "Guard_Ctrl" is undefined
+  	Guard_Ctrl *Message_Guard;
+..\Task\Inc\Guard_Task.h(52): error:  #20: identifier "Chassis_Ctrl" is undefined
+  	Chassis_Ctrl *Guard_Chassis;
+..\Task\Guard_Task.cpp: 0 warnings, 2 errors
+compiling UIDraw_Task.cpp...
+..\Task\Inc\Message_Task.h(76): error:  #20: identifier "Guard_Ctrl" is undefined
+  	Guard_Ctrl *Message_Guard;
+..\Task\UIDraw_Task.cpp(33): error:  #20: identifier "get_chassis_flag_control_point" is undefined
+      chassis_flag = get_chassis_flag_control_point();
+..\Task\UIDraw_Task.cpp(34): error:  #20: identifier "get_chassis_mode_control_point" is undefined
+      chassis_mode = get_chassis_mode_control_point();
+..\Task\UIDraw_Task.cpp(35): error:  #20: identifier "get_chassis_velocity_control_point" is undefined
+      chassis_velocity = get_chassis_velocity_control_point();
+..\Task\UIDraw_Task.cpp(37): error:  #20: identifier "get_gimbal_data_point" is undefined
+      Gimbal_UI = get_gimbal_data_point();
+..\Task\UIDraw_Task.cpp(161): error:  #20: identifier "Chassis" is undefined
+          x1 = 120 - arm_sin_f32(-*Chassis.chassis_yaw_relative_angle + 0.52359877f) * 100.0f;
+..\Task\UIDraw_Task.cpp: 0 warnings, 6 errors
+compiling Chassis_Task.cpp...
+..\Task\Inc\Message_Task.h(76): error:  #20: identifier "Guard_Ctrl" is undefined
+  	Guard_Ctrl *Message_Guard;
+..\Task\Chassis_Task.cpp: 0 warnings, 1 error
+compiling dev_serial.cpp...
+..\Task\Inc\Message_Task.h(76): error:  #20: identifier "Guard_Ctrl" is undefined
+  	Guard_Ctrl *Message_Guard;
+..\Device\dev_serial.cpp: 0 warnings, 1 error
+compiling protocol_dbus.cpp...
+..\Task\Inc\Message_Task.h(76): error:  #20: identifier "Guard_Ctrl" is undefined
+  	Guard_Ctrl *Message_Guard;
+..\Protocol\protocol_dbus.cpp: 0 warnings, 1 error
+compiling dev_can.cpp...
+..\Task\Inc\Message_Task.h(76): error:  #20: identifier "Guard_Ctrl" is undefined
+  	Guard_Ctrl *Message_Guard;
+..\Device\dev_can.cpp: 0 warnings, 1 error
+".\Objects\HERO_CHASSIS.axf" - 18 Error(s), 0 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -61,7 +116,8 @@ Package Vendor: Keil
 
    * Component: Keil.ARM Compiler::Compiler:I/O:TTY:Breakpoint:1.2.0
       Source file:   Source\retarget_io.c
-Build Time Elapsed:  00:00:06
+Target not created.
+Build Time Elapsed:  00:00:09
 </pre>
 </body>
 </html>

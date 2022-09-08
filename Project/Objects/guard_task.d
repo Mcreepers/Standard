@@ -72,3 +72,8 @@
 .\objects\guard_task.o: ..\MiddleWare\FreeRTOS\include\timers.h
 .\objects\guard_task.o: ..\Task\Inc\Message_Task.h
 .\objects\guard_task.o: ..\Protocol\Inc\protocol_dbus.h
+.\objects\guard_task.o: ..\Task\Inc\Chassis_Task.h
+.\objects\guard_task.o: ..\App\Inc\app_motor.h
+.\objects\guard_task.o: ..\Algorithm\inc\algorithm_pid.h
+.\objects\guard_task.o: ..\Algorithm\inc\algorithm_user_lib.h
+.\objects\guard_task.o: ..\ModuleDrivers\Inc\drivers_state_machines.h
