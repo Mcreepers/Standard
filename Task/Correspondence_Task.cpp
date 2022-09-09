@@ -5,7 +5,7 @@
 union F Gimbal_Union;
 	
 correspondence_ctrl corres;
-
+Message_Data_t Message_Data_corres[5];
 Usart_Data_t Usart3( Serial3_Buffer_Size, Serial3_Data_Header, Serial3_Data_tail );
 Usart_Data_t Usart6( Serial6_Buffer_Size, Serial6_Data_Header, Serial6_Data_tail );
 Usart_Data_t Usart7( Serial7_Buffer_Size, Serial7_Data_Header, Serial7_Data_tail );
@@ -22,13 +22,19 @@ void Correspondence_Task(void *pvParameters)
         corres.Corres_Feedback();
         corres.Corres_Send();
 
-        xQueueSend(Message_Queue, &(Message_Data.Data_ID = correspondence), 0);
+        xQueueSend(Message_Queue, &Message_Data_corres[0], 0);
         vTaskDelay(2);
     }
 }
 
 void correspondence_ctrl::Corres_Init(void)
 {
+	Message_Data_corres[0].Data_ID = correspondence;
+	Message_Data_corres[1].Data_ID = serial3;
+	Message_Data_corres[2].Data_ID = serial6;
+	Message_Data_corres[3].Data_ID = serial7;
+	Message_Data_corres[4].Data_ID = serial8;
+	
 	robo = get_robo_data_Point();
 	Corres_Message = get_message_ctrl_pointer();
 	Corres_Chassis = get_chassis_ctrl_pointer();
@@ -74,7 +80,7 @@ void Serial3_Hook(void)
 		}
 		if(Usart3.Data[Usart3.Len-2]==Usart3.Tail)
 		{
-			xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID = serial3), 0);
+			xQueueSendFromISR(Message_Queue, &Message_Data_corres[1], 0);
 		}
     }
 }
@@ -94,29 +100,30 @@ void Serial6_Hook(void)
 		}
 		if (Usart6.Data[Usart6.Len - 2] == Usart6.Tail)
 		{
-			xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID = serial6), 0);
+			xQueueSendFromISR(Message_Queue, &Message_Data_corres[2], 0);
 		}
     }
 }
 
 void Serial7_Hook(void)
 {
-    if (Serial7.peek() != Usart7.Header)
-	{
-		Usart7.Temp=Serial7.read();
-		return;
-	}
-	if (Serial7.available()==Usart7.Len-1)
-    {
-		for (uint8_t i = 0;i < Usart7.Len-1;i++)
-		{
-			Usart7.Data[i] = Serial7.read();
-		}
-		if(Usart7.Data[Usart7.Len-2]==Usart7.Tail)
-		{
-			xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID = serial7), 0);
-		}
-    }
+	xQueueSendFromISR(Message_Queue, &Message_Data_corres[3], 0);
+//    if (Serial7.peek() != Usart7.Header)
+//	{
+//		Usart7.Temp=Serial7.read();
+//		return;
+//	}
+//	if (Serial7.available()==Usart7.Len-1)
+//    {
+//		for (uint8_t i = 0;i < Usart7.Len-1;i++)
+//		{
+//			Usart7.Data[i] = Serial7.read();
+//		}
+//		if(Usart7.Data[Usart7.Len-2]==Usart7.Tail)
+//		{
+//			xQueueSendFromISR(Message_Queue, &Message_Data_corres[3], 0);
+//		}
+//    }
 }
 
 void Serial8_Hook(void)
@@ -134,7 +141,7 @@ void Serial8_Hook(void)
 		}
 		if(Usart8.Data[Usart8.Len-2]==Usart8.Tail)
 		{
-			xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID = serial8), 0);
+			xQueueSendFromISR(Message_Queue, &Message_Data_corres[4], 0);
 		}
     }
 }

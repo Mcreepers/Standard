@@ -1,5 +1,11 @@
 #include "drivers_serial.h"
 
+#define ITM_PORT8(n)         (*(volatile unsigned char *)(0xe0000000 + 4*(n)))
+#define ITM_PORT16(n)        (*(volatile unsigned short *)(0xe0000000 + 4*(n)))
+#define ITM_PORT32(n)        (*(volatile unsigned long *)(0xe0000000 + 4*(n)))
+#define DEMCR                (*(volatile unsigned long *)(0xE000EDFC))
+#define TRCENA               0X01000000
+
 extern "C" {
 	#pragma import(__use_no_semihosting)                
 	void _sys_exit(int returncode) 
@@ -11,8 +17,14 @@ extern "C" {
 
 	int fputc(int ch, FILE *f )
 	{ 	
-		while((USART1->SR&0X40)==0);  
-		USART1->DR = (u8) ch;      
+//		while((USART1->SR&0X40)==0);  
+//		USART1->DR = (u8) ch;      
+//		return ch;
+		if(DEMCR & TRCENA)
+		{
+			while(ITM_PORT32(0) == 0);                                                                                                                                                                                                                                                                                      
+			ITM_PORT8(0) = ch;
+		}
 		return ch;
 	}
 }
@@ -79,7 +91,7 @@ void Serialdev::Serial_Init( uint32_t BaudRate, SERIAL_Config Config, uint8_t Pr
         GPIO_AF_USARTx = GPIO_AF_UART7;
         RCC_AHB1Periph_GPIOx = RCC_AHB1Periph_GPIOE;
         RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART7, ENABLE);
-//        ItChannel = UART7_IRQn;
+        ItChannel = UART7_IRQn;
 	}
 	else if(USARTx == UART8)
     {

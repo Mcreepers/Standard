@@ -15,12 +15,12 @@ void SoftWareInit(void)
 	delay_init((uint32_t )1000);
 	power_ctrl_configuration();
 	
-	Message_Queue = xQueueCreate(Message_Q_NUM, sizeof(uint8_t));
+	Message_Queue = xQueueCreate(Message_Q_NUM, sizeof(Message_Data_t));
 	
 	Serial3.Serial_Init(115200);
 	Serial8.Serial_Init( 115200, SERIAL_8N1 );
 	Serial6.Serial_Init(115200, 6, 2);
-//	Serial7.Serial_Init( 115200, SERIAL_8N1, 6, 2 ); //哪种初始化方式都可以
+	Serial7.Serial_Init( 115200, SERIAL_8N1); //哪种初始化方式都可以
 //Serial7.Serial_Init( 115200, 6,2);
 	for (uint8_t i = POWER1_CTRL_SWITCH; i < POWER4_CTRL_SWITCH + 1; i++)
 	{

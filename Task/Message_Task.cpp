@@ -9,17 +9,17 @@ union I ecd_data;
 
 Message_Data_t Message_Data;
 Message_Ctrl Message;
-ID_e Message_ID;
+Guard_Ctrl *Message_Guard;
 
 extern void uart7_dma_get(void);
 void Message_Task(void *pvParameters)
 {
 	while (1)
     {
-        if (xQueueReceive(Message_Queue, &Message_ID, portMAX_DELAY))
+        if (xQueueReceive(Message_Queue, &Message_Data, portMAX_DELAY))
 		{
 			Message.Hook();
-			Message.Feed(&Message_ID);
+			Message.Feed(&Message_Data.Data_ID);
 		}
 	}
 }
@@ -37,14 +37,13 @@ void Message_Ctrl::Feed(ID_e *ID)
 //消息处理
 void Message_Ctrl::Hook()
 {
-	ptr=Message_Data.Data_Ptr[Message_ID];
-	switch (Message_ID)
+	switch (Message_Data.Data_ID)
 	{
 	case CanData1:
-		CAN1_Hook((CanRxMsg *)ptr);
+		CAN1_Hook((CanRxMsg *)Message_Data.Data_Ptr);
 		break;
 	case CanData2:
-		CAN2_Hook((CanRxMsg *)ptr);
+		CAN2_Hook((CanRxMsg *)Message_Data.Data_Ptr);
 		break;
 	case serial3:
 		// Usart3_Hook();
@@ -59,12 +58,11 @@ void Message_Ctrl::Hook()
 		// Usart8_Hook();
 		break;
 	case RC_ctrl:
-	rc_key_v_fresh((RC_ctrl_t *)ptr);
+	rc_key_v_fresh((RC_ctrl_t *)Message_Data.Data_Ptr);
 		break;
 	default:
 		break;
 	}
-
 }
 
 void Message_Ctrl::Usart3_Hook()

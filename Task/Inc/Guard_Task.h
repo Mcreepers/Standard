@@ -5,6 +5,7 @@
 #include "queue.h"
 #include "timers.h"
 #include "Message_Task.h"
+#include "Chassis_Task.h"
 
 #ifdef __cplusplus
 extern "C" {

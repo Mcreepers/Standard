@@ -8,7 +8,7 @@
 #include "protocol_dbus.h"
 
 Chassis_Ctrl Chassis;
-
+Message_Data_t Message_Data_chassis;
 uint8_t UIsend = 0;
 //底盘速度环pid值
 const static fp32 Motor_Speed_Pid[3] = {M3505_MOTOR_SPEED_PID_KP, M3505_MOTOR_SPEED_PID_KI, M3505_MOTOR_SPEED_PID_KD};
@@ -27,7 +27,7 @@ void Chassis_Task(void *pvParameters)
 {
 	CAN_ALL_Init();//所有电机控制都在一个类中
 	Chassis.Chassis_Init();
-	
+	Message_Data_chassis.Data_ID = chassis;
 	while (1)
 	{
 		Chassis.Behaviour_Mode();
@@ -52,7 +52,7 @@ void Chassis_Task(void *pvParameters)
 #endif
 		}
 		
-        xQueueSend(Message_Queue, &(Message_Data.Data_ID = chassis), 0);
+        xQueueSend(Message_Queue, &Message_Data_chassis, 0);
 		
 		vTaskDelay(CHASSIS_CONTROL_TIME_MS);
 	}
@@ -240,7 +240,7 @@ void Chassis_Ctrl::Behaviour_Mode(void)
 	{
 		Flags.Shoot_Flag = false;
 		Flags.Fric_Flag=false;
-		Mode = CHASSIS_LITTLE_TOP;
+//		Mode = CHASSIS_LITTLE_TOP;
 	}
 	else if (switch_is_mid(RC_Ptr->rc.s[CHANNEL_RIGHT]) && switch_is_up(RC_Ptr->rc.s[CHANNEL_LEFT]))
 	{

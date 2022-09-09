@@ -8,6 +8,8 @@ Serialctrl Serial6(USART6, Serial6_Buffer_Size);
 Serialctrl Serial7(UART7, Serial7_Buffer_Size, USART_IT_IDLE);
 Serialctrl Serial8(UART8, Serial8_Buffer_Size, USART_IT_IDLE);
 
+Message_Data_t Message_Data_serial7;
+
 void Serialctrl::attachInterrupt(USART_CallbackFunction_t Function)
 {
     USART_Function = Function;
@@ -25,6 +27,17 @@ void Serialctrl::IRQHandler(void)
         }
         USART_ClearITPendingBit(USARTx, USART_IT_RXNE);
     }
+	if(USART_GetITStatus(USARTx,USART_IT_IDLE) != RESET)
+	{
+		int temp;
+		temp = USARTx->DR;
+		temp = USARTx->SR;
+        if (USART_Function)
+        {
+            USART_Function();
+        }		
+        USART_ClearITPendingBit(USARTx, USART_IT_IDLE);
+	}
 }
 
 void Serialctrl::sendData(uint8_t ch)
@@ -93,8 +106,9 @@ extern "C"{
     }
     void UART7_IRQHandler(void)
     {
-//        xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID = serial7), 0);
-//        Serial7.IRQHandler();
+//		Message_Data_serial7.Data_ID = serial7;
+//        xQueueSendFromISR(Message_Queue, &Message_Data_serial7, 0);
+        Serial7.IRQHandler();
     }
     // void UART8_IRQHandler(void)
     // {

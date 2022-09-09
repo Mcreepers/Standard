@@ -64,7 +64,7 @@ void Guard_Ctrl::Guard_Scan(void)
     uint8_t i;
     for (i = 0;i < GUARD_TOTAL_NUM;i++)
     {
-        if (SG_Structure[i].start == false)
+        if (SG_Structure[i].start == false && (SG_Structure[i].StartValue != 0))
         {
             SG_Structure[i].Error=xTaskGetTickCount()-SG_Structure[i].Time;
             if (SG_Structure[i].Error > SG_Structure[i].StartValue)

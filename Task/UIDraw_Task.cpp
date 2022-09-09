@@ -23,23 +23,25 @@ char Buff[3][2] = { "1","2","3" };
 uint32_t x1, x2, x3, x4, y1, y2, y3, y4;
 uint16_t standard_ID1, standard_ID2;
 
-const Chassis_Ctrl_Flags_t *chassis_flag;
-const chassis_mode_e *chassis_mode;
-const Gimbal_Receive_Data_t *Gimbal_UI;
-const Chassis_Velocity_t *chassis_velocity;
+const Chassis_Ctrl *chassis_UI;
 const robo_data_t *robo_data_UI;
+const Message_Ctrl *Message_UI;
+Message_Data_t Message_Data_UI;
 void UIDraw_Task(void *pvParameters)
 {
-    chassis_flag = get_chassis_flag_control_point();
-    chassis_mode = get_chassis_mode_control_point();
-    chassis_velocity = get_chassis_velocity_control_point();
-	robo_data_UI=get_robo_data_Point();
-    Gimbal_UI = get_gimbal_data_point();
+    Message_Data_UI.Data_ID = UIdraw;
+
+    robo_data_UI = get_robo_data_Point();
+    Message_UI = get_message_ctrl_pointer();
+    chassis_UI = get_chassis_ctrl_pointer();
+    
     while (1)
     {
-		uart7_dma_get();
+        
+//        uart7_dma_get();
         standard_ID1 = robo_data_UI->robo_ID;
         standard_ID2 = 0x100 + uint32_t(robo_data_UI->robo_ID);
+
         
         while (uisend > 1)
         {
@@ -88,45 +90,45 @@ void UIDraw_Task(void *pvParameters)
             uisend--;
         }
 
-        Char_Painter("friesp", Chassis_Mode[*chassis_mode], UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Green, 3, 20, 1500, 790, Type_Flag_Frie_Speed);
+        Char_Painter("friesp", Chassis_Mode[chassis_UI->Mode], UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Green, 3, 20, 1500, 790, Type_Flag_Frie_Speed);
 
-        if (chassis_flag->Vision_Flag == 1)
+        if (chassis_UI->Flags.Vision_Flag == 1)
             Char_Painter("aim", Ture, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Green, 3, 20, 1500, 750, Type_Flag_Auto_Aiming);
-        else if (chassis_flag->Vision_Flag == 0)
+        else if (chassis_UI->Flags.Vision_Flag == 0)
             Char_Painter("aim", Flase, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Orange, 3, 20, 1500, 750, Type_Flag_Auto_Aiming);
 
-        if (chassis_flag->Fric_Flag == 1)
+        if (chassis_UI->Flags.Fric_Flag == 1)
             Char_Painter("shoot", Ture, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Green, 3, 20, 1500, 550, Type_Flag_Shoot_Mode);
-        else if (chassis_flag->Fric_Flag == 0)
+        else if (chassis_UI->Flags.Fric_Flag == 0)
             Char_Painter("shoot", Flase, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Orange, 3, 20, 1500, 550, Type_Flag_Shoot_Mode);
 
-        if (Gimbal_UI->goal == 1)
+        if (Message_UI->GimbalR.goal == 1)
             Graph_Painter("cir", UI_Graph_Change, UI_Graph_Circle, standard_ID1, standard_ID2, 3, Graphic_Color_Green, 10, 960, 540, NULL, NULL, 50, NULL, NULL);
-        else if (Gimbal_UI->goal == 0)
+        else if (Message_UI->GimbalR.goal == 0)
             Graph_Painter("cir", UI_Graph_Change, UI_Graph_Circle, standard_ID1, standard_ID2, 3, Graphic_Color_White, 10, 960, 540, NULL, NULL, 50, NULL, NULL);
 
-        if (chassis_flag->Predict_Flag == 1)
+        if (chassis_UI->Flags.Predict_Flag == 1)
             Char_Painter("predict", Ture, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Green, 3, 20, 1500, 710, Type_Flag_Predict);
-        else if (chassis_flag->Predict_Flag == 0)
+        else if (chassis_UI->Flags.Predict_Flag == 0)
             Char_Painter("predict", Flase, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Orange, 3, 20, 1500, 710, Type_Flag_Predict);
 
-        if (chassis_flag->Energy_Flag == 1)
+        if (chassis_UI->Flags.Energy_Flag == 1)
             Char_Painter("energy", Ture, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Green, 3, 20, 1500, 670, Type_Flag_Energy);
-        else if (chassis_flag->Energy_Flag == 0)
+        else if (chassis_UI->Flags.Energy_Flag == 0)
             Char_Painter("energy", Flase, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Orange, 3, 20, 1500, 670, Type_Flag_Energy);
 
-        if (chassis_velocity->Speed_Gear == 0)
-            Char_Painter("level", Speed_gears[chassis_velocity->Speed_Gear], UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Green, 3, 25, 340, 780, Type_Flag_Level);
-        else if (chassis_velocity->Speed_Gear == 1)
-            Char_Painter("level", Speed_gears[chassis_velocity->Speed_Gear], UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Cyan, 3, 25, 340, 780, Type_Flag_Level);
-        else if (chassis_velocity->Speed_Gear == 2)
-            Char_Painter("level", Speed_gears[chassis_velocity->Speed_Gear], UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Orange, 3, 25, 340, 780, Type_Flag_Level);
-        else if (chassis_velocity->Speed_Gear == 3)
-            Char_Painter("level", Speed_gears[chassis_velocity->Speed_Gear], UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Pink, 3, 25, 340, 780, Type_Flag_Level);
+        if (chassis_UI->Velocity.Speed_Gear == 0)
+            Char_Painter("level", Speed_gears[chassis_UI->Velocity.Speed_Gear], UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Green, 3, 25, 340, 780, Type_Flag_Level);
+        else if (chassis_UI->Velocity.Speed_Gear == 1)
+            Char_Painter("level", Speed_gears[chassis_UI->Velocity.Speed_Gear], UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Cyan, 3, 25, 340, 780, Type_Flag_Level);
+        else if (chassis_UI->Velocity.Speed_Gear == 2)
+            Char_Painter("level", Speed_gears[chassis_UI->Velocity.Speed_Gear], UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Orange, 3, 25, 340, 780, Type_Flag_Level);
+        else if (chassis_UI->Velocity.Speed_Gear == 3)
+            Char_Painter("level", Speed_gears[chassis_UI->Velocity.Speed_Gear], UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Pink, 3, 25, 340, 780, Type_Flag_Level);
 
-        if (chassis_flag->Speed_Up_Flag == 1)
+        if (chassis_UI->Flags.Speed_Up_Flag == 1)
             Char_Painter("power", null, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Pink, 3, 25, 340, 720, Type_Flag_Speed_up);
-        else if (chassis_flag->Speed_Up_Flag == 0) Char_Painter("power", null, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Green, 3, 25, 340, 720, Type_Flag_Speed_up);
+        else if (chassis_UI->Flags.Speed_Up_Flag == 0) Char_Painter("power", null, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Green, 3, 25, 340, 720, Type_Flag_Speed_up);
 
         // Num_Painter("outpost_red", UI_Graph_Change, UI_Graph_Int, standard_ID1, standard_ID2, 3, Graphic_Color_Purplish_red, 3, 10, 840, 20, NULL, game_robot_HP_t.red_outpost_HP, NULL);
         // delay_ms(10);
@@ -158,14 +160,14 @@ void UIDraw_Task(void *pvParameters)
         // 	Num_Painter ("li",UI_Graph_Change,UI_Graph_Int,standard_ID1,standard_ID2,3,Graphic_Color_Yellow,3,1350,100,20,NULL,USART8_RX_BUF[2],NULL);
         // delay_ms(10);
 
-        x1 = 120 - arm_sin_f32(-*Chassis.chassis_yaw_relative_angle + 0.52359877f) * 100.0f;
-        y1 = 625 + arm_cos_f32(-*Chassis.chassis_yaw_relative_angle + 0.52359877f) * 100.0f;
-        x2 = 120 - arm_cos_f32(-*Chassis.chassis_yaw_relative_angle + 1.04719754f) * 100.0f;
-        y2 = 625 - arm_sin_f32(-*Chassis.chassis_yaw_relative_angle + 1.04719754f) * 100.0f;
-        x3 = 120 + arm_sin_f32(-*Chassis.chassis_yaw_relative_angle + 0.52359877f) * 100.0f;
-        y3 = 625 - arm_cos_f32(-*Chassis.chassis_yaw_relative_angle + 0.52359877f) * 100.0f;
-        x4 = 120 + arm_cos_f32(-*Chassis.chassis_yaw_relative_angle + 1.04719754f) * 100.0f;
-        y4 = 625 + arm_sin_f32(-*Chassis.chassis_yaw_relative_angle + 1.04719754f) * 100.0f;
+        x1 = 120 - arm_sin_f32(-*chassis_UI->chassis_yaw_relative_angle + 0.52359877f) * 100.0f;
+        y1 = 625 + arm_cos_f32(-*chassis_UI->chassis_yaw_relative_angle + 0.52359877f) * 100.0f;
+        x2 = 120 - arm_cos_f32(-*chassis_UI->chassis_yaw_relative_angle + 1.04719754f) * 100.0f;
+        y2 = 625 - arm_sin_f32(-*chassis_UI->chassis_yaw_relative_angle + 1.04719754f) * 100.0f;
+        x3 = 120 + arm_sin_f32(-*chassis_UI->chassis_yaw_relative_angle + 0.52359877f) * 100.0f;
+        y3 = 625 - arm_cos_f32(-*chassis_UI->chassis_yaw_relative_angle + 0.52359877f) * 100.0f;
+        x4 = 120 + arm_cos_f32(-*chassis_UI->chassis_yaw_relative_angle + 1.04719754f) * 100.0f;
+        y4 = 625 + arm_sin_f32(-*chassis_UI->chassis_yaw_relative_angle + 1.04719754f) * 100.0f;
 
         Graph_Painter("Li1", UI_Graph_Change, UI_Graph_Line, standard_ID1, standard_ID2, 3, Graphic_Color_Yellow, 13, x1, y1, x2, y2, NULL, NULL, NULL);
         Graph_Painter("Li2", UI_Graph_Change, UI_Graph_Line, standard_ID1, standard_ID2, 3, Graphic_Color_Yellow, 13, x2, y2, x3, y3, NULL, NULL, NULL);
@@ -183,7 +185,7 @@ void UIDraw_Task(void *pvParameters)
         //         UserTaskStack = uxTaskGetStackHighWaterMark(NULL);
         // #endif
         
-        xQueueSend(Message_Queue, &(Message_Data.Data_ID = UIdraw), 0);
+        xQueueSend(Message_Queue, &Message_Data_UI, 0);
         vTaskDelay(10);
     }
 }

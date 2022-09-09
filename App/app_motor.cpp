@@ -4,6 +4,7 @@
 CAN_Ctrl CAN_Cmd;
 
 supercap_measure_t SuperCap;
+Message_Data_t Message_Data_Can[2];
 
 void CAN2_Hook(CanRxMsg *Rx_Message)
 {
@@ -89,20 +90,16 @@ void CAN1_Hook(CanRxMsg *Rx_Message)
 void CAN1_Send(CanRxMsg *Rx_Message)
 {
 	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-	if(xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID = CanData1), &xHigherPriorityTaskWoken))
-	{
-		Message_Data.Data_Ptr[CanData1] = Rx_Message;
-	}
+	Message_Data_Can[0].Data_Ptr = Rx_Message;
+	xQueueSendFromISR(Message_Queue, &Message_Data_Can[0], &xHigherPriorityTaskWoken);
 	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
 void CAN2_Send(CanRxMsg *Rx_Message)
 {
 	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-	if(xQueueSendFromISR(Message_Queue, &(Message_Data.Data_ID = CanData2), &xHigherPriorityTaskWoken))
-	{
-		Message_Data.Data_Ptr[CanData2] = Rx_Message;
-	}
+	Message_Data_Can[1].Data_Ptr = Rx_Message;
+	xQueueSendFromISR(Message_Queue, &Message_Data_Can[1], &xHigherPriorityTaskWoken);
 	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
@@ -113,6 +110,9 @@ void CAN_ALL_Init(void)
 	CAN1_Ctrl.CANx_Init();
 	CAN2_Ctrl.CANx_Init();
 
+	Message_Data_Can[0].Data_ID = CanData1;
+	Message_Data_Can[1].Data_ID = CanData2;
+	
 	CAN1_Ctrl.attachInterrupt(CAN1_Send);
 	CAN2_Ctrl.attachInterrupt(CAN2_Send);
 }

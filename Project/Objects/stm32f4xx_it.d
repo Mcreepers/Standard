@@ -37,3 +37,4 @@
 .\objects\stm32f4xx_it.o: ..\STM32F4xx_FWLib\inc\stm32f4xx_dma2d.h
 .\objects\stm32f4xx_it.o: ..\STM32F4xx_FWLib\inc\stm32f4xx_fmc.h
 .\objects\stm32f4xx_it.o: ..\STM32F4xx_FWLib\inc\stm32f4xx_sai.h
+.\objects\stm32f4xx_it.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdio.h

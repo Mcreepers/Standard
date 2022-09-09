@@ -208,11 +208,36 @@ NMI_Handler     PROC
                 EXPORT  NMI_Handler                [WEAK]
                 B       .
                 ENDP
-HardFault_Handler\
-                PROC
-                EXPORT  HardFault_Handler          [WEAK]
-                B       .
-                ENDP
+;HardFault_Handler
+                ;PROC
+                ;EXPORT  HardFault_Handler          [WEAK]
+                ;B       .
+                ;ENDP
+    IMPORT HardFault_Exception
+    EXPORT HardFault_Handler
+HardFault_Handler    PROC
+
+    TST     lr, #0x04               
+    ITE     EQ
+    MRSEQ   r0, msp                 
+    MRSNE   r0, psp                 
+
+    STMFD   r0!, {r4 - r11}         
+    STMFD   r0!, {lr}               
+
+    TST     lr, #0x04
+    ITE     EQ
+    MSREQ   msp, r0
+    MSRNE   psp, r0
+
+    PUSH    {lr}
+    BL      HardFault_Exception
+    POP     {lr}
+
+    ORR     lr, lr, #0x04
+    BX      lr
+    ENDP
+		
 MemManage_Handler\
                 PROC
                 EXPORT  MemManage_Handler          [WEAK]

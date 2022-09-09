@@ -54,7 +54,7 @@ typedef enum
 struct Message_Data_t
 {
 	ID_e Data_ID;
-	void *Data_Ptr[ID_e_count];
+	void *Data_Ptr;
 };
 
 struct Gimbal_Receive_Data_t
@@ -66,14 +66,12 @@ struct Gimbal_Receive_Data_t
 class Message_Ctrl
 {
 public:
-	Message_Data_t *Data;
 	Gimbal_Receive_Data_t GimbalR;
 	
 	void Hook();
 	void Init();
 	void Feed(ID_e *Name);
 private:
-	Guard_Ctrl *Message_Guard;
 	void *ptr;
 	void Usart3_Hook();
 	void Usart6_Hook();
@@ -142,5 +140,4 @@ private:
 	void sum_key_count(int16_t key_num, count_num_key *temp_count);
 };
 
-extern Message_Data_t Message_Data;
 #endif
