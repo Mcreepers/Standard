@@ -29,11 +29,11 @@ uint16_t UART7_DataLength;
 
 void uart7_dma_get(void)
 {
-	if (UART7->SR & (1 << 4))//检测到线路空闲
-	{
-		//软件序列清除IDLE标志位
-		temp = UART7->DR;
-		temp = UART7->SR;
+//	if (UART7->SR & (1 << 4))//检测到线路空闲
+//	{
+//		//软件序列清除IDLE标志位
+//		temp = UART7->DR;
+//		temp = UART7->SR;
 
 
 		DMA_Cmd(DMA1_Stream3, DISABLE); //先停止DMA，暂停接收 
@@ -48,7 +48,7 @@ void uart7_dma_get(void)
 		USART_DMACmd(UART7, USART_DMAReq_Rx, ENABLE); //使能串口7的DMA接收
 		DMA_Cmd(DMA1_Stream3, ENABLE);
 
-	}
+//	}
 
 }
 

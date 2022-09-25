@@ -13,6 +13,7 @@ Usart_Data_t Usart8( Serial8_Buffer_Size, Serial8_Data_Header, Serial8_Data_tail
 
 void Serial3_Hook(void);
 void Serial6_Hook(void);
+void Serial7_Hook(void);
 
 void Correspondence_Task(void *pvParameters)
 {
@@ -44,6 +45,7 @@ void correspondence_ctrl::Corres_Init(void)
 
     Serial3.attachInterrupt(Serial3_Hook);
 	Serial6.attachInterrupt(Serial6_Hook);
+	Serial7.attachInterrupt(Serial7_Hook);
 	
 	usart7_DMA_init();
 }

@@ -38,7 +38,7 @@ void UIDraw_Task(void *pvParameters)
     while (1)
     {
         
-//        uart7_dma_get();
+        //uart7_dma_get();
         standard_ID1 = robo_data_UI->robo_ID;
         standard_ID2 = 0x100 + uint32_t(robo_data_UI->robo_ID);
 

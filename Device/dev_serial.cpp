@@ -27,7 +27,8 @@ void Serialctrl::IRQHandler(void)
         }
         USART_ClearITPendingBit(USARTx, USART_IT_RXNE);
     }
-	if(USART_GetITStatus(USARTx,USART_IT_IDLE) != RESET)
+    
+    if (USART_GetITStatus(USARTx, USART_IT_IDLE) != RESET)
 	{
 		int temp;
 		temp = USARTx->DR;
