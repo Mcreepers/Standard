@@ -28,8 +28,8 @@
     {                                                                                          \
         (ptr)->last_ecd = (ptr)->ecd;                                                          \
         (ptr)->ecd = (uint16_t)((rx_message)->Data[0] << 8 | (rx_message)->Data[1]);           \
-        (ptr)->speed_rpm = (uint16_t)((rx_message)->Data[2] << 8 | (rx_message)->Data[3]);     \
-        (ptr)->given_current = (uint16_t)((rx_message)->Data[4] << 8 | (rx_message)->Data[5]); \
+        (ptr)->speed_rpm = (int16_t)((rx_message)->Data[2] << 8 | (rx_message)->Data[3]);     \
+        (ptr)->given_current = (int16_t)((rx_message)->Data[4] << 8 | (rx_message)->Data[5]); \
         (ptr)->temperate = (rx_message)->Data[6];                                              \
     }
 		
@@ -38,8 +38,8 @@
     {                                                                                          \
         (ptr)->last_ecd = (ptr)->ecd;                                                          \
         (ptr)->ecd = (uint16_t)((rx_message)->Data[0] << 8 | (rx_message)->Data[1]);           \
-        (ptr)->given_current = (uint16_t)((rx_message)->Data[4] << 8 | (rx_message)->Data[5]); \
-        (ptr)->speed_rpm = (uint16_t)((rx_message)->Data[2] << 8 | (rx_message)->Data[3]);     \
+        (ptr)->given_current = (int16_t)((rx_message)->Data[4] << 8 | (rx_message)->Data[5]); \
+        (ptr)->speed_rpm = (int16_t)((rx_message)->Data[2] << 8 | (rx_message)->Data[3]);     \
         (ptr)->temperate = (rx_message)->Data[6];                                              \
     }
 		
