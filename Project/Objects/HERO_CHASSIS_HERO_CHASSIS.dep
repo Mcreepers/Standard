@@ -72,8 +72,8 @@ I (..\MiddleWare\FreeRTOS\include\timers.h)(0x603A06FC)
 I (..\Task\Inc\RTOSsystem_Task.h)(0x6291F9CD)
 I (..\Task\Inc\Chassis_Task.h)(0x6311BFFF)
 I (..\Protocol\Inc\protocol_dbus.h)(0x62CFDDBA)
-I (..\App\Inc\app_motor.h)(0x62F12C88)
-I (..\Task\Inc\Message_Task.h)(0x6319EF60)
+I (..\App\Inc\app_motor.h)(0x6332FAAC)
+I (..\Task\Inc\Message_Task.h)(0x6333106C)
 I (..\MiddleWare\FreeRTOS\include\queue.h)(0x603A06FC)
 I (..\Algorithm\inc\algorithm_pid.h)(0x62A977CC)
 I (..\Algorithm\inc\algorithm_user_lib.h)(0x62A96D73)
@@ -151,8 +151,8 @@ I (..\ModuleDrivers\Inc\drivers_remote.h)(0x6290991A)
 I (..\ModuleDrivers\Inc\drivers_led.h)(0x628F4FD0)
 I (..\ModuleDrivers\Inc\drivers_dma.h)(0x62D969FD)
 I (D:\study\STM32\mdk1\ARM\ARMCC\include\stdbool.h)(0x6025237C)
-F (..\App\app_motor.cpp)(0x6319F22B)(--cpp -c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork --split_sections -I ..\App\Inc -I ..\Core -I ..\Device\Inc -I ..\MiddleWare\FreeRTOS\portable\RVDS\ARM_CM4F -I ..\MiddleWare\FreeRTOS\include -I ..\ModuleDrivers\Inc -I ..\Platform\Inc -I ..\Protocol\Inc -I ..\STM32F4xx_FWLib\inc -I ..\Task\Inc -I ..\Algorithm\inc -I ..\MiddleWare\DSP\Include --gnu;-diag_suppress=2903,1,1035-I.\RTE\_HERO_CHASSIS-ID:\study\STM32\mdk1\arm\Keil\STM32F4xx_DFP\2.15.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="536" -D_RTE_ -DSTM32F427xx -D_RTE_ -DSTM32F427X -DUSE_STDPERIPH_DRIVER -D__FPU_USED -D__FPU_PRESENT -DARM_MATH_CM4 -D__CC_ARM -DARM_MATH_MATRIX_CHECK -DARM_MATH_ROUNDING-o .\objects\app_motor.o --omf_browse .\objects\app_motor.crf --depend .\objects\app_motor.d)
-I (..\App\Inc\app_motor.h)(0x62F12C88)
+F (..\App\app_motor.cpp)(0x6332FACA)(--cpp -c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork --split_sections -I ..\App\Inc -I ..\Core -I ..\Device\Inc -I ..\MiddleWare\FreeRTOS\portable\RVDS\ARM_CM4F -I ..\MiddleWare\FreeRTOS\include -I ..\ModuleDrivers\Inc -I ..\Platform\Inc -I ..\Protocol\Inc -I ..\STM32F4xx_FWLib\inc -I ..\Task\Inc -I ..\Algorithm\inc -I ..\MiddleWare\DSP\Include --gnu;-diag_suppress=2903,1,1035-I.\RTE\_HERO_CHASSIS-ID:\study\STM32\mdk1\arm\Keil\STM32F4xx_DFP\2.15.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="536" -D_RTE_ -DSTM32F427xx -D_RTE_ -DSTM32F427X -DUSE_STDPERIPH_DRIVER -D__FPU_USED -D__FPU_PRESENT -DARM_MATH_CM4 -D__CC_ARM -DARM_MATH_MATRIX_CHECK -DARM_MATH_ROUNDING-o .\objects\app_motor.o --omf_browse .\objects\app_motor.crf --depend .\objects\app_motor.d)
+I (..\App\Inc\app_motor.h)(0x6332FAAC)
 I (..\Device\Inc\dev_system.h)(0x6305EE38)
 I (..\Platform\Inc\platform.h)(0x6291F951)
 I (..\MiddleWare\FreeRTOS\include\FreeRTOSConfig.h)(0x62CD855C)
@@ -222,7 +222,7 @@ I (D:\study\STM32\mdk1\ARM\ARMCC\include\stdbool.h)(0x6025237C)
 I (..\MiddleWare\FreeRTOS\include\queue.h)(0x603A06FC)
 I (..\Task\Inc\Guard_Task.h)(0x6319EF60)
 I (..\MiddleWare\FreeRTOS\include\timers.h)(0x603A06FC)
-I (..\Task\Inc\Message_Task.h)(0x6319EF60)
+I (..\Task\Inc\Message_Task.h)(0x6333106C)
 I (..\Protocol\Inc\protocol_dbus.h)(0x62CFDDBA)
 I (..\Task\Inc\Chassis_Task.h)(0x6311BFFF)
 I (..\Algorithm\inc\algorithm_pid.h)(0x62A977CC)
@@ -368,8 +368,8 @@ I (..\MiddleWare\FreeRTOS\include\timers.h)(0x603A06FC)
 I (..\Task\Inc\RTOSsystem_Task.h)(0x6291F9CD)
 I (..\Task\Inc\Chassis_Task.h)(0x6311BFFF)
 I (..\Protocol\Inc\protocol_dbus.h)(0x62CFDDBA)
-I (..\App\Inc\app_motor.h)(0x62F12C88)
-I (..\Task\Inc\Message_Task.h)(0x6319EF60)
+I (..\App\Inc\app_motor.h)(0x6332FAAC)
+I (..\Task\Inc\Message_Task.h)(0x6333106C)
 I (..\MiddleWare\FreeRTOS\include\queue.h)(0x603A06FC)
 I (..\Algorithm\inc\algorithm_pid.h)(0x62A977CC)
 I (..\Algorithm\inc\algorithm_user_lib.h)(0x62A96D73)
@@ -516,8 +516,8 @@ I (..\ModuleDrivers\Inc\drivers_led.h)(0x628F4FD0)
 I (..\ModuleDrivers\Inc\drivers_dma.h)(0x62D969FD)
 I (D:\study\STM32\mdk1\ARM\ARMCC\include\stdbool.h)(0x6025237C)
 I (..\Protocol\Inc\protocol_dbus.h)(0x62CFDDBA)
-I (..\App\Inc\app_motor.h)(0x62F12C88)
-I (..\Task\Inc\Message_Task.h)(0x6319EF60)
+I (..\App\Inc\app_motor.h)(0x6332FAAC)
+I (..\Task\Inc\Message_Task.h)(0x6333106C)
 I (..\MiddleWare\FreeRTOS\include\queue.h)(0x603A06FC)
 I (..\Algorithm\inc\algorithm_pid.h)(0x62A977CC)
 I (..\Algorithm\inc\algorithm_user_lib.h)(0x62A96D73)
@@ -526,8 +526,8 @@ I (..\Task\Inc\Guard_Task.h)(0x6319EF60)
 I (..\MiddleWare\FreeRTOS\include\timers.h)(0x603A06FC)
 I (..\MiddleWare\DSP\Include\arm_math.h)(0x581CC64D)
 I (D:\study\STM32\mdk1\ARM\ARMCC\include\math.h)(0x60252378)
-F (..\Task\Message_Task.cpp)(0x6319EE8F)(--cpp -c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork --split_sections -I ..\App\Inc -I ..\Core -I ..\Device\Inc -I ..\MiddleWare\FreeRTOS\portable\RVDS\ARM_CM4F -I ..\MiddleWare\FreeRTOS\include -I ..\ModuleDrivers\Inc -I ..\Platform\Inc -I ..\Protocol\Inc -I ..\STM32F4xx_FWLib\inc -I ..\Task\Inc -I ..\Algorithm\inc -I ..\MiddleWare\DSP\Include --gnu;-diag_suppress=2903,1,1035-I.\RTE\_HERO_CHASSIS-ID:\study\STM32\mdk1\arm\Keil\STM32F4xx_DFP\2.15.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="536" -D_RTE_ -DSTM32F427xx -D_RTE_ -DSTM32F427X -DUSE_STDPERIPH_DRIVER -D__FPU_USED -D__FPU_PRESENT -DARM_MATH_CM4 -D__CC_ARM -DARM_MATH_MATRIX_CHECK -DARM_MATH_ROUNDING-o .\objects\message_task.o --omf_browse .\objects\message_task.crf --depend .\objects\message_task.d)
-I (..\Task\Inc\Message_Task.h)(0x6319EF60)
+F (..\Task\Message_Task.cpp)(0x6333106C)(--cpp -c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork --split_sections -I ..\App\Inc -I ..\Core -I ..\Device\Inc -I ..\MiddleWare\FreeRTOS\portable\RVDS\ARM_CM4F -I ..\MiddleWare\FreeRTOS\include -I ..\ModuleDrivers\Inc -I ..\Platform\Inc -I ..\Protocol\Inc -I ..\STM32F4xx_FWLib\inc -I ..\Task\Inc -I ..\Algorithm\inc -I ..\MiddleWare\DSP\Include --gnu;-diag_suppress=2903,1,1035-I.\RTE\_HERO_CHASSIS-ID:\study\STM32\mdk1\arm\Keil\STM32F4xx_DFP\2.15.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="536" -D_RTE_ -DSTM32F427xx -D_RTE_ -DSTM32F427X -DUSE_STDPERIPH_DRIVER -D__FPU_USED -D__FPU_PRESENT -DARM_MATH_CM4 -D__CC_ARM -DARM_MATH_MATRIX_CHECK -DARM_MATH_ROUNDING-o .\objects\message_task.o --omf_browse .\objects\message_task.crf --depend .\objects\message_task.d)
+I (..\Task\Inc\Message_Task.h)(0x6333106C)
 I (..\Device\Inc\dev_system.h)(0x6305EE38)
 I (..\Platform\Inc\platform.h)(0x6291F951)
 I (..\MiddleWare\FreeRTOS\include\FreeRTOSConfig.h)(0x62CD855C)
@@ -597,7 +597,7 @@ I (D:\study\STM32\mdk1\ARM\ARMCC\include\stdbool.h)(0x6025237C)
 I (..\MiddleWare\FreeRTOS\include\queue.h)(0x603A06FC)
 I (..\Protocol\Inc\protocol_dbus.h)(0x62CFDDBA)
 I (..\Task\Inc\Chassis_Task.h)(0x6311BFFF)
-I (..\App\Inc\app_motor.h)(0x62F12C88)
+I (..\App\Inc\app_motor.h)(0x6332FAAC)
 I (..\Algorithm\inc\algorithm_pid.h)(0x62A977CC)
 I (..\Algorithm\inc\algorithm_user_lib.h)(0x62A96D73)
 I (..\ModuleDrivers\Inc\drivers_state_machines.h)(0x62A97472)
@@ -681,8 +681,8 @@ I (..\Protocol\Inc\protocol_crc.h)(0x6290CCB8)
 I (..\Protocol\Inc\protocol_judgement.h)(0x62E5507A)
 I (..\Task\Inc\Chassis_Task.h)(0x6311BFFF)
 I (..\Protocol\Inc\protocol_dbus.h)(0x62CFDDBA)
-I (..\App\Inc\app_motor.h)(0x62F12C88)
-I (..\Task\Inc\Message_Task.h)(0x6319EF60)
+I (..\App\Inc\app_motor.h)(0x6332FAAC)
+I (..\Task\Inc\Message_Task.h)(0x6333106C)
 I (..\Algorithm\inc\algorithm_pid.h)(0x62A977CC)
 I (..\Algorithm\inc\algorithm_user_lib.h)(0x62A96D73)
 I (..\ModuleDrivers\Inc\drivers_state_machines.h)(0x62A97472)
@@ -756,10 +756,10 @@ I (..\ModuleDrivers\Inc\drivers_dma.h)(0x62D969FD)
 I (D:\study\STM32\mdk1\ARM\ARMCC\include\stdbool.h)(0x6025237C)
 I (..\MiddleWare\FreeRTOS\include\queue.h)(0x603A06FC)
 I (..\MiddleWare\FreeRTOS\include\timers.h)(0x603A06FC)
-I (..\Task\Inc\Message_Task.h)(0x6319EF60)
+I (..\Task\Inc\Message_Task.h)(0x6333106C)
 I (..\Protocol\Inc\protocol_dbus.h)(0x62CFDDBA)
 I (..\Task\Inc\Chassis_Task.h)(0x6311BFFF)
-I (..\App\Inc\app_motor.h)(0x62F12C88)
+I (..\App\Inc\app_motor.h)(0x6332FAAC)
 I (..\Algorithm\inc\algorithm_pid.h)(0x62A977CC)
 I (..\Algorithm\inc\algorithm_user_lib.h)(0x62A96D73)
 I (..\ModuleDrivers\Inc\drivers_state_machines.h)(0x62A97472)
@@ -833,8 +833,8 @@ I (..\ModuleDrivers\Inc\drivers_dma.h)(0x62D969FD)
 I (D:\study\STM32\mdk1\ARM\ARMCC\include\stdbool.h)(0x6025237C)
 I (..\Task\Inc\Chassis_Task.h)(0x6311BFFF)
 I (..\Protocol\Inc\protocol_dbus.h)(0x62CFDDBA)
-I (..\App\Inc\app_motor.h)(0x62F12C88)
-I (..\Task\Inc\Message_Task.h)(0x6319EF60)
+I (..\App\Inc\app_motor.h)(0x6332FAAC)
+I (..\Task\Inc\Message_Task.h)(0x6333106C)
 I (..\MiddleWare\FreeRTOS\include\queue.h)(0x603A06FC)
 I (..\Algorithm\inc\algorithm_pid.h)(0x62A977CC)
 I (..\Algorithm\inc\algorithm_user_lib.h)(0x62A96D73)
@@ -962,7 +962,7 @@ I (..\Platform\Inc\platform_pwm.h)(0x628F9A67)
 I (..\Platform\Inc\platform_exti.h)(0x628F40B7)
 I (..\Platform\Inc\platform_timer.h)(0x628F9840)
 I (..\Platform\Inc\platform_systick.h)(0x629367C9)
-I (..\App\Inc\app_motor.h)(0x62F12C88)
+I (..\App\Inc\app_motor.h)(0x6332FAAC)
 I (..\Device\Inc\dev_system.h)(0x6305EE38)
 I (..\Device\Inc\device.h)(0x62CD677A)
 I (..\Device\Inc\dev_serial.h)(0x62E62D44)
@@ -976,7 +976,7 @@ I (..\ModuleDrivers\Inc\drivers_led.h)(0x628F4FD0)
 I (..\ModuleDrivers\Inc\drivers_dma.h)(0x62D969FD)
 I (D:\study\STM32\mdk1\ARM\ARMCC\include\stdbool.h)(0x6025237C)
 I (..\MiddleWare\FreeRTOS\include\queue.h)(0x603A06FC)
-I (..\Task\Inc\Message_Task.h)(0x6319EF60)
+I (..\Task\Inc\Message_Task.h)(0x6333106C)
 I (..\Protocol\Inc\protocol_dbus.h)(0x62CFDDBA)
 F (..\Device\dev_serial.cpp)(0x6320234D)(--cpp -c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork --split_sections -I ..\App\Inc -I ..\Core -I ..\Device\Inc -I ..\MiddleWare\FreeRTOS\portable\RVDS\ARM_CM4F -I ..\MiddleWare\FreeRTOS\include -I ..\ModuleDrivers\Inc -I ..\Platform\Inc -I ..\Protocol\Inc -I ..\STM32F4xx_FWLib\inc -I ..\Task\Inc -I ..\Algorithm\inc -I ..\MiddleWare\DSP\Include --gnu;-diag_suppress=2903,1,1035-I.\RTE\_HERO_CHASSIS-ID:\study\STM32\mdk1\arm\Keil\STM32F4xx_DFP\2.15.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="536" -D_RTE_ -DSTM32F427xx -D_RTE_ -DSTM32F427X -DUSE_STDPERIPH_DRIVER -D__FPU_USED -D__FPU_PRESENT -DARM_MATH_CM4 -D__CC_ARM -DARM_MATH_MATRIX_CHECK -DARM_MATH_ROUNDING-o .\objects\dev_serial.o --omf_browse .\objects\dev_serial.crf --depend .\objects\dev_serial.d)
 I (..\Device\Inc\dev_serial.h)(0x62E62D44)
@@ -1037,7 +1037,7 @@ I (..\ModuleDrivers\Inc\drivers_buffer.h)(0x62A8EF5E)
 I (D:\study\STM32\mdk1\ARM\ARMCC\include\stdlib.h)(0x60252374)
 I (D:\study\STM32\mdk1\ARM\ARMCC\include\string.h)(0x6025237E)
 I (D:\study\STM32\mdk1\ARM\ARMCC\include\stdio.h)(0x60252374)
-I (..\Task\Inc\Message_Task.h)(0x6319EF60)
+I (..\Task\Inc\Message_Task.h)(0x6333106C)
 I (..\Device\Inc\dev_system.h)(0x6305EE38)
 I (..\Device\Inc\device.h)(0x62CD677A)
 I (..\Device\Inc\dev_can.h)(0x62E2A128)
@@ -1104,7 +1104,7 @@ I (..\Platform\Inc\platform_pwm.h)(0x628F9A67)
 I (..\Platform\Inc\platform_exti.h)(0x628F40B7)
 I (..\Platform\Inc\platform_timer.h)(0x628F9840)
 I (..\Platform\Inc\platform_systick.h)(0x629367C9)
-I (..\Task\Inc\Message_Task.h)(0x6319EF60)
+I (..\Task\Inc\Message_Task.h)(0x6333106C)
 I (..\Device\Inc\dev_system.h)(0x6305EE38)
 I (..\Device\Inc\device.h)(0x62CD677A)
 I (..\Device\Inc\dev_serial.h)(0x62E62D44)
@@ -1119,7 +1119,7 @@ I (..\ModuleDrivers\Inc\drivers_led.h)(0x628F4FD0)
 I (..\ModuleDrivers\Inc\drivers_dma.h)(0x62D969FD)
 I (D:\study\STM32\mdk1\ARM\ARMCC\include\stdbool.h)(0x6025237C)
 I (..\MiddleWare\FreeRTOS\include\queue.h)(0x603A06FC)
-F (..\Protocol\protocol_crc.cpp)(0x6290C9F3)(--cpp -c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork --split_sections -I ..\App\Inc -I ..\Core -I ..\Device\Inc -I ..\MiddleWare\FreeRTOS\portable\RVDS\ARM_CM4F -I ..\MiddleWare\FreeRTOS\include -I ..\ModuleDrivers\Inc -I ..\Platform\Inc -I ..\Protocol\Inc -I ..\STM32F4xx_FWLib\inc -I ..\Task\Inc -I ..\Algorithm\inc -I ..\MiddleWare\DSP\Include --gnu;-diag_suppress=2903,1,1035-I.\RTE\_HERO_CHASSIS-ID:\study\STM32\mdk1\arm\Keil\STM32F4xx_DFP\2.15.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="536" -D_RTE_ -DSTM32F427xx -D_RTE_ -DSTM32F427X -DUSE_STDPERIPH_DRIVER -D__FPU_USED -D__FPU_PRESENT -DARM_MATH_CM4 -D__CC_ARM -DARM_MATH_MATRIX_CHECK -DARM_MATH_ROUNDING-o .\objects\protocol_crc.o --omf_browse .\objects\protocol_crc.crf --depend .\objects\protocol_crc.d)
+F (..\Protocol\protocol_crc.cpp)(0x6332FB06)(--cpp -c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork --split_sections -I ..\App\Inc -I ..\Core -I ..\Device\Inc -I ..\MiddleWare\FreeRTOS\portable\RVDS\ARM_CM4F -I ..\MiddleWare\FreeRTOS\include -I ..\ModuleDrivers\Inc -I ..\Platform\Inc -I ..\Protocol\Inc -I ..\STM32F4xx_FWLib\inc -I ..\Task\Inc -I ..\Algorithm\inc -I ..\MiddleWare\DSP\Include --gnu;-diag_suppress=2903,1,1035-I.\RTE\_HERO_CHASSIS-ID:\study\STM32\mdk1\arm\Keil\STM32F4xx_DFP\2.15.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="536" -D_RTE_ -DSTM32F427xx -D_RTE_ -DSTM32F427X -DUSE_STDPERIPH_DRIVER -D__FPU_USED -D__FPU_PRESENT -DARM_MATH_CM4 -D__CC_ARM -DARM_MATH_MATRIX_CHECK -DARM_MATH_ROUNDING-o .\objects\protocol_crc.o --omf_browse .\objects\protocol_crc.crf --depend .\objects\protocol_crc.d)
 I (..\Protocol\Inc\protocol_crc.h)(0x6290CCB8)
 I (..\Core\stm32f4xx.h)(0x603A05BB)
 I (..\Core\core_cm4.h)(0x603A05E3)

@@ -5,8 +5,6 @@
 #include "queue.h"
 #include "device.h"
  
-union I ecd_data;
-
 Message_Data_t Message_Data;
 Message_Ctrl Message;
 Guard_Ctrl *Message_Guard;

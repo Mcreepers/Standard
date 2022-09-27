@@ -67,7 +67,9 @@ class Message_Ctrl
 {
 public:
 	Gimbal_Receive_Data_t GimbalR;
-	
+
+	union I ecd_data;
+
 	void Hook();
 	void Init();
 	void Feed(ID_e *Name);
