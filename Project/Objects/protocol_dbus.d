@@ -69,4 +69,6 @@
 .\objects\protocol_dbus.o: ..\ModuleDrivers\Inc\drivers_led.h
 .\objects\protocol_dbus.o: ..\ModuleDrivers\Inc\drivers_dma.h
 .\objects\protocol_dbus.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\protocol_dbus.o: ..\App\Inc\app_preference.h
 .\objects\protocol_dbus.o: ..\MiddleWare\FreeRTOS\include\queue.h
+.\objects\protocol_dbus.o: ..\Protocol\Inc\protocol_judgement.h

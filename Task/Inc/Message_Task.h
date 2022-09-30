@@ -5,9 +5,7 @@
 
 #include "queue.h"
 #include "protocol_dbus.h"
-// #include "Chassis_Task.h"
-// #include "dev_serial.h"
-// #include <vector>
+#include "protocol_judgement.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -24,9 +22,7 @@ extern "C" {
 
 #define Message_Q_NUM    40  		    //消息队列的数量
 extern QueueHandle_t Message_Queue;   		//消息队列句柄
-//步兵3 3243
-//步兵5 7631
-#define Gimbal_Motor_Yaw_Offset_ECD 3243
+
 #define RX_BUF_NUM   1000u
 
 union I
@@ -47,6 +43,7 @@ typedef enum
 	chassis,
 	UIdraw,
 	correspondence,
+	robotid,
 	fault,
 	ID_e_count
 }ID_e;
@@ -67,6 +64,7 @@ class Message_Ctrl
 {
 public:
 	Gimbal_Receive_Data_t GimbalR;
+	const robo_data_t *robo;
 
 	union I ecd_data;
 

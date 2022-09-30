@@ -110,7 +110,7 @@ public:
 //舵轮中使用云台电机处理函数平替舵向电机
 class Gimbal_Motor_Ctrl
 {
-#if useSteering
+#ifdef useSteering
   public:
     CANctrl *CAN_Gimbal;
     motor_measure_t Steering_Measure[Chassis_Motor_Numbers];
@@ -120,8 +120,9 @@ class Gimbal_Motor_Ctrl
     {
       return &Steering_Measure[(i & 0x03)];
     }
-#else
-  public:
+#endif
+#ifdef useMecanum
+public:
     CANctrl *CAN_Gimbal;
     motor_measure_t Yaw_Measure;
     //  motor_measure_t Motor_Pitch;

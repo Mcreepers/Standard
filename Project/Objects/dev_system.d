@@ -67,3 +67,4 @@
 .\objects\dev_system.o: ..\ModuleDrivers\Inc\drivers_led.h
 .\objects\dev_system.o: ..\ModuleDrivers\Inc\drivers_dma.h
 .\objects\dev_system.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\dev_system.o: ..\App\Inc\app_preference.h

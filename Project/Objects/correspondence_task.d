@@ -68,12 +68,13 @@
 .\objects\correspondence_task.o: ..\ModuleDrivers\Inc\drivers_led.h
 .\objects\correspondence_task.o: ..\ModuleDrivers\Inc\drivers_dma.h
 .\objects\correspondence_task.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\correspondence_task.o: ..\App\Inc\app_preference.h
 .\objects\correspondence_task.o: ..\Task\Inc\Chassis_Task.h
 .\objects\correspondence_task.o: ..\Protocol\Inc\protocol_dbus.h
 .\objects\correspondence_task.o: ..\App\Inc\app_motor.h
 .\objects\correspondence_task.o: ..\Task\Inc\Message_Task.h
 .\objects\correspondence_task.o: ..\MiddleWare\FreeRTOS\include\queue.h
+.\objects\correspondence_task.o: ..\Protocol\Inc\protocol_judgement.h
 .\objects\correspondence_task.o: ..\Algorithm\inc\algorithm_pid.h
 .\objects\correspondence_task.o: ..\Algorithm\inc\algorithm_user_lib.h
 .\objects\correspondence_task.o: ..\ModuleDrivers\Inc\drivers_state_machines.h
-.\objects\correspondence_task.o: ..\Protocol\Inc\protocol_judgement.h

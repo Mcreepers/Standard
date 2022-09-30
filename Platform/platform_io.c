@@ -156,7 +156,7 @@ const PinInfo_TypeDef PIN_MAP[PIN_MAX] =
     {GPIOH, NULL, NULL,  GPIO_Pin_3, 0, ADC_Channel_X}, /* PH3 */
     {GPIOH, NULL, NULL,  GPIO_Pin_4, 0, ADC_Channel_X}, /* PH4 */
     {GPIOH, NULL, NULL,  GPIO_Pin_5, 0, ADC_Channel_X}, /* PH5 */
-    {GPIOH, NULL, NULL,  GPIO_Pin_6, 0, ADC_Channel_X}, /* PH6 */
+    {GPIOH, TIM12, NULL,  GPIO_Pin_6, 1, ADC_Channel_X}, /* PH6 */
     {GPIOH, NULL, NULL,  GPIO_Pin_7, 0, ADC_Channel_X}, /* PH7 */
     {GPIOH, NULL, NULL,  GPIO_Pin_8, 0, ADC_Channel_X}, /* PH8 */
     {GPIOH, NULL, NULL,  GPIO_Pin_9, 0, ADC_Channel_X}, /* PH9 */

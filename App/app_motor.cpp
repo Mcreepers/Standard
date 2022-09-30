@@ -31,9 +31,9 @@ void CAN2_Hook(CanRxMsg *Rx_Message)
 
 void CAN1_Hook(CanRxMsg *Rx_Message)
 {
-#if useMecanum
 	switch (Rx_Message->StdId)
 	{
+#ifdef useMecanum
 	case CAN_YAW_MOTOR_ID:
 	{
 		//处理电机数据宏函数
@@ -45,14 +45,8 @@ void CAN1_Hook(CanRxMsg *Rx_Message)
 		get_motor_measure(&CAN_Cmd.Fric.Fric_Measure, Rx_Message);//底盘大弹丸拨弹轮电机
 		break;
 	}
-	default:
-	{
-		break;
-	}
-	}
-#elif useSteering
-	switch (Rx_Message->StdId)
-	{
+#endif
+#ifdef useSteering
 	case CAN_6020_M1_ID:
 	case CAN_6020_M2_ID:
 	case CAN_6020_M3_ID:
@@ -65,6 +59,7 @@ void CAN1_Hook(CanRxMsg *Rx_Message)
 		get_motor_measure(&CAN_Cmd.Gimbal.Steering_Measure[i], Rx_Message);
 		break;
 	}
+#endif
 	case 0x301:
 	{
 		SuperCap.ptr = (uint8_t *)&SuperCap.supercap_voltage;
@@ -84,7 +79,6 @@ void CAN1_Hook(CanRxMsg *Rx_Message)
 		break;
 	}
 	}
-#endif
 }
 
 void CAN1_Send(CanRxMsg *Rx_Message)

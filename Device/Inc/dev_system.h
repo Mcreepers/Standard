@@ -38,24 +38,7 @@ extern "C" {
 #include "stdlib.h"
 #include "stdbool.h"
 
-//车id
-#define robotID 3
-
-#ifndef robotID
-#define useMecanum 1
-#define useSteering 0
-#if useMecanum&&useSteering
-#error "不能同时使用麦克纳姆轮和舵轮"
-#elif !(useMecanum||useSteering)
-#error "不能不选择运动逻辑"
-#endif
-#elif robotID==3
-#define useMecanum 0
-#define useSteering 1
-#else
-#define useMecanum 1
-#define useSteering 0
-#endif
+#include "app_preference.h"
 
 #define PI 3.1415926535897932384626433832795f
 #define HALF_PI 1.5707963267948966192313216916398f

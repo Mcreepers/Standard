@@ -52,7 +52,7 @@ void correspondence_ctrl::Corres_Init(void)
 
 void correspondence_ctrl::Corres_Send(void)
 {
-    Serial6.sendData(&GimbalS,7);
+    GIMBAL_SERIAL.sendData(&GimbalS,8);
 }
 
 void correspondence_ctrl::Corres_Feedback(void)
@@ -65,6 +65,7 @@ void correspondence_ctrl::Corres_Feedback(void)
 	{
 		GimbalS.Shoot[i]=Gimbal_Union.I[i];
 	}
+	GimbalS.robo_ID = robo->robo_ID;
 }
 
 void Serial3_Hook(void)

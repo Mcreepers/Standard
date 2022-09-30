@@ -17,7 +17,7 @@ const static fp32 Chassis_Follow_Gimbal_Pid[3] = {CHASSIS_FOLLOW_GIMBAL_PID_KP, 
 const static fp32 chassis_x_order_filter[1] = {CHASSIS_ACCEL_X_NUM};
 const static fp32 chassis_y_order_filter[1] = {CHASSIS_ACCEL_Y_NUM};
 const static fp32 chassis_z_order_filter[1] = {CHASSIS_ACCEL_Z_NUM};
-#if useSteering
+#ifdef useSteering
 const static fp32 m6020_motor_angle_pid[3] = {M6020_MOTOR_ANGLE_PID_KP, M6020_MOTOR_ANGLE_PID_KI, M6020_MOTOR_ANGLE_PID_KD};
 const static fp32 m6020_motor_speed_pid[3] = {M6020_MOTOR_SPEED_PID_KP, M6020_MOTOR_SPEED_PID_KI, M6020_MOTOR_SPEED_PID_KD};
 const static fp32 MOTOR_6020_offset[4] = {MOTOR_6020_1_offset, MOTOR_6020_2_offset, MOTOR_6020_3_offset, MOTOR_6020_4_offset};//6020 ecd中值
@@ -34,7 +34,7 @@ void Chassis_Task(void *pvParameters)
 		if (Chassis.Mode == CHASSIS_NO_MOVE)
 		{
 			CAN_Cmd.Chassis.CAN_Chassis->SendData(0, 0, 0, 0);
-#if useSteering
+#ifdef useSteering
 			CAN_Cmd.Gimbal.CAN_Gimbal->SendData(0, 0, 0, 0);
 #endif
 		}
@@ -46,7 +46,7 @@ void Chassis_Task(void *pvParameters)
 			
 			CAN_Cmd.Chassis.CAN_Chassis->SendData(Chassis.Motor[0].give_current, Chassis.Motor[1].give_current,
 				Chassis.Motor[2].give_current, Chassis.Motor[3].give_current);
-#if useSteering
+#ifdef useSteering
 			CAN_Cmd.Gimbal.CAN_Gimbal->SendData(Chassis.Steering[0].give_current, Chassis.Steering[1].give_current,
 				Chassis.Steering[2].give_current, Chassis.Steering[3].give_current);
 #endif
@@ -71,7 +71,7 @@ void Chassis_Ctrl::Chassis_Init(void)
 		Motor[i].chassis_motor_measure = Motor_Ctrl.Chassis.Get_Motor_Measure_Pointer(i);
 		PID_Init( &Speed_Pid[i], PID_POSITION, Motor_Speed_Pid, M3505_MOTOR_SPEED_PID_MAX_OUT, M3505_MOTOR_SPEED_PID_MAX_IOUT );
 	}
-#if useSteering/* useSteering */
+#ifdef useSteering/* useSteering */
 	for ( uint8_t i = 0; i < 4; i++ )
 	{
 		Steering[i].chassis_motor_measure = Motor_Ctrl.Gimbal.Get_Motor_Measure_Pointer(i);
@@ -111,12 +111,13 @@ void Chassis_Ctrl::Feedback_Update( void )
 	}
 	chassis_relative_ECD = *(chassis_yaw_relative_angle);//相对云台角度
 	chassis_relative_RAD = chassis_relative_ECD * ECD_TO_PI;
-#if useMecanum
+#ifdef useMecanum
     //更新底盘前进速度 x，平移速度y，旋转速度wz，坐标系为右手系
     Velocity.vx = (-Motor[0].speed + Motor[1].speed + Motor[2].speed - Motor[3].speed) * MOTOR_SPEED_TO_CHASSIS_SPEED_VX;
     Velocity.vy = (-Motor[0].speed - Motor[1].speed + Motor[2].speed + Motor[3].speed) * MOTOR_SPEED_TO_CHASSIS_SPEED_VY;
     Velocity.wz = (-Motor[0].speed - Motor[1].speed - Motor[2].speed - Motor[3].speed) * MOTOR_SPEED_TO_CHASSIS_SPEED_WZ / MOTOR_DISTANCE_TO_CENTER;
-#elif	useSteering
+#endif
+#ifdef	useSteering
 	for (i = 0; i < 4; i++)
     {
         //更新电机速度，加速度是速度的PID微分
@@ -454,13 +455,14 @@ void Chassis_Ctrl::Vector_to_Wheel_Speed(fp32 *vx_set,fp32 *vy_set,fp32 *wz_set)
 	fp32 vx_temp = *vx_set;
 	fp32 vy_temp = *vy_set;
 	fp32 wz_temp = *wz_set;
-#if useMecanum
+#ifdef useMecanum
 	//旋转的时候， 由于云台靠前，所以是前面两轮 0 ，1 旋转的速度变慢， 后面两轮 2,3 旋转的速度变快
 	Motor[0].speed_set = vx_temp - vy_temp + MOTOR_DISTANCE_TO_CENTER * wz_temp;
 	Motor[1].speed_set = -vx_temp - vy_temp +  MOTOR_DISTANCE_TO_CENTER * wz_temp;
 	Motor[2].speed_set = vx_temp + vy_temp +  MOTOR_DISTANCE_TO_CENTER * wz_temp;
 	Motor[3].speed_set = -vx_temp + vy_temp +  MOTOR_DISTANCE_TO_CENTER * wz_temp;
-#elif useSteering
+#endif
+#ifdef useSteering
 	uint8_t i = 0;
 	fp32 wheel_speed[4], wheel_angle[4];
 	fp32 vx_mid[2],vy_mid[2];
@@ -492,7 +494,7 @@ void Chassis_Ctrl::Vector_to_Wheel_Speed(fp32 *vx_set,fp32 *vy_set,fp32 *wz_set)
 void Chassis_Ctrl::Control_loop(void)
 {
 	uint8_t i = 0;
-#if useMecanum
+#ifdef useMecanum
 	Vector_to_Wheel_Speed(&Velocity.vx_set, &Velocity.vy_set, &Velocity.wz_set);
     //计算pid
     for (i = 0; i < 4; i++)
@@ -503,8 +505,9 @@ void Chassis_Ctrl::Control_loop(void)
     for (i = 0; i < 4; i++)
     {
         Motor[i].give_current = (int16_t)(Speed_Pid[i].out);
-    }
-#elif useSteering
+	}
+#endif
+#ifdef useSteering
 	//舵轮运动分解
 	Steering_Behaviour_Control(&Velocity.vx_set, &Velocity.vy_set, &Velocity.wz_set);
 	
@@ -560,7 +563,7 @@ void System_Reset(void)
 }
 
 /*------------------------------以下舵轮专属------------------------------*/
-#if useSteering
+#ifdef useSteering
 //根据底盘模式控制舵轮行为
 void Chassis_Ctrl::Steering_Mode_Control(void)
 {

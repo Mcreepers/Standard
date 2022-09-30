@@ -68,3 +68,4 @@
 .\objects\algorithm_pid.o: ..\ModuleDrivers\Inc\drivers_led.h
 .\objects\algorithm_pid.o: ..\ModuleDrivers\Inc\drivers_dma.h
 .\objects\algorithm_pid.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\algorithm_pid.o: ..\App\Inc\app_preference.h

@@ -27,28 +27,30 @@ void Guard_Ctrl::Guard_Start(void)
     Guard_Chassis = get_chassis_ctrl_pointer();
     Guard_Message = get_message_ctrl_pointer();
 
-    Guard_Init(CanData1, false, 1000, 100, &System_RESET);
-    Guard_Init(CanData2, false, 1000 , 100, &System_RESET);
-    // Guard_Init(serial3, false, 1000  ,100, &Error_Send);
-    Guard_Init(serial6, false, 1000 , 100, &Error_Enable);
-    // Guard_Init(serial7, false, 1000 , false, 1000  ,100, &Error_Send);
-    // Guard_Init(serial8, false, 1000  ,100, &Error_Send);
-    // Guard_Init(RC_ctrl, false, 1000 , 200, &System_RESET);
-    Guard_Init(chassis, false, 1000 , 100, &System_RESET);
-    // Guard_Init(UIdraw, false, 1000  ,100, &System_RESET);
-    Guard_Init(correspondence, false, 1000 , 100, &System_RESET);
+    // Guard_Init(CanData1, 1000 ,100, &System_RESET);
+    // Guard_Init(CanData2, 1000, 100, &System_RESET);
+    // Guard_Init(serial3, 1000, 100, &Error_Enable, true);
+    // Guard_Init(serial6, 1000, 100, &Error_Enable, true);
+    // Guard_Init(serial7, 1000 ,100, &Error_Enable, true);
+    // Guard_Init(serial8, 1000 ,100, &Error_Enable, true);
+    // Guard_Init(RC_ctrl, 1000, 200, &System_RESET);
+    // Guard_Init(chassis, 1000, 100, &System_RESET);
+    // Guard_Init(UIdraw, 1000 ,100, &System_RESET);
+    // Guard_Init(correspondence, 1000 ,100, &System_RESET);
+    Guard_Init(robotid, 20000, 5000, &Error_Enable, true, 30000, &Close_Enable);
 }
 //警戒任务初始化
-void Guard_Ctrl::Guard_Init(ID_e Name, bool close, uint32_t StartValue, uint32_t MaxValue, void(*errcb)(uint8_t id))
+void Guard_Ctrl::Guard_Init(ID_e Name, uint32_t StartValue, uint32_t MaxValue, void(*errcb)(uint8_t id), bool Close,uint32_t CloseValue, void(*closecb)(uint8_t id))
 {
-    SG_Structure[Name].Name = Name;
     SG_Structure[Name].Enable = false;//默认关闭
-    SG_Structure[Name].start = false;
-    SG_Structure[Name].close = close;
+    SG_Structure[Name].Start = true;//默认打开
     SG_Structure[Name].Time = 0;
     SG_Structure[Name].Error = 0;
+    SG_Structure[Name].Name = Name;
     SG_Structure[Name].StartValue = StartValue;
     SG_Structure[Name].MaxValue = MaxValue;
+    SG_Structure[Name].Close = Close;
+    SG_Structure[Name].CloseValue = CloseValue;
     if (errcb == NULL)
     {
         SG_Structure[Name].errcallback = &Guard_Return;
@@ -57,6 +59,22 @@ void Guard_Ctrl::Guard_Init(ID_e Name, bool close, uint32_t StartValue, uint32_t
     {
         SG_Structure[Name].errcallback = errcb;
     }
+    if (closecb == NULL)
+    {
+        SG_Structure[Name].closecallback = &Guard_Return;
+    }
+    else
+    {
+        SG_Structure[Name].closecallback = closecb;
+    }
+}
+void Guard_Ctrl::Guard_Init(ID_e Name, uint32_t StartValue, uint32_t MaxValue, void(*errcb)(uint8_t id))
+{
+    Guard_Init(Name, StartValue, MaxValue, errcb, false, 0, &Guard_Return);
+}
+void Guard_Ctrl::Guard_Init(ID_e Name, uint32_t StartValue, uint32_t MaxValue, void(*errcb)(uint8_t id), bool Close)
+{//默认200ms
+    Guard_Init(Name, StartValue, MaxValue, errcb, Close, 200, &Guard_Return);
 }
 //警戒任务扫描
 void Guard_Ctrl::Guard_Scan(void)
@@ -64,44 +82,54 @@ void Guard_Ctrl::Guard_Scan(void)
     uint8_t i;
     for (i = 0;i < GUARD_TOTAL_NUM;i++)
     {
-        if (SG_Structure[i].start == false && (SG_Structure[i].StartValue != 0))
-        {
+        if (SG_Structure[i].Start == true && (SG_Structure[i].StartValue != 0))
+        {//初始化检测
             SG_Structure[i].Error=xTaskGetTickCount()-SG_Structure[i].Time;
             if (SG_Structure[i].Error > SG_Structure[i].StartValue)
-            {
+            {//超时执行回调
                 SG_Structure[i].errcallback(i);
-            }
-        }
-        else if ((SG_Structure[i].Enable == true) && (SG_Structure[i].MaxValue != 0))
-        {
-            SG_Structure[i].Error=xTaskGetTickCount()-SG_Structure[i].Time;
-            if (SG_Structure[i].Error > SG_Structure[i].MaxValue)
-            {
-                SG_Structure[i].errcallback(i);
-            }
-            if (SG_Structure[i].close == true)
-            {
-                if ((int16_t)(SG_Structure[i].Error - SG_Structure[i].MaxValue) > 100)
+                if (((int32_t)(SG_Structure[i].Error - SG_Structure[i].StartValue) > SG_Structure[i].CloseValue) && (SG_Structure[i].Close == true))
+                {//超时后等待关闭
+					SG_Structure[i].Start = false;
+					SG_Structure[i].closecallback(i);
+				}
+			}
+		}
+		else if ((SG_Structure[i].Enable == true) && (SG_Structure[i].MaxValue != 0))
+		{//运行检测
+			SG_Structure[i].Error=xTaskGetTickCount()-SG_Structure[i].Time;
+			if (SG_Structure[i].Error > SG_Structure[i].MaxValue)
+			{//超时执行回调
+				SG_Structure[i].errcallback(i);
+                if (((int32_t)(SG_Structure[i].Error - SG_Structure[i].MaxValue) > SG_Structure[i].CloseValue) && (SG_Structure[i].Close == true))
+                {//超时后等待关闭
+					SG_Structure[i].Enable = false;
+					SG_Structure[i].closecallback(i);
+				}
+			}
+			else
+            {//运行则执行关闭回调
+                if (SG_Structure[i].Close == true)
                 {
-                    SG_Structure[i].Enable = 0;
+                    SG_Structure[i].closecallback(i);
                 }
-            }
-        }
+			}
+		}
     }
 }
 //警戒任务喂狗
-void Guard_Ctrl::Guard_Feed(ID_e *Name)
+void Guard_Ctrl::Guard_Feed(ID_e Name)
 {
-    if (Name == NULL || *Name == fault)
+    if (Name == fault)
     {
         return;
     }
-
-    Guard.SG_Structure[*Name].Enable = true;
-    Guard.SG_Structure[*Name].start = true;
-    Guard.SG_Structure[*Name].Time = xTaskGetTickCount();
+    
+    Guard.SG_Structure[Name].Enable = true;
+    Guard.SG_Structure[Name].Start = false;
+    Guard.SG_Structure[Name].Time = xTaskGetTickCount();
 }
-
+//错误处理函数
 void Error_Enable(uint8_t id)
 {
     switch (id)
@@ -116,10 +144,29 @@ void Error_Enable(uint8_t id)
         
     }
     break;
+    case robotid:
+    {
+		pwmWrite(PH6,1000);
+    }
     default:
     break;
     }
 }
+//关闭处理函数
+void Close_Enable(uint8_t id)
+{
+    switch (id)
+    {
+    case robotid:
+    {
+		pwmWrite(PH6,0);
+    }
+    break;
+    default:
+    break;
+    }
+}
+
 //警戒任务使能(feed中的使能只针对已运行任务)
 void Guard_Ctrl::Guard_Enable(void)
 {

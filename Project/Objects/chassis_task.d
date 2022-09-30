@@ -68,10 +68,12 @@
 .\objects\chassis_task.o: ..\ModuleDrivers\Inc\drivers_led.h
 .\objects\chassis_task.o: ..\ModuleDrivers\Inc\drivers_dma.h
 .\objects\chassis_task.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\chassis_task.o: ..\App\Inc\app_preference.h
 .\objects\chassis_task.o: ..\Protocol\Inc\protocol_dbus.h
 .\objects\chassis_task.o: ..\App\Inc\app_motor.h
 .\objects\chassis_task.o: ..\Task\Inc\Message_Task.h
 .\objects\chassis_task.o: ..\MiddleWare\FreeRTOS\include\queue.h
+.\objects\chassis_task.o: ..\Protocol\Inc\protocol_judgement.h
 .\objects\chassis_task.o: ..\Algorithm\inc\algorithm_pid.h
 .\objects\chassis_task.o: ..\Algorithm\inc\algorithm_user_lib.h
 .\objects\chassis_task.o: ..\ModuleDrivers\Inc\drivers_state_machines.h

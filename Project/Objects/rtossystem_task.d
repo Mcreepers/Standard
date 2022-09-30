@@ -68,4 +68,5 @@
 .\objects\rtossystem_task.o: ..\ModuleDrivers\Inc\drivers_led.h
 .\objects\rtossystem_task.o: ..\ModuleDrivers\Inc\drivers_dma.h
 .\objects\rtossystem_task.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\rtossystem_task.o: ..\App\Inc\app_preference.h
 .\objects\rtossystem_task.o: ..\App\Inc\app_led.h

@@ -68,6 +68,7 @@
 .\objects\uidraw_task.o: ..\ModuleDrivers\Inc\drivers_led.h
 .\objects\uidraw_task.o: ..\ModuleDrivers\Inc\drivers_dma.h
 .\objects\uidraw_task.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\uidraw_task.o: ..\App\Inc\app_preference.h
 .\objects\uidraw_task.o: ..\MiddleWare\FreeRTOS\include\queue.h
 .\objects\uidraw_task.o: ..\MiddleWare\DSP\Include\arm_math.h
 .\objects\uidraw_task.o: ..\Core\core_cm4.h

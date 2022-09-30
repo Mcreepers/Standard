@@ -33,110 +33,6 @@ void Chassis_Task(void *pvParameters);
 //选择底盘状态 开关通道号
 #define CHANNEL_LEFT  1
 #define CHANNEL_RIGHT  0
-//选择遥控器控制模式下切换移动或射击
-#define MOVE_OR_SHOOT 0
-//遥控器前进摇杆（max 660）转化成车体前进速度（m/s）的比例
-#define CHASSIS_VX_RC_SEN 0.003030303f//0.0015f
-//遥控器左右摇杆（max 660）转化成车体左右速度（m/s）的比例
-#define CHASSIS_VY_RC_SEN 0.003030303f//0.0015f
-//跟随底盘yaw模式下，遥控器的yaw遥杆（max 660）增加到车体角度的比例
-#define CHASSIS_ANGLE_Z_RC_SEN 0.000002f
-//不跟随云台的时候 遥控器的yaw遥杆（max 660）转化成车体旋转速度的比例
-#define CHASSIS_WZ_RC_SEN 0.01f
-
-//这两个宏用于低通滤波//值越大底盘越软
-#define CHASSIS_ACCEL_X_NUM 0.5f
-#define CHASSIS_ACCEL_Y_NUM 0.5f
-#define CHASSIS_ACCEL_Z_NUM 0.15f
-//遥控器死区
-#define CHASSIS_RC_DEADLINE 10
-
-#define MOTOR_SPEED_TO_CHASSIS_SPEED_VX 0.25f
-#define MOTOR_SPEED_TO_CHASSIS_SPEED_VY 0.25f
-#define MOTOR_SPEED_TO_CHASSIS_SPEED_WZ 0.25f
-
-#define MOTOR_DISTANCE_TO_CENTER 0.2f
-
-//底盘任务控制间隔 2ms
-#define CHASSIS_CONTROL_TIME_MS 2
-//底盘任务控制间隔 0.002s
-#define CHASSIS_CONTROL_TIME 0.002
-//底盘任务控制频率，尚未使用这个宏
-#define CHASSIS_CONTROL_FREQUENCE 500.0f
-//底盘3508最大can发送电流值
-#define MAX_MOTOR_CAN_CURRENT 10000.0f
-
-//功率优先
-#define POWER_FIRST 1 
-//血量优先
-#define HP_FIRST 0 
-
-#define FRONT_ECD 887
-#define BACK_ECD  4974
-#define LEFT_ECD  2935
-#define RIGHT_ECD 7034
-
-#define FRONT_LEFT_ECD  3977
-#define FRONT_RIGHT_ECD 2050
-#define BACK_RIGHT_ECD  6022
-#define BACK_LEFT_ECD   7930
-
-
-//m3508转化成底盘速度(m/s)的比例，做两个宏 是因为可能换电机需要更换比例
-#define M3508_MOTOR_RPM_TO_VECTOR 0.000415809748903494517209f
-#define CHASSIS_MOTOR_RPM_TO_VECTOR_SEN M3508_MOTOR_RPM_TO_VECTOR
-
-//底盘电机最大速度
-#define MAX_WHEEL_SPEED 10.0f//4.0
-//底盘运动过程最大前进速度
-#define NORMAL_MAX_CHASSIS_SPEED_X 10.0f//2.9
-//底盘运动过程最大平移速度
-#define NORMAL_MAX_CHASSIS_SPEED_Y 10.0f//2.9
-//底盘运动过程最大旋速度
-#define NORMAL_MAX_CHASSIS_SPEED_Z 10.0f//2.9
-
-//底盘设置旋转速度，设置前后左右轮不同设定速度的比例分权 0为在几何中心，不需要补偿
-#define CHASSIS_WZ_SET_SCALE 0.1f
-
-//摇摆原地不动摇摆最大角度(rad)
-#define SWING_NO_MOVE_ANGLE 0.1f
-//摇摆过程底盘运动最大角度(rad)
-#define SWING_MOVE_ANGLE 0.5f
-
-//底盘电机速度环PID
-#define M3505_MOTOR_SPEED_PID_KP 15000.0f
-#define M3505_MOTOR_SPEED_PID_KI 10.0f
-#define M3505_MOTOR_SPEED_PID_KD 1.0f
-#define M3505_MOTOR_SPEED_PID_MAX_OUT MAX_MOTOR_CAN_CURRENT
-#define M3505_MOTOR_SPEED_PID_MAX_IOUT 2000.0f
-
-#if useSteering
-//底盘6020ecd偏差值
-#define MOTOR_6020_1_offset 2082
-#define MOTOR_6020_2_offset 719
-#define MOTOR_6020_3_offset 7511
-#define MOTOR_6020_4_offset 3450
-
-//底盘6020电机角度环PID
-#define M6020_MOTOR_ANGLE_PID_KP 10.0f
-#define M6020_MOTOR_ANGLE_PID_KI 0.0f
-#define M6020_MOTOR_ANGLE_PID_KD 1.0f
-#define M6020_MOTOR_ANGLE_PID_MAX_OUT MAX_MOTOR_CAN_CURRENT
-#define M6020_MOTOR_ANGLE_PID_MAX_IOUT 2000.0f
-//底盘6020电机速度环PID
-#define M6020_MOTOR_SPEED_PID_KP 2.0f
-#define M6020_MOTOR_SPEED_PID_KI 0.005f
-#define M6020_MOTOR_SPEED_PID_KD 0.0f
-#define M6020_MOTOR_SPEED_PID_MAX_OUT MAX_MOTOR_CAN_CURRENT
-#define M6020_MOTOR_SPEED_PID_MAX_IOUT 2000.0f
-#endif
-//底盘旋转跟随PID
-#define CHASSIS_FOLLOW_GIMBAL_PID_KP 1.1f
-#define CHASSIS_FOLLOW_GIMBAL_PID_KI 0.001f
-#define CHASSIS_FOLLOW_GIMBAL_PID_KD 0.0f
-#define CHASSIS_FOLLOW_GIMBAL_PID_MAX_OUT 2000.0f
-#define CHASSIS_FOLLOW_GIMBAL_PID_MAX_IOUT 1000.0f
-
 
 typedef struct
 {
@@ -149,7 +45,7 @@ typedef struct
 } Chassis_Motor_t;//底盘接收编码器数据
 
 
-#if useSteering
+#ifdef useSteering
 struct Steering_Data_t
 {
   fp32 angle;
@@ -266,7 +162,7 @@ public:
   void Control(void);
   void Behaviour_Mode(void);
   void Control_loop(void);
-#if useSteering
+#ifdef useSteering
   Chassis_Steering_t Steering[4];
   chassis_steering_mode_e Steering_Mode;
 
@@ -279,7 +175,7 @@ private:
   void RC_to_Control(fp32 *vx_set, fp32 *vy_set);
   void Behaviour_Control(fp32 *vx_set, fp32 *vy_set, fp32 *angle_set);
   void Vector_to_Wheel_Speed(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set);
-#if  useSteering
+#ifdef  useSteering
   void Steering_Behaviour_Control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set);
   void Steering_Round_Calc(void);
   void Steering_Mode_Control(void);

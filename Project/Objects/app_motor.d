@@ -68,11 +68,13 @@
 .\objects\app_motor.o: ..\ModuleDrivers\Inc\drivers_led.h
 .\objects\app_motor.o: ..\ModuleDrivers\Inc\drivers_dma.h
 .\objects\app_motor.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\app_motor.o: ..\App\Inc\app_preference.h
 .\objects\app_motor.o: ..\MiddleWare\FreeRTOS\include\queue.h
 .\objects\app_motor.o: ..\Task\Inc\Guard_Task.h
 .\objects\app_motor.o: ..\MiddleWare\FreeRTOS\include\timers.h
 .\objects\app_motor.o: ..\Task\Inc\Message_Task.h
 .\objects\app_motor.o: ..\Protocol\Inc\protocol_dbus.h
+.\objects\app_motor.o: ..\Protocol\Inc\protocol_judgement.h
 .\objects\app_motor.o: ..\Task\Inc\Chassis_Task.h
 .\objects\app_motor.o: ..\Algorithm\inc\algorithm_pid.h
 .\objects\app_motor.o: ..\Algorithm\inc\algorithm_user_lib.h

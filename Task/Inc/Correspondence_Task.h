@@ -22,19 +22,6 @@ union F
     fp32 F;
 };
 
-#define GIMBAL_SERIAL_HEADER 0xff
-#define GIMBAL_SERIAL_TAIL 0xfe
-
-//ÎÞÖ¡Î²ÔòÎª NULL
-#define Serial3_Data_Header 0xff
-#define Serial3_Data_tail 0xfe
-#define Serial6_Data_Header 0xff
-#define Serial6_Data_tail 0xfe
-#define Serial7_Data_Header 0xff
-#define Serial7_Data_tail 0xfe
-#define Serial8_Data_Header 0xff
-#define Serial8_Data_tail 0xfe
-
 #define RATE_5_HZ		5
 #define RATE_10_HZ		10
 #define RATE_25_HZ		25
@@ -53,7 +40,8 @@ struct Gimbal_Send_Data_t
 {
     uint8_t Header;
     uint8_t Grade;
-	uint8_t Shoot[4];
+    uint8_t Shoot[4];
+    uint8_t robo_ID;
     uint8_t Tail;
 };
 

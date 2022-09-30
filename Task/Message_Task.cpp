@@ -12,6 +12,7 @@ Guard_Ctrl *Message_Guard;
 extern void uart7_dma_get(void);
 void Message_Task(void *pvParameters)
 {
+	Message.Init();
 	while (1)
     {
         if (xQueueReceive(Message_Queue, &Message_Data, portMAX_DELAY))
@@ -25,11 +26,12 @@ void Message_Task(void *pvParameters)
 void Message_Ctrl::Init()
 {
 	Message_Guard = get_guard_ctrl_pointer();
+	robo = get_robo_data_Point();
 }
 
 void Message_Ctrl::Feed(ID_e *ID)
 {
-	Message_Guard->Guard_Feed(ID);
+	Message_Guard->Guard_Feed(*ID);
 }
 
 //消息处理
@@ -56,7 +58,7 @@ void Message_Ctrl::Hook()
 		// Usart8_Hook();
 		break;
 	case RC_ctrl:
-	rc_key_v_fresh((RC_ctrl_t *)Message_Data.Data_Ptr);
+		rc_key_v_fresh((RC_ctrl_t *)Message_Data.Data_Ptr);
 		break;
 	default:
 		break;
@@ -85,6 +87,10 @@ void Message_Ctrl::Usart6_Hook()
 void Message_Ctrl::Usart7_Hook()
 {
 	uart7_dma_get();
+	if (robo->robo_ID % 100 == RobotID)
+	{//%100忽视红蓝
+		Message_Guard->Guard_Feed(robotid);
+	}
 }
 
 void Message_Ctrl::Usart8_Hook()

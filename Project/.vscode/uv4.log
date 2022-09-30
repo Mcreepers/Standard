@@ -1,21 +1,52 @@
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'D:\study\STM32\mdk1\ARM\ARMCC\Bin'
 Build target 'HERO_CHASSIS'
-compiling Correspondence_Task.cpp...
-compiling Message_Task.cpp...
-compiling main.cpp...
 compiling app_motor.cpp...
-compiling start_task.cpp...
+..\App\Inc\app_preference.h(7): warning:  #1215-D: #warning directive: RobotID位置提示, 请自行注释
+  #warning RobotID位置提示, 请自行注释
+..\App\app_motor.cpp: 1 warning, 0 errors
+compiling Correspondence_Task.cpp...
+..\App\Inc\app_preference.h(7): warning:  #1215-D: #warning directive: RobotID位置提示, 请自行注释
+  #warning RobotID位置提示, 请自行注释
+..\Task\Correspondence_Task.cpp: 1 warning, 0 errors
 compiling Guard_Task.cpp...
+..\App\Inc\app_preference.h(7): warning:  #1215-D: #warning directive: RobotID位置提示, 请自行注释
+  #warning RobotID位置提示, 请自行注释
+..\Task\Guard_Task.cpp: 1 warning, 0 errors
+compiling main.cpp...
+..\App\Inc\app_preference.h(7): warning:  #1215-D: #warning directive: RobotID位置提示, 请自行注释
+  #warning RobotID位置提示, 请自行注释
+..\App\main.cpp: 1 warning, 0 errors
+compiling Message_Task.cpp...
+..\App\Inc\app_preference.h(7): warning:  #1215-D: #warning directive: RobotID位置提示, 请自行注释
+  #warning RobotID位置提示, 请自行注释
+..\Task\Message_Task.cpp: 1 warning, 0 errors
+compiling start_task.cpp...
+..\App\Inc\app_preference.h(7): warning:  #1215-D: #warning directive: RobotID位置提示, 请自行注释
+  #warning RobotID位置提示, 请自行注释
+..\Task\start_task.cpp: 1 warning, 0 errors
 compiling UIDraw_Task.cpp...
+..\App\Inc\app_preference.h(7): warning:  #1215-D: #warning directive: RobotID位置提示, 请自行注释
+  #warning RobotID位置提示, 请自行注释
+..\Task\UIDraw_Task.cpp: 1 warning, 0 errors
 compiling Chassis_Task.cpp...
-compiling protocol_crc.cpp...
+..\App\Inc\app_preference.h(7): warning:  #1215-D: #warning directive: RobotID位置提示, 请自行注释
+  #warning RobotID位置提示, 请自行注释
+..\Task\Chassis_Task.cpp: 1 warning, 0 errors
 compiling protocol_dbus.cpp...
+..\App\Inc\app_preference.h(7): warning:  #1215-D: #warning directive: RobotID位置提示, 请自行注释
+  #warning RobotID位置提示, 请自行注释
+..\Protocol\protocol_dbus.cpp: 1 warning, 0 errors
+compiling dev_can.cpp...
+..\App\Inc\app_preference.h(7): warning:  #1215-D: #warning directive: RobotID位置提示, 请自行注释
+  #warning RobotID位置提示, 请自行注释
+..\Device\dev_can.cpp: 1 warning, 0 errors
 compiling dev_serial.cpp...
+..\App\Inc\app_preference.h(7): warning:  #1215-D: #warning directive: RobotID位置提示, 请自行注释
+  #warning RobotID位置提示, 请自行注释
 ..\Device\dev_serial.cpp(33): warning:  #550-D: variable "temp"  was set but never used
   		int temp;
-..\Device\dev_serial.cpp: 1 warning, 0 errors
-compiling dev_can.cpp...
+..\Device\dev_serial.cpp: 2 warnings, 0 errors
 linking...
-Program Size: Code=33462 RO-data=6298 RW-data=428 ZI-data=139652  
-".\Objects\HERO_CHASSIS.axf" - 0 Error(s), 1 Warning(s).
-Build Time Elapsed:  00:00:13
+Program Size: Code=33534 RO-data=6298 RW-data=428 ZI-data=139772  
+".\Objects\HERO_CHASSIS.axf" - 0 Error(s), 12 Warning(s).
+Build Time Elapsed:  00:00:10

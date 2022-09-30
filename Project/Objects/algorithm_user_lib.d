@@ -68,3 +68,4 @@
 .\objects\algorithm_user_lib.o: ..\ModuleDrivers\Inc\drivers_led.h
 .\objects\algorithm_user_lib.o: ..\ModuleDrivers\Inc\drivers_dma.h
 .\objects\algorithm_user_lib.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\algorithm_user_lib.o: ..\App\Inc\app_preference.h
