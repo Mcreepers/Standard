@@ -176,7 +176,7 @@ void Chassis_Ctrl::Behaviour_Mode(void)
 				Velocity.Speed_Gear--;
 		}
 		//视觉开关
-		if (read_key(&Press.R, single, &Flags.Vision_Flag))
+		if (read_key(&Press.R, single, &Flags.Visual_Flag))
 		{//预测开关
 			read_key(&Key.E, single, &Flags.Predict_Flag);
 		}
@@ -185,11 +185,11 @@ void Chassis_Ctrl::Behaviour_Mode(void)
 		{
 			UIsend = 10;
 			//能量机关开关
-			if ((Flags.Vision_Flag == 1) && (Flags.Energy_Flag == 0))
+			if ((Flags.Visual_Flag == 1) && (Flags.Energy_Flag == 0))
 			{
 				Flags.Energy_Flag = 1;
 			}
-			else if ((Flags.Vision_Flag == 1) && (Flags.Energy_Flag == 1))
+			else if ((Flags.Visual_Flag == 1) && (Flags.Energy_Flag == 1))
 			{
 				Flags.Energy_Flag = 0;
 			}
@@ -215,38 +215,40 @@ void Chassis_Ctrl::Behaviour_Mode(void)
 	{
 		Mode = CHASSIS_NO_MOVE;
 	}
-#if MOVE_OR_SHOOT
+#if RC_CONTRAL_MODE == 0
 	if (switch_is_mid(RC_Ptr->rc.s[CHANNEL_RIGHT]) && switch_is_down(RC_Ptr->rc.s[CHANNEL_LEFT]))
 	{
-		Mode = CHASSIS_NO_FOLLOW_YAW;
-	}
-	else if(switch_is_mid(RC_Ptr->rc.s[CHANNEL_RIGHT]) && switch_is_mid(RC_Ptr->rc.s[CHANNEL_LEFT])){
-		Mode = CHASSIS_FOLLOW_YAW;
-	}
-	else if(switch_is_mid(RC_Ptr->rc.s[CHANNEL_RIGHT]) && switch_is_up(RC_Ptr->rc.s[CHANNEL_LEFT])){
-		Mode = CHASSIS_LITTLE_TOP;
-	}
-#else
-	else if(switch_is_mid(RC_Ptr->rc.s[CHANNEL_RIGHT]))
-	{
-		Mode = CHASSIS_NO_FOLLOW_YAW;
-	}
-	if (switch_is_mid(RC_Ptr->rc.s[CHANNEL_RIGHT]) && switch_is_down(RC_Ptr->rc.s[CHANNEL_LEFT]))
-	{
-		Flags.Shoot_Flag=false;
-		Flags.Fric_Flag=false;
 		Mode = CHASSIS_NO_FOLLOW_YAW;
 	}
 	else if (switch_is_mid(RC_Ptr->rc.s[CHANNEL_RIGHT]) && switch_is_mid(RC_Ptr->rc.s[CHANNEL_LEFT]))
 	{
+		Mode = CHASSIS_FOLLOW_YAW;
+	}
+	if (switch_is_mid(RC_Ptr->rc.s[CHANNEL_RIGHT]) && switch_is_up(RC_Ptr->rc.s[CHANNEL_LEFT]))
+	{
+		Mode = CHASSIS_LITTLE_TOP;
+	}
+#elif RC_CONTRAL_MODE == 1
+	if (switch_is_mid(RC_Ptr->rc.s[CHANNEL_RIGHT]) && switch_is_down(RC_Ptr->rc.s[CHANNEL_LEFT]))
+	{
+		Mode = CHASSIS_NO_FOLLOW_YAW;
+		Flags.Fric_Flag = false;
 		Flags.Shoot_Flag = false;
-		Flags.Fric_Flag=false;
-//		Mode = CHASSIS_LITTLE_TOP;
+		Flags.Visual_Flag = false;
+	}
+	else if (switch_is_mid(RC_Ptr->rc.s[CHANNEL_RIGHT]) && switch_is_mid(RC_Ptr->rc.s[CHANNEL_LEFT]))
+	{
+		Mode = CHASSIS_NO_FOLLOW_YAW;
+		Flags.Fric_Flag = false;
+		Flags.Shoot_Flag = false;
+		Flags.Visual_Flag = true;
 	}
 	else if (switch_is_mid(RC_Ptr->rc.s[CHANNEL_RIGHT]) && switch_is_up(RC_Ptr->rc.s[CHANNEL_LEFT]))
 	{
+		Mode = CHASSIS_NO_FOLLOW_YAW;
 		Flags.Fric_Flag = true;
 		Flags.Shoot_Flag = true;
+		Flags.Visual_Flag = true;
 	}
 #endif
 	else if (switch_is_up(RC_Ptr->rc.s[CHANNEL_RIGHT]) && switch_is_up(RC_Ptr->rc.s[CHANNEL_LEFT]))
@@ -301,7 +303,7 @@ void Chassis_Ctrl::RC_to_Control( fp32 *vx_set, fp32 *vy_set)
 			}
 			else
 			{
-				vx_set_channel = 0;
+				vx_set_channel = 0.f;
 			}
 			if (read_key(&Key.A, even, true))
 			{
@@ -313,7 +315,7 @@ void Chassis_Ctrl::RC_to_Control( fp32 *vx_set, fp32 *vy_set)
 			}
 			else
 			{
-				vy_set_channel = 0;
+				vy_set_channel = 0.f;
 			}
 		}
 		else//无WSAD输入则一直静止

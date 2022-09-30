@@ -79,7 +79,7 @@ typedef struct
 {
   bool Spin_Flag;
   bool RC_Flag;
-  bool Vision_Flag;
+  bool Visual_Flag;
   bool Predict_Flag;
   bool Energy_Flag;
   bool Looding_Flag;

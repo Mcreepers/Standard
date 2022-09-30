@@ -92,9 +92,9 @@ void UIDraw_Task(void *pvParameters)
 
         Char_Painter("friesp", Chassis_Mode[chassis_UI->Mode], UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Green, 3, 20, 1500, 790, Type_Flag_Frie_Speed);
 
-        if (chassis_UI->Flags.Vision_Flag == 1)
+        if (chassis_UI->Flags.Visual_Flag == 1)
             Char_Painter("aim", Ture, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Green, 3, 20, 1500, 750, Type_Flag_Auto_Aiming);
-        else if (chassis_UI->Flags.Vision_Flag == 0)
+        else if (chassis_UI->Flags.Visual_Flag == 0)
             Char_Painter("aim", Flase, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Orange, 3, 20, 1500, 750, Type_Flag_Auto_Aiming);
 
         if (chassis_UI->Flags.Fric_Flag == 1)
