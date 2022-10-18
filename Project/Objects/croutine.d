@@ -1,7 +1,7 @@
 .\objects\croutine.o: ..\MiddleWare\FreeRTOS\croutine.c
 .\objects\croutine.o: ..\MiddleWare\FreeRTOS\include\FreeRTOS.h
-.\objects\croutine.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stddef.h
-.\objects\croutine.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\croutine.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\croutine.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\croutine.o: ..\MiddleWare\FreeRTOS\include\FreeRTOSConfig.h
 .\objects\croutine.o: ..\MiddleWare\FreeRTOS\include\projdefs.h
 .\objects\croutine.o: ..\MiddleWare\FreeRTOS\include\portable.h

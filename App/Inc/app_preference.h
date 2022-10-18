@@ -3,7 +3,7 @@
 /*-----------------------------各兵种宏指令大全---------------------------*/
 //id错误蜂鸣器会响
 //该id无关红蓝
-#define RobotID 3
+#define RobotID 4
 #warning RobotID位置提示, 请自行注释
 #ifndef RobotID
 #define useMecanum
@@ -329,7 +329,8 @@
 #define Serial8_Data_Header 0xff
 #define Serial8_Data_tail 0xfe
 
-#define Gimbal_Motor_Yaw_Offset_ECD 3243// 5 7631
+//底盘跟随云台ECD
+#define Gimbal_Motor_Yaw_Offset_ECD 200// 5 7631
 
 //选择遥控器控制模式(三挡位功能如下0:不跟随 跟随 小陀螺 1:不跟随 视觉 视觉发弹)
 #define RC_CONTRAL_MODE 0
@@ -393,11 +394,11 @@
 #define M3505_MOTOR_SPEED_PID_MAX_IOUT 2000.0f
 
 //底盘旋转跟随PID
-#define CHASSIS_FOLLOW_GIMBAL_PID_KP 1.1f
+#define CHASSIS_FOLLOW_GIMBAL_PID_KP 10.0f
 #define CHASSIS_FOLLOW_GIMBAL_PID_KI 0.001f
-#define CHASSIS_FOLLOW_GIMBAL_PID_KD 0.0f
-#define CHASSIS_FOLLOW_GIMBAL_PID_MAX_OUT 2000.0f
-#define CHASSIS_FOLLOW_GIMBAL_PID_MAX_IOUT 1000.0f
+#define CHASSIS_FOLLOW_GIMBAL_PID_KD 8.0f
+#define CHASSIS_FOLLOW_GIMBAL_PID_MAX_OUT 6000.0f
+#define CHASSIS_FOLLOW_GIMBAL_PID_MAX_IOUT 4000.0f
 
 #endif
 #if RobotID == 5

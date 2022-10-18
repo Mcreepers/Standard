@@ -2,7 +2,7 @@
 .\objects\stm32f4xx_usart.o: ..\STM32F4xx_FWLib\inc\stm32f4xx_usart.h
 .\objects\stm32f4xx_usart.o: ..\Core\stm32f4xx.h
 .\objects\stm32f4xx_usart.o: ..\Core\core_cm4.h
-.\objects\stm32f4xx_usart.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\stm32f4xx_usart.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\stm32f4xx_usart.o: ..\Core\core_cmInstr.h
 .\objects\stm32f4xx_usart.o: ..\Core\core_cmFunc.h
 .\objects\stm32f4xx_usart.o: ..\Core\core_cm4_simd.h

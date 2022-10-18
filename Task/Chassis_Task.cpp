@@ -459,10 +459,10 @@ void Chassis_Ctrl::Vector_to_Wheel_Speed(fp32 *vx_set,fp32 *vy_set,fp32 *wz_set)
 	fp32 wz_temp = *wz_set;
 #ifdef useMecanum
 	//旋转的时候， 由于云台靠前，所以是前面两轮 0 ，1 旋转的速度变慢， 后面两轮 2,3 旋转的速度变快
-	Motor[0].speed_set = vx_temp - vy_temp + MOTOR_DISTANCE_TO_CENTER * wz_temp;
-	Motor[1].speed_set = -vx_temp - vy_temp +  MOTOR_DISTANCE_TO_CENTER * wz_temp;
-	Motor[2].speed_set = vx_temp + vy_temp +  MOTOR_DISTANCE_TO_CENTER * wz_temp;
-	Motor[3].speed_set = -vx_temp + vy_temp +  MOTOR_DISTANCE_TO_CENTER * wz_temp;
+	Motor[0].speed_set = vx_temp - vy_temp - MOTOR_DISTANCE_TO_CENTER * wz_temp;
+	Motor[1].speed_set = -vx_temp - vy_temp -  MOTOR_DISTANCE_TO_CENTER * wz_temp;
+	Motor[2].speed_set = vx_temp + vy_temp -  MOTOR_DISTANCE_TO_CENTER * wz_temp;
+	Motor[3].speed_set = -vx_temp + vy_temp -  MOTOR_DISTANCE_TO_CENTER * wz_temp;
 #endif
 #ifdef useSteering
 	uint8_t i = 0;
