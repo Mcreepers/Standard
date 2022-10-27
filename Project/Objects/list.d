@@ -1,8 +1,8 @@
 .\objects\list.o: ..\MiddleWare\FreeRTOS\list.c
-.\objects\list.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\list.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\list.o: ..\MiddleWare\FreeRTOS\include\FreeRTOS.h
-.\objects\list.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stddef.h
-.\objects\list.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\list.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\list.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\list.o: ..\MiddleWare\FreeRTOS\include\FreeRTOSConfig.h
 .\objects\list.o: ..\MiddleWare\FreeRTOS\include\projdefs.h
 .\objects\list.o: ..\MiddleWare\FreeRTOS\include\portable.h

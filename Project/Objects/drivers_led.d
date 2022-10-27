@@ -2,9 +2,9 @@
 .\objects\drivers_led.o: ..\ModuleDrivers\Inc\drivers_led.h
 .\objects\drivers_led.o: ..\Platform\Inc\platform.h
 .\objects\drivers_led.o: ..\MiddleWare\FreeRTOS\include\FreeRTOSConfig.h
-.\objects\drivers_led.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\drivers_led.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\drivers_led.o: ..\MiddleWare\FreeRTOS\include\FreeRTOS.h
-.\objects\drivers_led.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\drivers_led.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\drivers_led.o: ..\MiddleWare\FreeRTOS\include\projdefs.h
 .\objects\drivers_led.o: ..\MiddleWare\FreeRTOS\include\portable.h
 .\objects\drivers_led.o: ..\MiddleWare\FreeRTOS\include\deprecated_definitions.h
