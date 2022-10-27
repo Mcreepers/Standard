@@ -5,6 +5,7 @@
 
 CANctrl CAN1_Ctrl(CAN1, CAN_GIMBAL_ALL_ID);
 CANctrl CAN2_Ctrl( CAN2, CAN_CHASSIS_ALL_ID );
+CANctrl CANCAP_Ctrl( CAN2, CAN_CAP_ALL_ID );
 
 void CANctrl::attachInterrupt( CAN_CallbackFunction_t Function )
 {

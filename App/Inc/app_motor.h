@@ -60,6 +60,9 @@ typedef enum
     CAN_YAW_MOTOR_ID = 0x205,
     CAN_FRIC_MOTOR_ID = 0x202,
     CAN_GIMBAL_ALL_ID = 0x1FF,
+    
+    CAN_CAP_GET_ID = 0x301,
+    CAN_CAP_SENT_ID = 0x311,
 } can_msg_id_e;
 
 //rm电机统一数据结构体

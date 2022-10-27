@@ -29,6 +29,7 @@ uint16_t UART7_DataLength;
 
 void uart7_dma_get(void)
 {
+//	已在串口空闲中断中被清除
 //	if (UART7->SR & (1 << 4))//检测到线路空闲
 //	{
 //		//软件序列清除IDLE标志位

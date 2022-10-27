@@ -204,7 +204,10 @@ void Chassis_Ctrl::Behaviour_Mode(void)
 			Flags.Shoot_Flag = 0;
 		}
 		//提速开关
-		read_key(&Key.F, single, &Flags.Speed_Up_Flag);
+		if (read_key(&Key.F, single, &Flags.Speed_Up_Flag))
+		{
+			
+		}
 	}
 	else
 	{
