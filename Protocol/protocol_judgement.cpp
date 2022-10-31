@@ -167,7 +167,9 @@ static void get_receiver(robo_data_t *res)
 	res->robo_level = game_robot_state_t.robot_level;
 	res->robo_HP = game_robot_state_t.remain_HP;
 	res->robo_ID = game_robot_state_t.robot_id;
-	res->robo_17_Speed=shoot_data_t.bullet_speed;
+	res->robo_17_Speed = shoot_data_t.bullet_speed;
+	res->chassis_power = power_heat_data_t.chassis_power;
+	res->power_limit = game_robot_state_t.chassis_power_limit;
 }
 
 const robo_data_t *get_robo_data_Point(void)

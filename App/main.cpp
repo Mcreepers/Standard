@@ -34,7 +34,6 @@ void SoftWareInit(void)
 	}
 
 	remote_control_init();
-
 }
 
 int main(void)
@@ -45,7 +44,7 @@ int main(void)
 	  vTaskStartScheduler();
 
 	  while(1)
-	  {
+	  { 
 
 	  }
 }

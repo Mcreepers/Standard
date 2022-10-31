@@ -1,8 +1,8 @@
 .\objects\event_groups.o: ..\MiddleWare\FreeRTOS\event_groups.c
-.\objects\event_groups.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\event_groups.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\event_groups.o: ..\MiddleWare\FreeRTOS\include\FreeRTOS.h
-.\objects\event_groups.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stddef.h
-.\objects\event_groups.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\event_groups.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\event_groups.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\event_groups.o: ..\MiddleWare\FreeRTOS\include\FreeRTOSConfig.h
 .\objects\event_groups.o: ..\MiddleWare\FreeRTOS\include\projdefs.h
 .\objects\event_groups.o: ..\MiddleWare\FreeRTOS\include\portable.h

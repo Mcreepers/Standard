@@ -2,9 +2,9 @@
 .\objects\drivers_serial.o: ..\ModuleDrivers\Inc\drivers_serial.h
 .\objects\drivers_serial.o: ..\Platform\Inc\platform.h
 .\objects\drivers_serial.o: ..\MiddleWare\FreeRTOS\include\FreeRTOSConfig.h
-.\objects\drivers_serial.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\drivers_serial.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\drivers_serial.o: ..\MiddleWare\FreeRTOS\include\FreeRTOS.h
-.\objects\drivers_serial.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\drivers_serial.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\drivers_serial.o: ..\MiddleWare\FreeRTOS\include\projdefs.h
 .\objects\drivers_serial.o: ..\MiddleWare\FreeRTOS\include\portable.h
 .\objects\drivers_serial.o: ..\MiddleWare\FreeRTOS\include\deprecated_definitions.h
@@ -55,6 +55,6 @@
 .\objects\drivers_serial.o: ..\Platform\Inc\platform_timer.h
 .\objects\drivers_serial.o: ..\Platform\Inc\platform_systick.h
 .\objects\drivers_serial.o: ..\ModuleDrivers\Inc\drivers_buffer.h
-.\objects\drivers_serial.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\drivers_serial.o: D:\MDK5\ARM\ARMCC\Bin\..\include\string.h
-.\objects\drivers_serial.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\drivers_serial.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\drivers_serial.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\string.h
+.\objects\drivers_serial.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdio.h

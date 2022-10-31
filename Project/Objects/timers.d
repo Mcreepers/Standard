@@ -1,8 +1,8 @@
 .\objects\timers.o: ..\MiddleWare\FreeRTOS\timers.c
-.\objects\timers.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\timers.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\timers.o: ..\MiddleWare\FreeRTOS\include\FreeRTOS.h
-.\objects\timers.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stddef.h
-.\objects\timers.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\timers.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\timers.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\timers.o: ..\MiddleWare\FreeRTOS\include\FreeRTOSConfig.h
 .\objects\timers.o: ..\MiddleWare\FreeRTOS\include\projdefs.h
 .\objects\timers.o: ..\MiddleWare\FreeRTOS\include\portable.h

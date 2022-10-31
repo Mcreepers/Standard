@@ -2,9 +2,9 @@
 .\objects\platform_io.o: ..\Platform\Inc\platform_io.h
 .\objects\platform_io.o: ..\Platform\Inc\platform.h
 .\objects\platform_io.o: ..\MiddleWare\FreeRTOS\include\FreeRTOSConfig.h
-.\objects\platform_io.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\platform_io.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\platform_io.o: ..\MiddleWare\FreeRTOS\include\FreeRTOS.h
-.\objects\platform_io.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\platform_io.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\platform_io.o: ..\MiddleWare\FreeRTOS\include\projdefs.h
 .\objects\platform_io.o: ..\MiddleWare\FreeRTOS\include\portable.h
 .\objects\platform_io.o: ..\MiddleWare\FreeRTOS\include\deprecated_definitions.h

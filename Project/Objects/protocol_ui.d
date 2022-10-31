@@ -2,7 +2,7 @@
 .\objects\protocol_ui.o: ..\Protocol\Inc\protocol_ui.h
 .\objects\protocol_ui.o: ..\Core\stm32f4xx.h
 .\objects\protocol_ui.o: ..\Core\core_cm4.h
-.\objects\protocol_ui.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\protocol_ui.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\protocol_ui.o: ..\Core\core_cmInstr.h
 .\objects\protocol_ui.o: ..\Core\core_cmFunc.h
 .\objects\protocol_ui.o: ..\Core\core_cm4_simd.h
@@ -40,5 +40,5 @@
 .\objects\protocol_ui.o: ..\Protocol\Inc\protocol_ui.h
 .\objects\protocol_ui.o: ..\Protocol\Inc\protocol_crc.h
 .\objects\protocol_ui.o: ..\Protocol\Inc\protocol_judgement.h
-.\objects\protocol_ui.o: D:\MDK5\ARM\ARMCC\Bin\..\include\string.h
-.\objects\protocol_ui.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\protocol_ui.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\string.h
+.\objects\protocol_ui.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdio.h

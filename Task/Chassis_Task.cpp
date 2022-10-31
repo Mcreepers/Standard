@@ -206,7 +206,7 @@ void Chassis_Ctrl::Behaviour_Mode(void)
 		//提速开关
 		if (read_key(&Key.F, single, &Flags.Speed_Up_Flag))
 		{
-			
+			// if(Chassis_Message->SuperCapR.mode == 0xff)
 		}
 	}
 	else

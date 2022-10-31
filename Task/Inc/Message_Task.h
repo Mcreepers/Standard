@@ -25,6 +25,13 @@ extern QueueHandle_t Message_Queue;   		//消息队列句柄
 
 #define RX_BUF_NUM   1000u
 
+#define CAP_CHECK 0x00
+#define CAP_CLOSE 0x0f
+#define CAP_OPEN 0xf0
+#define CAP_ERROR 0xff
+#define CAP_MODE1 0x00
+#define CAP_MODE2 0xff
+
 union I
 {
 	char s[2];
@@ -60,10 +67,23 @@ struct Gimbal_Receive_Data_t
 	uint8_t goal;
 };
 
+struct supercap_Receive_Data_t
+{
+  uint8_t situation;//0x00自检 0x0f关闭 0xf0开启 0xff错误
+  uint8_t mode;//0x00模式1 0xff模式2
+  fp32 power;
+  uint8_t energy;
+  uint8_t power_limit;
+  uint8_t errorcode;
+  
+  uint8_t *ptr;
+};
+
 class Message_Ctrl
 {
 public:
 	Gimbal_Receive_Data_t GimbalR;
+	supercap_Receive_Data_t SuperCapR;
 	const robo_data_t *robo;
 
 	union I ecd_data;
@@ -73,6 +93,8 @@ public:
 	void Feed(ID_e *Name);
 private:
 	void *ptr;
+	void CAN1_Process(CanRxMsg *Rx_Message);
+	void CAN2_Process(CanRxMsg *Rx_Message);
 	void Usart3_Hook();
 	void Usart6_Hook();
 	void Usart7_Hook();

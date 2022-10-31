@@ -2,7 +2,7 @@
 .\objects\protocol_judgement.o: ..\Protocol\Inc\protocol_judgement.h
 .\objects\protocol_judgement.o: ..\Core\stm32f4xx.h
 .\objects\protocol_judgement.o: ..\Core\core_cm4.h
-.\objects\protocol_judgement.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\protocol_judgement.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\protocol_judgement.o: ..\Core\core_cmInstr.h
 .\objects\protocol_judgement.o: ..\Core\core_cmFunc.h
 .\objects\protocol_judgement.o: ..\Core\core_cm4_simd.h
@@ -38,14 +38,14 @@
 .\objects\protocol_judgement.o: ..\STM32F4xx_FWLib\inc\stm32f4xx_fmc.h
 .\objects\protocol_judgement.o: ..\STM32F4xx_FWLib\inc\stm32f4xx_sai.h
 .\objects\protocol_judgement.o: ..\Protocol\Inc\protocol_crc.h
-.\objects\protocol_judgement.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\protocol_judgement.o: D:\MDK5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\protocol_judgement.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\protocol_judgement.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\string.h
 .\objects\protocol_judgement.o: ..\Device\Inc\device.h
 .\objects\protocol_judgement.o: ..\Device\Inc\dev_serial.h
 .\objects\protocol_judgement.o: ..\Platform\Inc\platform.h
 .\objects\protocol_judgement.o: ..\MiddleWare\FreeRTOS\include\FreeRTOSConfig.h
 .\objects\protocol_judgement.o: ..\MiddleWare\FreeRTOS\include\FreeRTOS.h
-.\objects\protocol_judgement.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\protocol_judgement.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\protocol_judgement.o: ..\MiddleWare\FreeRTOS\include\projdefs.h
 .\objects\protocol_judgement.o: ..\MiddleWare\FreeRTOS\include\portable.h
 .\objects\protocol_judgement.o: ..\MiddleWare\FreeRTOS\include\deprecated_definitions.h
@@ -61,7 +61,7 @@
 .\objects\protocol_judgement.o: ..\Platform\Inc\platform_systick.h
 .\objects\protocol_judgement.o: ..\ModuleDrivers\Inc\drivers_serial.h
 .\objects\protocol_judgement.o: ..\ModuleDrivers\Inc\drivers_buffer.h
-.\objects\protocol_judgement.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\protocol_judgement.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\protocol_judgement.o: ..\Device\Inc\dev_can.h
 .\objects\protocol_judgement.o: ..\ModuleDrivers\Inc\drivers_can.h
 .\objects\protocol_judgement.o: ..\ModuleDrivers\Inc\drivers_remote.h

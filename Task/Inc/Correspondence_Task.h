@@ -60,6 +60,14 @@ struct Usart_Data_t
     }
 };
 
+struct Cap_Data_t
+{
+    uint8_t enable;
+    uint8_t mode;
+    uint8_t power;
+    uint8_t power_limit;
+};
+
 class correspondence_ctrl
 {
 public:
@@ -68,6 +76,7 @@ public:
     void Corres_Init(void);
     void Corres_Send(void);
     void Corres_Feedback(void);
+    Cap_Data_t SuperCapS;
 private:
     Message_Ctrl *Corres_Message;
     Chassis_Ctrl *Corres_Chassis;
@@ -75,11 +84,11 @@ private:
 
     void Visual_Feedback(void);
     void Chassis_Feedback(void);
+    void CAP_SendData(const void *buf, uint8_t len);
 };
 
 extern Usart_Data_t Usart3;
 extern Usart_Data_t Usart6;
 extern Usart_Data_t Usart7;
 extern Usart_Data_t Usart8;
-
 #endif

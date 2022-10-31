@@ -1,9 +1,9 @@
 .\objects\queue.o: ..\MiddleWare\FreeRTOS\queue.c
-.\objects\queue.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\queue.o: D:\MDK5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\queue.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\queue.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\string.h
 .\objects\queue.o: ..\MiddleWare\FreeRTOS\include\FreeRTOS.h
-.\objects\queue.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stddef.h
-.\objects\queue.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\queue.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\queue.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\queue.o: ..\MiddleWare\FreeRTOS\include\FreeRTOSConfig.h
 .\objects\queue.o: ..\MiddleWare\FreeRTOS\include\projdefs.h
 .\objects\queue.o: ..\MiddleWare\FreeRTOS\include\portable.h

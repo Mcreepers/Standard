@@ -2,7 +2,7 @@
 .\objects\protocol_crc.o: ..\Protocol\Inc\protocol_crc.h
 .\objects\protocol_crc.o: ..\Core\stm32f4xx.h
 .\objects\protocol_crc.o: ..\Core\core_cm4.h
-.\objects\protocol_crc.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\protocol_crc.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\protocol_crc.o: ..\Core\core_cmInstr.h
 .\objects\protocol_crc.o: ..\Core\core_cmFunc.h
 .\objects\protocol_crc.o: ..\Core\core_cm4_simd.h

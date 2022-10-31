@@ -3,7 +3,7 @@
 /*-----------------------------各兵种宏指令大全---------------------------*/
 //id错误蜂鸣器会响
 //该id无关红蓝
-#define RobotID 4
+#define RobotID 3
 #warning RobotID位置提示, 请自行注释
 #ifndef RobotID
 #define useMecanum
@@ -221,7 +221,7 @@
 #define Gimbal_Motor_Yaw_Offset_ECD 3243// 5 7631
 
 //选择遥控器控制模式(三挡位功能如下0:不跟随 跟随 小陀螺 1:不跟随 视觉 视觉发弹)
-#define RC_CONTRAL_MODE 1
+#define RC_CONTRAL_MODE 0
 //遥控器前进摇杆（max 660）转化成车体前进速度（m/s）的比例
 #define CHASSIS_VX_RC_SEN 0.003030303f//0.0015f
 //遥控器左右摇杆（max 660）转化成车体左右速度（m/s）的比例

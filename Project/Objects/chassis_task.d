@@ -3,9 +3,9 @@
 .\objects\chassis_task.o: ..\Device\Inc\dev_system.h
 .\objects\chassis_task.o: ..\Platform\Inc\platform.h
 .\objects\chassis_task.o: ..\MiddleWare\FreeRTOS\include\FreeRTOSConfig.h
-.\objects\chassis_task.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\chassis_task.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\chassis_task.o: ..\MiddleWare\FreeRTOS\include\FreeRTOS.h
-.\objects\chassis_task.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\chassis_task.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\chassis_task.o: ..\MiddleWare\FreeRTOS\include\projdefs.h
 .\objects\chassis_task.o: ..\MiddleWare\FreeRTOS\include\portable.h
 .\objects\chassis_task.o: ..\MiddleWare\FreeRTOS\include\deprecated_definitions.h
@@ -59,15 +59,15 @@
 .\objects\chassis_task.o: ..\Device\Inc\dev_serial.h
 .\objects\chassis_task.o: ..\ModuleDrivers\Inc\drivers_serial.h
 .\objects\chassis_task.o: ..\ModuleDrivers\Inc\drivers_buffer.h
-.\objects\chassis_task.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\chassis_task.o: D:\MDK5\ARM\ARMCC\Bin\..\include\string.h
-.\objects\chassis_task.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\chassis_task.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\chassis_task.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\string.h
+.\objects\chassis_task.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\chassis_task.o: ..\Device\Inc\dev_can.h
 .\objects\chassis_task.o: ..\ModuleDrivers\Inc\drivers_can.h
 .\objects\chassis_task.o: ..\ModuleDrivers\Inc\drivers_remote.h
 .\objects\chassis_task.o: ..\ModuleDrivers\Inc\drivers_led.h
 .\objects\chassis_task.o: ..\ModuleDrivers\Inc\drivers_dma.h
-.\objects\chassis_task.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\chassis_task.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdbool.h
 .\objects\chassis_task.o: ..\App\Inc\app_preference.h
 .\objects\chassis_task.o: ..\Protocol\Inc\protocol_dbus.h
 .\objects\chassis_task.o: ..\App\Inc\app_motor.h
@@ -81,4 +81,4 @@
 .\objects\chassis_task.o: ..\MiddleWare\FreeRTOS\include\timers.h
 .\objects\chassis_task.o: ..\MiddleWare\DSP\Include\arm_math.h
 .\objects\chassis_task.o: ..\Core\core_cm4.h
-.\objects\chassis_task.o: D:\MDK5\ARM\ARMCC\Bin\..\include\math.h
+.\objects\chassis_task.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\math.h

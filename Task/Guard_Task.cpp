@@ -37,7 +37,7 @@ void Guard_Ctrl::Guard_Start(void)
     // Guard_Init(chassis, 1000, 100, &System_RESET);
     // Guard_Init(UIdraw, 1000 ,100, &System_RESET);
     // Guard_Init(correspondence, 1000 ,100, &System_RESET);
-    Guard_Init(robotid, 20000, 5000, &Error_Enable, true, 30000, &Close_Enable);
+    // Guard_Init(robotid, 20000, 5000, &Error_Enable, true, 30000, &Close_Enable);
 }
 //警戒任务初始化
 void Guard_Ctrl::Guard_Init(ID_e Name, uint32_t StartValue, uint32_t MaxValue, void(*errcb)(uint8_t id), bool Close,uint32_t CloseValue, void(*closecb)(uint8_t id))

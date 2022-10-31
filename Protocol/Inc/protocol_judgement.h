@@ -334,6 +334,8 @@ typedef struct
 	uint8_t  robo_ID;		//机器人当前ID
 	uint16_t robo_HP;
 	float robo_17_Speed;
+	float chassis_power;                  //底盘输出功率 w
+	uint16_t power_limit;
 	//.....................
 }robo_data_t;
 

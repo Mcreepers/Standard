@@ -1,7 +1,7 @@
 .\objects\port.o: ..\MiddleWare\FreeRTOS\portable\RVDS\ARM_CM4F\port.c
 .\objects\port.o: ..\MiddleWare\FreeRTOS\include\FreeRTOS.h
-.\objects\port.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stddef.h
-.\objects\port.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\port.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\port.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\port.o: ..\MiddleWare\FreeRTOS\include\FreeRTOSConfig.h
 .\objects\port.o: ..\MiddleWare\FreeRTOS\include\projdefs.h
 .\objects\port.o: ..\MiddleWare\FreeRTOS\include\portable.h

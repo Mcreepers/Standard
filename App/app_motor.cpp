@@ -3,7 +3,6 @@
 #include "Guard_Task.h"
 CAN_Ctrl CAN_Cmd;
 
-supercap_measure_t SuperCap;
 Message_Data_t Message_Data_Can[2];
 
 void CAN2_Hook(CanRxMsg *Rx_Message)
@@ -60,24 +59,8 @@ void CAN1_Hook(CanRxMsg *Rx_Message)
 		break;
 	}
 #endif
-	case 0x301:
-	{
-		SuperCap.ptr = (uint8_t *)&SuperCap.supercap_voltage;
-		SuperCap.ptr[0] = (uint8_t)((Rx_Message)->Data[0]);
-		SuperCap.ptr[1] = (uint8_t)((Rx_Message)->Data[1]);
-		SuperCap.ptr[2] = (uint8_t)((Rx_Message)->Data[2]);
-		SuperCap.ptr[3] = (uint8_t)((Rx_Message)->Data[3]);
-		SuperCap.ptr = (uint8_t *)&SuperCap.supercap_energy_percent;
-		SuperCap.ptr[0] = (uint8_t)((Rx_Message)->Data[4]);
-		SuperCap.ptr[1] = (uint8_t)((Rx_Message)->Data[5]);
-		SuperCap.ptr[2] = (uint8_t)((Rx_Message)->Data[6]);
-		SuperCap.ptr[3] = (uint8_t)((Rx_Message)->Data[7]);
-		break;
-	}
 	default:
-	{
 		break;
-	}
 	}
 }
 

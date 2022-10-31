@@ -40,10 +40,10 @@ void Message_Ctrl::Hook()
 	switch (Message_Data.Data_ID)
 	{
 	case CanData1:
-		CAN1_Hook((CanRxMsg *)Message_Data.Data_Ptr);
+		CAN1_Process((CanRxMsg *)Message_Data.Data_Ptr);
 		break;
 	case CanData2:
-		CAN2_Hook((CanRxMsg *)Message_Data.Data_Ptr);
+		CAN2_Process((CanRxMsg *)Message_Data.Data_Ptr);
 		break;
 	case serial3:
 		// Usart3_Hook();
@@ -62,6 +62,39 @@ void Message_Ctrl::Hook()
 		break;
 	default:
 		break;
+	}
+}
+
+void Message_Ctrl::CAN1_Process(CanRxMsg *Rx_Message)
+{
+	switch (Rx_Message->StdId)
+	{
+	case CAN_CAP_GET_ID:
+	{
+		SuperCapR.situation = (uint8_t)((Rx_Message)->Data[0]);
+		SuperCapR.mode = (uint8_t)((Rx_Message)->Data[1]);
+		SuperCapR.power = (float)((uint16_t)(((Rx_Message)->Data[2])| ((Rx_Message)->Data[3]) << 8 )) * 0.1f;
+		SuperCapR.energy = (uint8_t)((Rx_Message)->Data[4]);
+		SuperCapR.power_limit = (uint8_t)((Rx_Message)->Data[5]);
+		SuperCapR.errorcode = (uint8_t)((Rx_Message)->Data[6]);
+		// SuperCapR.enable = (uint8_t)((Rx_Message)->Data[7]);
+		// SuperCapR.enable = (uint8_t)((Rx_Message)->Data[8]);
+	}
+	default:
+	CAN1_Hook(Rx_Message);
+	break;
+	}
+}
+
+void Message_Ctrl::CAN2_Process(CanRxMsg *Rx_Message)
+{
+	switch (Rx_Message->StdId)
+	{
+	// case :
+	// 	break;
+	default:
+	CAN2_Hook(Rx_Message);
+	break;
 	}
 }
 
@@ -219,7 +252,7 @@ bool rc_key_c::read_key(count_num_key *temp_count, key_count_e mode, bool *temp_
 //¸üÐÂ°´¼ü
 void rc_key_c::rc_key_v_set(RC_ctrl_t *RC)
 {
-	if (RC->key.v  &  KEY_PRESSED_OFFSET_W){
+	if (RC->key.v & KEY_PRESSED_OFFSET_W){
 		sum_key_count(1,&Key.W);
 	}else{
 		sum_key_count(0,&Key.W);
