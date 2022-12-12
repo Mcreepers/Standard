@@ -4,7 +4,6 @@
 #include "dev_system.h"
 #include "queue.h"
 #include "timers.h"
-#include "Message_Task.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -45,15 +44,13 @@ class Guard_Ctrl
 {
 public:
 	void Start(void);
-	void Init(ID_e Name, uint32_t StartValue, uint32_t MaxValue, void(*errcb)(uint8_t id));
-	void Init(ID_e Name, uint32_t StartValue, uint32_t MaxValue, void(*errcb)(uint8_t id), bool Close);
-	void Init(ID_e Name, uint32_t StartValue, uint32_t MaxValue, void(*errcb)(uint8_t id), bool Close, uint32_t CloseValue, void(*closecb)(uint8_t id));
 	void Scan(void);
 	void Feed(ID_e Name);
 	bool Return(ID_e Name);
-
-	ID_e ID;
 private:
+	void Init(ID_e Name, uint32_t StartValue, uint32_t MaxValue, void(*errcb)(uint8_t id));
+	void Init(ID_e Name, uint32_t StartValue, uint32_t MaxValue, void(*errcb)(uint8_t id), bool Close);
+	void Init(ID_e Name, uint32_t StartValue, uint32_t MaxValue, void(*errcb)(uint8_t id), bool Close, uint32_t CloseValue, void(*closecb)(uint8_t id));
 	void Guard_Enable(void);
 
 	SG_Data_t SG_Structure[GUARD_TOTAL_NUM];

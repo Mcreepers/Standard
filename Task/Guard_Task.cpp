@@ -1,7 +1,5 @@
 #include "Guard_Task.h"
-#include "Message_Task.h"
 #include "timers.h"
-#include "Chassis_Task.h"
 
 Guard_Ctrl Guard;
 Error_Flags_t Error_Flag;
@@ -80,7 +78,7 @@ void Guard_Ctrl::Scan(void)
     for (i = 0;i < GUARD_TOTAL_NUM;i++)
     {
         if (SG_Structure[i].Start == true && (SG_Structure[i].StartValue != 0))
-        {//初始化检测
+        {//初始化等待检测
             SG_Structure[i].DiffValue=xTaskGetTickCount()-SG_Structure[i].Time;
             if (SG_Structure[i].DiffValue > SG_Structure[i].StartValue)
             {//超时执行回调
@@ -94,7 +92,7 @@ void Guard_Ctrl::Scan(void)
 			}
 		}
 		else if ((SG_Structure[i].Enable == true) && (SG_Structure[i].MaxValue != 0))
-		{//运行检测
+		{//运行超时检测
 			SG_Structure[i].DiffValue=xTaskGetTickCount()-SG_Structure[i].Time;
 			if (SG_Structure[i].DiffValue > SG_Structure[i].MaxValue)
 			{//超时执行回调
@@ -123,7 +121,7 @@ void Guard_Ctrl::Feed(ID_e Name)
     {
         return;
     }
-    
+    //若正常运行或重连则打开运行超时检测关闭初始化检测和错误标志
     Guard.SG_Structure[Name].Enable = true;
     Guard.SG_Structure[Name].Start = false;
     Guard.SG_Structure[Name].Error = false;
@@ -152,7 +150,7 @@ void Error_Enable(uint8_t id)
     break;
     }
 }
-//关闭处理函数
+//关闭处理函数(简单操作，复杂操作进任务用return判断)
 void Close_Enable(uint8_t id)
 {
     switch (id)

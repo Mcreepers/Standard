@@ -1,0 +1,4 @@
+Project/Object/*
+*.o
+*.d
+*.crf

@@ -1,6 +1,5 @@
 #include "Correspondence_Task.h"
 #include "device.h"
-#include "Message_Task.h"
 
 union F Gimbal_Union;
 
