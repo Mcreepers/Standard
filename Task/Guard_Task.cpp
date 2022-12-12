@@ -26,15 +26,15 @@ void Guard_Ctrl::Start(void)
 {
     // Init(CanData1, 1000 ,100, &System_RESET);
     // Init(CanData2, 1000, 100, &System_RESET);
-    // Init(serial3, 1000, 100, &Error_Enable, true);
-    // Init(serial6, 1000, 100, &Error_Enable, true);
-    // Init(serial7, 1000 ,100, &Error_Enable, true);
-    // Init(serial8, 1000 ,100, &Error_Enable, true);
-    // Init(RC_ctrl, 1000, 200, &System_RESET);
-    // Init(chassis, 1000, 100, &System_RESET);
-    // Init(UIdraw, 1000 ,100, &System_RESET);
-    // Init(correspondence, 1000 ,100, &System_RESET);
-    // Init(robotid, 20000, 5000, &Error_Enable, true, 30000, &Close_Enable);
+    // Init(SerialData3, 1000, 100, &Error_Enable, true);
+    // Init(SerialData6, 1000, 100, &Error_Enable, true);
+    // Init(SerialData7, 1000 ,100, &Error_Enable, true);
+    // Init(SerialData8, 1000 ,100, &Error_Enable, true);
+    // Init(RC_Data, 1000, 200, &System_RESET);
+    // Init(ChassisData, 1000, 100, &System_RESET);
+    // Init(UIdrawData, 1000 ,100, &System_RESET);
+    // Init(CorrespondenceData, 1000 ,100, &System_RESET);
+    // Init(RobotId, 20000, 5000, &Error_Enable, true, 30000, &Close_Enable);
 }
 //警戒任务初始化
 void Guard_Ctrl::Init(ID_e Name, uint32_t StartValue, uint32_t MaxValue, void(*errcb)(uint8_t id), bool Close,uint32_t CloseValue, void(*closecb)(uint8_t id))
@@ -119,7 +119,7 @@ void Guard_Ctrl::Scan(void)
 //警戒任务喂狗
 void Guard_Ctrl::Feed(ID_e Name)
 {
-    if (Name == fault)
+    if (Name == Fault)
     {
         return;
     }
@@ -134,17 +134,17 @@ void Error_Enable(uint8_t id)
 {
     switch (id)
     {
-    case serial6:
+    case SerialData6:
     {
 
     }
     break;
-    case serial7:
+    case SerialData7:
     {
         
     }
     break;
-    case robotid:
+    case RobotId:
     {
 		pwmWrite(PH6,1000);
     }
@@ -157,7 +157,7 @@ void Close_Enable(uint8_t id)
 {
     switch (id)
     {
-    case robotid:
+    case RobotId:
     {
 		pwmWrite(PH6,0);
     }

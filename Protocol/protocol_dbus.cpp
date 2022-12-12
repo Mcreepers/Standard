@@ -4,7 +4,6 @@
 //遥控器出错数据上限
 #define RC_CHANNAL_ERROR_VALUE 700
 
-Message_Data_t Message_Data_dbus;
 //取正函数
 static int16_t RC_abs(int16_t value);
 //遥控器处理函数
@@ -17,9 +16,7 @@ static uint8_t SBUS_rx_buf[2][SBUS_RX_BUF_NUM];
 
 //初始化DMA，串口1
 void remote_control_init(void)
-{
-    Message_Data_dbus.Data_ID = RC_ctrl;
-    
+{    
     RC_Init(SBUS_rx_buf[0], SBUS_rx_buf[1], SBUS_RX_BUF_NUM);
 }
 //返回遥控器控制变量，通过指针传递方式传递信息
@@ -116,8 +113,7 @@ extern"C"
 							SBUS_TO_RC(SBUS_rx_buf[0], &rc_ctrl);
 							//发送消息更新按键
 							BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-							Message_Data_dbus.Data_Ptr = &rc_ctrl;
-                            xQueueSendFromISR(Message_Queue, &Message_Data_dbus, &xHigherPriorityTaskWoken);
+                            xQueueSendFromISR(Message_Queue, &ID_Data[RC_Data], &xHigherPriorityTaskWoken);
 							portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 						}
 					}
@@ -136,8 +132,7 @@ extern"C"
 							SBUS_TO_RC(SBUS_rx_buf[1], &rc_ctrl);
 							//发送消息更新按键
 							BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-							Message_Data_dbus.Data_Ptr = &rc_ctrl;
-                            xQueueSendFromISR(Message_Queue, &Message_Data_dbus, &xHigherPriorityTaskWoken);
+                            xQueueSendFromISR(Message_Queue, &ID_Data[RC_Data], &xHigherPriorityTaskWoken);
 							portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 						}
 					}

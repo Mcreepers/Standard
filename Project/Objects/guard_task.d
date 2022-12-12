@@ -56,6 +56,8 @@
 .\objects\guard_task.o: ..\Platform\Inc\platform_timer.h
 .\objects\guard_task.o: ..\Platform\Inc\platform_systick.h
 .\objects\guard_task.o: ..\Device\Inc\device.h
+.\objects\guard_task.o: ..\App\Inc\app_preference.h
+.\objects\guard_task.o: ..\App\Inc\preference_3.h
 .\objects\guard_task.o: ..\Device\Inc\dev_serial.h
 .\objects\guard_task.o: ..\ModuleDrivers\Inc\drivers_serial.h
 .\objects\guard_task.o: ..\ModuleDrivers\Inc\drivers_buffer.h
@@ -68,10 +70,10 @@
 .\objects\guard_task.o: ..\ModuleDrivers\Inc\drivers_led.h
 .\objects\guard_task.o: ..\ModuleDrivers\Inc\drivers_dma.h
 .\objects\guard_task.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdbool.h
-.\objects\guard_task.o: ..\App\Inc\app_preference.h
 .\objects\guard_task.o: ..\MiddleWare\FreeRTOS\include\queue.h
 .\objects\guard_task.o: ..\MiddleWare\FreeRTOS\include\timers.h
 .\objects\guard_task.o: ..\Task\Inc\Message_Task.h
+.\objects\guard_task.o: ..\App\Inc\app_serial.h
 .\objects\guard_task.o: ..\Protocol\Inc\protocol_dbus.h
 .\objects\guard_task.o: ..\Protocol\Inc\protocol_judgement.h
 .\objects\guard_task.o: ..\Task\Inc\Chassis_Task.h

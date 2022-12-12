@@ -45,20 +45,6 @@ struct Gimbal_Send_Data_t
     uint8_t Tail;
 };
 
-struct Usart_Data_t
-{
-	uint8_t Header;
-	uint8_t Tail;
-	uint8_t Len;
-	uint8_t Temp;
-	uint8_t Data[max(max(Serial3_Buffer_Size,Serial6_Buffer_Size),max(Serial7_Buffer_Size,Serial8_Buffer_Size))];
-	Usart_Data_t(uint8_t Len = 0, uint8_t Header = 0, uint8_t Tail = 0)
-	{
-		this->Len = Len;
-		this->Header = Header;
-        this->Tail = Tail;
-    }
-};
 
 struct Cap_Data_t
 {
@@ -82,13 +68,7 @@ private:
     Chassis_Ctrl *Corres_Chassis;
     Gimbal_Send_Data_t GimbalS;
 
-    void Visual_Feedback(void);
-    void Chassis_Feedback(void);
     void CAP_SendData(const void *buf, uint8_t len);
 };
 
-extern Usart_Data_t Usart3;
-extern Usart_Data_t Usart6;
-extern Usart_Data_t Usart7;
-extern Usart_Data_t Usart8;
 #endif

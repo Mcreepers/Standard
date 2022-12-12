@@ -1,19 +1,14 @@
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'D:\study\STM32\mdk1\ARM\ARMCC\Bin'
 Build target 'HERO_CHASSIS'
-compiling Chassis_Task.cpp...
-..\Task\Chassis_Task.cpp(106): warning:  #3337-D: list initialization syntax is a C++11 feature
-  	Matrix<3, 1> v {1.1f, 1.1f, 1.1f};
-..\Task\Chassis_Task.cpp(329): error:  #513: a value of type "fp32 *" cannot be assigned to an entity of type "fp32"
-  				vx_set_channel = Velocity.Speed_Set[Flags.Speed_Up_Flag];
-..\Task\Chassis_Task.cpp(333): error:  #848: expression must have arithmetic or enum type
-  				vx_set_channel = -Velocity.Speed_Set[Flags.Speed_Up_Flag];
-..\Task\Chassis_Task.cpp(341): error:  #848: expression must have arithmetic or enum type
-  				vy_set_channel = -Velocity.Speed_Set[Flags.Speed_Up_Flag];
-..\Task\Chassis_Task.cpp(345): error:  #513: a value of type "fp32 *" cannot be assigned to an entity of type "fp32"
-  				vy_set_channel = Velocity.Speed_Set[Flags.Speed_Up_Flag];
-..\Task\Chassis_Task.cpp(421): error:  #513: a value of type "fp32 *" cannot be assigned to an entity of type "fp32"
-  		*angle_set = Velocity.Speed_Set[2];
-..\Task\Chassis_Task.cpp: 1 warning, 5 errors
-".\Objects\HERO_CHASSIS.axf" - 5 Error(s), 1 Warning(s).
+compiling start_task.cpp...
+compiling main.cpp...
+compiling Correspondence_Task.cpp...
+compiling Message_Task.cpp...
+linking...
+.\Objects\HERO_CHASSIS.axf: Error: L6218E: Undefined symbol Serial_ALL_Init (referred from main.o).
+Not enough information to list image symbols.
+Not enough information to list load addresses in the image map.
+Finished: 2 information, 0 warning and 1 error messages.
+".\Objects\HERO_CHASSIS.axf" - 1 Error(s), 0 Warning(s).
 Target not created.
-Build Time Elapsed:  00:00:14
+Build Time Elapsed:  00:00:09

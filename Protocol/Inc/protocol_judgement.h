@@ -218,14 +218,14 @@ typedef struct
 {
 	tMsg_head                     judgedatahead;
 	uint16_t                      rxCmdId;
-	ext_game_robot_status_t      game_robot_state_t;    //机器人状态
+	ext_game_robot_status_t      game_robot_state;    //机器人状态
 	ext_game_status_t            game_status;           //比赛状态
-	ext_game_robot_HP_t          game_robot_HP_t;       //机器人血量
-	ext_power_heat_data_t        power_heat_data_t;     //机器人功率与热量
-	ext_shoot_data_t	         shoot_data_t;			//机器人发射机构
-	ext_game_robot_pos_t         game_robot_pos_t;   //机器人位置
-	ext_referee_warning_t        referee_warning_t;     //裁判警告信息	
-	client_custom_data_t         robot_data_t;
+	ext_game_robot_HP_t          game_robot_HP;       //机器人血量
+	ext_power_heat_data_t        power_heat_data;     //机器人功率与热量
+	ext_shoot_data_t	         shoot_data;			//机器人发射机构
+	ext_game_robot_pos_t         game_robot_pos;   //机器人位置
+	ext_referee_warning_t        referee_warning;     //裁判警告信息	
+	client_custom_data_t         robot_data;
 	client_custom_data_t          userinfo;
 
 }judge_type_t;
@@ -315,8 +315,8 @@ typedef  struct
 		ext_game_robot_status_t      game_robot_state_t;    //机器人状态
 		ext_game_robot_HP_t          game_robot_HP_t;       //机器人血量
 		ext_power_heat_data_t        power_heat_data_t;     //机器人功率与热量
-		ext_game_robot_pos_t         game_robot_position;
-		ext_shoot_data_t		 				 shoot_data_t;
+		ext_game_robot_pos_t         game_robot_position_t;
+		ext_shoot_data_t		 		shoot_data_t;
 		ext_referee_warning_t        referee_warning_t; 		//裁判警告信息
 		robot_interactive_data_t     robot_data_t;
 		client_custom_data_t 	userinfo;
@@ -326,21 +326,6 @@ typedef  struct
 	uint16_t        CRC16_2;
 }FRAME;
 
-/*--------------------------------接口结构体----------------------------------------------*/
-//裁判系统数据结构
-typedef struct
-{
-
-
-	
-	uint8_t  robo_level;//机器人当前等级
-	uint8_t  robo_ID;		//机器人当前ID
-	uint16_t robo_HP;
-	float robo_17_Speed;
-	float chassis_power;                  //底盘输出功率 w
-	uint16_t power_limit;
-	//.....................
-}robo_data_t;
 
 typedef __packed struct
 {

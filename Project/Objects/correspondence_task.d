@@ -56,6 +56,8 @@
 .\objects\correspondence_task.o: ..\Platform\Inc\platform_timer.h
 .\objects\correspondence_task.o: ..\Platform\Inc\platform_systick.h
 .\objects\correspondence_task.o: ..\Device\Inc\device.h
+.\objects\correspondence_task.o: ..\App\Inc\app_preference.h
+.\objects\correspondence_task.o: ..\App\Inc\preference_3.h
 .\objects\correspondence_task.o: ..\Device\Inc\dev_serial.h
 .\objects\correspondence_task.o: ..\ModuleDrivers\Inc\drivers_serial.h
 .\objects\correspondence_task.o: ..\ModuleDrivers\Inc\drivers_buffer.h
@@ -68,11 +70,11 @@
 .\objects\correspondence_task.o: ..\ModuleDrivers\Inc\drivers_led.h
 .\objects\correspondence_task.o: ..\ModuleDrivers\Inc\drivers_dma.h
 .\objects\correspondence_task.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdbool.h
-.\objects\correspondence_task.o: ..\App\Inc\app_preference.h
 .\objects\correspondence_task.o: ..\Task\Inc\Chassis_Task.h
 .\objects\correspondence_task.o: ..\Protocol\Inc\protocol_dbus.h
 .\objects\correspondence_task.o: ..\App\Inc\app_motor.h
 .\objects\correspondence_task.o: ..\Task\Inc\Message_Task.h
+.\objects\correspondence_task.o: ..\App\Inc\app_serial.h
 .\objects\correspondence_task.o: ..\MiddleWare\FreeRTOS\include\queue.h
 .\objects\correspondence_task.o: ..\Protocol\Inc\protocol_judgement.h
 .\objects\correspondence_task.o: ..\Task\Inc\Guard_Task.h

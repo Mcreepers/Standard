@@ -3,17 +3,8 @@
 #include "Message_Task.h"
 
 union F Gimbal_Union;
-	
-correspondence_ctrl corres;
-Message_Data_t Message_Data_corres[5];
-Usart_Data_t Usart3( Serial3_Buffer_Size, Serial3_Data_Header, Serial3_Data_tail );
-Usart_Data_t Usart6( Serial6_Buffer_Size, Serial6_Data_Header, Serial6_Data_tail );
-Usart_Data_t Usart7( Serial7_Buffer_Size, Serial7_Data_Header, Serial7_Data_tail );
-Usart_Data_t Usart8( Serial8_Buffer_Size, Serial8_Data_Header, Serial8_Data_tail );
 
-void Serial3_Hook(void);
-void Serial6_Hook(void);
-void Serial7_Hook(void);
+correspondence_ctrl corres;
 
 void Correspondence_Task(void *pvParameters)
 {
@@ -23,29 +14,19 @@ void Correspondence_Task(void *pvParameters)
         corres.Corres_Feedback();
         corres.Corres_Send();
 
-        xQueueSend(Message_Queue, &Message_Data_corres[0], 0);
+        xQueueSend(Message_Queue, &ID_Data[CorrespondenceData], 0);
         vTaskDelay(2);
     }
 }
 
 void correspondence_ctrl::Corres_Init(void)
-{
-	Message_Data_corres[0].Data_ID = correspondence;
-	Message_Data_corres[1].Data_ID = serial3;
-	Message_Data_corres[2].Data_ID = serial6;
-	Message_Data_corres[3].Data_ID = serial7;
-	Message_Data_corres[4].Data_ID = serial8;
-	
+{	
 	robo = get_robo_data_Point();
 	Corres_Message = get_message_ctrl_pointer();
 	Corres_Chassis = get_chassis_ctrl_pointer();
 
     GimbalS.Header = GIMBAL_SERIAL_HEADER;
     GimbalS.Tail = GIMBAL_SERIAL_TAIL;
-
-    Serial3.attachInterrupt(Serial3_Hook);
-	Serial6.attachInterrupt(Serial6_Hook);
-	Serial7.attachInterrupt(Serial7_Hook);
 	
 	usart7_DMA_init();
 }
@@ -61,15 +42,15 @@ void correspondence_ctrl::Corres_Feedback(void)
 {
 	uint8_t i;
     
-    GimbalS.Grade = robo->game_robot_state_t.robot_level;
-	Gimbal_Union.F=robo->shoot_data_t.bullet_speed;
+    GimbalS.Grade = robo->game_robot_state.robot_level;
+	Gimbal_Union.F=robo->shoot_data.bullet_speed;
 	for(i=0;i<4;i++)
 	{
 		GimbalS.Shoot[i]=Gimbal_Union.I[i];
 	}
-	GimbalS.robo_ID = robo->game_robot_state_t.robot_id;
+	GimbalS.robo_ID = robo->game_robot_state.robot_id;
 
-	if ((Corres_Message->SuperCapR.situation == CAP_CLOSE || Corres_Message->SuperCapR.situation == CAP_OPEN) && robo->game_robot_state_t.robot_level >= 1)
+	if ((Corres_Message->SuperCapR.situation == CAP_CLOSE || Corres_Message->SuperCapR.situation == CAP_OPEN) && robo->game_robot_state.robot_level >= 1)
 	{
 		SuperCapS.enable = 0xff;
 	}
@@ -86,91 +67,11 @@ void correspondence_ctrl::Corres_Feedback(void)
 	{
 		SuperCapS.mode = 0x00;
 	}
-	SuperCapS.power = (uint8_t)robo->power_heat_data_t.chassis_power;
+	SuperCapS.power = (uint8_t)robo->power_heat_data.chassis_power;
 //	SuperCapS.power_limit = (uint8_t)robo->power_limit;
 	SuperCapS.power_limit = 60;
 }
 
-void Serial3_Hook(void)
-{
-    if (Serial3.peek() != Usart3.Header)
-	{
-		Usart3.Temp=Serial3.read();
-		return;
-	}
-	if (Serial3.available()==Usart3.Len-1)
-    {
-		for (uint8_t i = 0;i < Usart3.Len-1;i++)
-		{
-			Usart3.Data[i] = Serial3.read();
-		}
-		if(Usart3.Data[Usart3.Len-2]==Usart3.Tail)
-		{
-			xQueueSendFromISR(Message_Queue, &Message_Data_corres[1], 0);
-		}
-    }
-}
-
-void Serial6_Hook(void)
-{
-    if (Serial6.peek() != Usart6.Header)
-	{
-		Usart6.Temp=Serial6.read();
-		return;
-	}
-	if (Serial6.available()==Usart6.Len-1)
-    {
-		for (uint8_t i = 0;i < Usart6.Len-1;i++)
-		{
-			Usart6.Data[i] = Serial6.read();
-		}
-		if (Usart6.Data[Usart6.Len - 2] == Usart6.Tail)
-		{
-			xQueueSendFromISR(Message_Queue, &Message_Data_corres[2], 0);
-		}
-    }
-}
-
-void Serial7_Hook(void)
-{
-	xQueueSendFromISR(Message_Queue, &Message_Data_corres[3], 0);
-//    if (Serial7.peek() != Usart7.Header)
-//	{
-//		Usart7.Temp=Serial7.read();
-//		return;
-//	}
-//	if (Serial7.available()==Usart7.Len-1)
-//    {
-//		for (uint8_t i = 0;i < Usart7.Len-1;i++)
-//		{
-//			Usart7.Data[i] = Serial7.read();
-//		}
-//		if(Usart7.Data[Usart7.Len-2]==Usart7.Tail)
-//		{
-//			xQueueSendFromISR(Message_Queue, &Message_Data_corres[3], 0);
-//		}
-//    }
-}
-
-void Serial8_Hook(void)
-{
-    if (Serial8.peek() != Usart8.Header)
-	{
-		Usart8.Temp=Serial8.read();
-		return;
-	}
-	if (Serial8.available()==Usart8.Len-1)
-    {
-		for (uint8_t i = 0;i < Usart8.Len-1;i++)
-		{
-			Usart8.Data[i] = Serial8.read();
-		}
-		if(Usart8.Data[Usart8.Len-2]==Usart8.Tail)
-		{
-			xQueueSendFromISR(Message_Queue, &Message_Data_corres[4], 0);
-		}
-    }
-}
 
 void correspondence_ctrl::CAP_SendData(const void *buf, uint8_t len)
 {

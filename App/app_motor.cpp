@@ -1,9 +1,7 @@
 #include "app_motor.h"
 #include "queue.h"
-#include "Guard_Task.h"
+#include "Message_Task.h"
 CAN_Ctrl CAN_Cmd;
-
-Message_Data_t Message_Data_Can[2];
 
 void CAN2_Hook(CanRxMsg *Rx_Message)
 {
@@ -67,16 +65,16 @@ void CAN1_Hook(CanRxMsg *Rx_Message)
 void CAN1_Send(CanRxMsg *Rx_Message)
 {
 	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-	Message_Data_Can[0].Data_Ptr = Rx_Message;
-	xQueueSendFromISR(Message_Queue, &Message_Data_Can[0], &xHigherPriorityTaskWoken);
+	ID_Data[CanData1].Data_Ptr = Rx_Message;
+	xQueueSendFromISR(Message_Queue, &ID_Data[CanData1], &xHigherPriorityTaskWoken);
 	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
 void CAN2_Send(CanRxMsg *Rx_Message)
 {
 	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-	Message_Data_Can[1].Data_Ptr = Rx_Message;
-	xQueueSendFromISR(Message_Queue, &Message_Data_Can[1], &xHigherPriorityTaskWoken);
+	ID_Data[CanData2].Data_Ptr = Rx_Message;
+	xQueueSendFromISR(Message_Queue, &ID_Data[CanData2], &xHigherPriorityTaskWoken);
 	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
@@ -86,9 +84,6 @@ void CAN_ALL_Init(void)
 	//必须先初始化CAN1，在初始化CAN2
 	CAN1_Ctrl.CANx_Init();
 	CAN2_Ctrl.CANx_Init();
-
-	Message_Data_Can[0].Data_ID = CanData1;
-	Message_Data_Can[1].Data_ID = CanData2;
 	
 	CAN1_Ctrl.attachInterrupt(CAN1_Send);
 	CAN2_Ctrl.attachInterrupt(CAN2_Send);

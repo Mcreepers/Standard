@@ -56,6 +56,8 @@
 .\objects\app_power_ctrl.o: ..\Platform\Inc\platform_timer.h
 .\objects\app_power_ctrl.o: ..\Platform\Inc\platform_systick.h
 .\objects\app_power_ctrl.o: ..\Device\Inc\device.h
+.\objects\app_power_ctrl.o: ..\App\Inc\app_preference.h
+.\objects\app_power_ctrl.o: ..\App\Inc\preference_3.h
 .\objects\app_power_ctrl.o: ..\Device\Inc\dev_serial.h
 .\objects\app_power_ctrl.o: ..\ModuleDrivers\Inc\drivers_serial.h
 .\objects\app_power_ctrl.o: ..\ModuleDrivers\Inc\drivers_buffer.h
@@ -68,4 +70,3 @@
 .\objects\app_power_ctrl.o: ..\ModuleDrivers\Inc\drivers_led.h
 .\objects\app_power_ctrl.o: ..\ModuleDrivers\Inc\drivers_dma.h
 .\objects\app_power_ctrl.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdbool.h
-.\objects\app_power_ctrl.o: ..\App\Inc\app_preference.h

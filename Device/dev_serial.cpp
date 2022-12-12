@@ -8,7 +8,7 @@ Serialctrl Serial6(USART6, Serial6_Buffer_Size);
 Serialctrl Serial7(UART7, Serial7_Buffer_Size, USART_IT_IDLE);
 Serialctrl Serial8(UART8, Serial8_Buffer_Size, USART_IT_IDLE);
 
-Message_Data_t Message_Data_serial7;
+ID_Data_t Message_Data_serial7;
 
 void Serialctrl::attachInterrupt(USART_CallbackFunction_t Function)
 {
@@ -33,6 +33,7 @@ void Serialctrl::IRQHandler(void)
 		int temp;
 		temp = USARTx->DR;
 		temp = USARTx->SR;
+		temp = 0;
         if (USART_Function)
         {
             USART_Function();
@@ -107,7 +108,7 @@ extern "C"{
     }
     void UART7_IRQHandler(void)
     {
-//		Message_Data_serial7.Data_ID = serial7;
+//		Message_Data_serial7.Data_ID = SerialData7;
 //        xQueueSendFromISR(Message_Queue, &Message_Data_serial7, 0);
         Serial7.IRQHandler();
     }

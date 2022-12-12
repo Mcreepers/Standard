@@ -2,6 +2,7 @@
 #define Message_TASK_H
 
 #include "dev_system.h"
+#include "app_serial.h"
 
 #include "queue.h"
 #include "protocol_dbus.h"
@@ -38,30 +39,6 @@ union I
 	uint16_t d;
 };
 
-typedef enum
-{
-	CanData1 = 0x00,
-	CanData2,
-	serial3,
-	serial6,
-	serial7,
-	serial8,
-	RC_ctrl,
-	chassis,
-	UIdraw,
-	correspondence,
-	robotid,
-	supercap,
-	fault,
-	ID_e_count
-}ID_e;
-
-struct Message_Data_t
-{
-	ID_e Data_ID;
-	void *Data_Ptr;
-};
-
 struct Gimbal_Receive_Data_t
 {
 	fp32 ECD;
@@ -96,10 +73,10 @@ private:
 	void *ptr;
 	void CAN1_Process(CanRxMsg *Rx_Message);
 	void CAN2_Process(CanRxMsg *Rx_Message);
-	void Usart3_Hook();
-	void Usart6_Hook();
-	void Usart7_Hook();
-	void Usart8_Hook();
+	void Usart3_Hook(Serial_Data_t *Rx_Message);
+	void Usart6_Hook(Serial_Data_t *Rx_Message);
+	void Usart7_Hook(Serial_Data_t *Rx_Message);
+	void Usart8_Hook(Serial_Data_t *Rx_Message);
 };
 
 Message_Ctrl * get_message_ctrl_pointer(void);

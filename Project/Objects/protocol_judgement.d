@@ -41,6 +41,8 @@
 .\objects\protocol_judgement.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\protocol_judgement.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\string.h
 .\objects\protocol_judgement.o: ..\Device\Inc\device.h
+.\objects\protocol_judgement.o: ..\App\Inc\app_preference.h
+.\objects\protocol_judgement.o: ..\App\Inc\preference_3.h
 .\objects\protocol_judgement.o: ..\Device\Inc\dev_serial.h
 .\objects\protocol_judgement.o: ..\Platform\Inc\platform.h
 .\objects\protocol_judgement.o: ..\MiddleWare\FreeRTOS\include\FreeRTOSConfig.h

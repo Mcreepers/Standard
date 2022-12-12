@@ -56,6 +56,8 @@
 .\objects\uidraw_task.o: ..\Platform\Inc\platform_timer.h
 .\objects\uidraw_task.o: ..\Platform\Inc\platform_systick.h
 .\objects\uidraw_task.o: ..\Device\Inc\device.h
+.\objects\uidraw_task.o: ..\App\Inc\app_preference.h
+.\objects\uidraw_task.o: ..\App\Inc\preference_3.h
 .\objects\uidraw_task.o: ..\Device\Inc\dev_serial.h
 .\objects\uidraw_task.o: ..\ModuleDrivers\Inc\drivers_serial.h
 .\objects\uidraw_task.o: ..\ModuleDrivers\Inc\drivers_buffer.h
@@ -68,7 +70,6 @@
 .\objects\uidraw_task.o: ..\ModuleDrivers\Inc\drivers_led.h
 .\objects\uidraw_task.o: ..\ModuleDrivers\Inc\drivers_dma.h
 .\objects\uidraw_task.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdbool.h
-.\objects\uidraw_task.o: ..\App\Inc\app_preference.h
 .\objects\uidraw_task.o: ..\MiddleWare\FreeRTOS\include\queue.h
 .\objects\uidraw_task.o: ..\MiddleWare\DSP\Include\arm_math.h
 .\objects\uidraw_task.o: ..\Core\core_cm4.h
@@ -81,6 +82,7 @@
 .\objects\uidraw_task.o: ..\Protocol\Inc\protocol_dbus.h
 .\objects\uidraw_task.o: ..\App\Inc\app_motor.h
 .\objects\uidraw_task.o: ..\Task\Inc\Message_Task.h
+.\objects\uidraw_task.o: ..\App\Inc\app_serial.h
 .\objects\uidraw_task.o: ..\Task\Inc\Guard_Task.h
 .\objects\uidraw_task.o: ..\MiddleWare\FreeRTOS\include\timers.h
 .\objects\uidraw_task.o: ..\Algorithm\inc\algorithm_pid.h

@@ -56,6 +56,8 @@
 .\objects\app_serial.o: ..\Platform\Inc\platform_timer.h
 .\objects\app_serial.o: ..\Platform\Inc\platform_systick.h
 .\objects\app_serial.o: ..\Device\Inc\device.h
+.\objects\app_serial.o: ..\App\Inc\app_preference.h
+.\objects\app_serial.o: ..\App\Inc\preference_3.h
 .\objects\app_serial.o: ..\Device\Inc\dev_serial.h
 .\objects\app_serial.o: ..\ModuleDrivers\Inc\drivers_serial.h
 .\objects\app_serial.o: ..\ModuleDrivers\Inc\drivers_buffer.h
@@ -68,3 +70,7 @@
 .\objects\app_serial.o: ..\ModuleDrivers\Inc\drivers_led.h
 .\objects\app_serial.o: ..\ModuleDrivers\Inc\drivers_dma.h
 .\objects\app_serial.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\app_serial.o: ..\Task\Inc\Message_Task.h
+.\objects\app_serial.o: ..\MiddleWare\FreeRTOS\include\queue.h
+.\objects\app_serial.o: ..\Protocol\Inc\protocol_dbus.h
+.\objects\app_serial.o: ..\Protocol\Inc\protocol_judgement.h

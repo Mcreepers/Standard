@@ -26,11 +26,8 @@ uint16_t standard_ID1, standard_ID2;
 const Chassis_Ctrl *chassis_UI;
 const judge_type_t *robo_data_UI;
 const Message_Ctrl *Message_UI;
-Message_Data_t Message_Data_UI;
 void UIDraw_Task(void *pvParameters)
 {
-    Message_Data_UI.Data_ID = UIdraw;
-
     robo_data_UI = get_robo_data_Point();
     Message_UI = get_message_ctrl_pointer();
     chassis_UI = get_chassis_ctrl_pointer();
@@ -39,8 +36,8 @@ void UIDraw_Task(void *pvParameters)
     {
         
         //uart7_dma_get();
-        standard_ID1 = robo_data_UI->game_robot_state_t.robot_id;
-        standard_ID2 = 0x100 + uint32_t(robo_data_UI->game_robot_state_t.robot_id);
+        standard_ID1 = robo_data_UI->game_robot_state.robot_id;
+        standard_ID2 = 0x100 + uint32_t(robo_data_UI->game_robot_state.robot_id);
 
         
         while (uisend > 1)
@@ -65,12 +62,12 @@ void UIDraw_Task(void *pvParameters)
             Graph_Painter(" ", UI_Graph_ADD, UI_Graph_Line, standard_ID1, standard_ID2, 3, Graphic_Color_White, 10, 500, 100, 500, 100, NULL, NULL, NULL);
 
             // //敌我场地血量
-            // Num_Painter("outpost_red", UI_Graph_ADD, UI_Graph_Int, standard_ID1, standard_ID2, 3, Graphic_Color_White, 3, 10, 770, 20, NULL, game_robot_HP_t.red_outpost_HP, NULL);
-            // Num_Painter("outpost_blue", UI_Graph_ADD, UI_Graph_Int, standard_ID1, standard_ID2, 4, Graphic_Color_White, 3, 100, 770, 20, NULL, game_robot_HP_t.blue_outpost_HP, NULL);
-            // Num_Painter("sentry_red", UI_Graph_ADD, UI_Graph_Int, standard_ID1, standard_ID2, 3, Graphic_Color_White, 3, 10, 730, 20, NULL, game_robot_HP_t.red_7_robot_HP, NULL);
-            // Num_Painter("sentry_blue", UI_Graph_ADD, UI_Graph_Int, standard_ID1, standard_ID2, 4, Graphic_Color_White, 3, 100, 730, 20, NULL, game_robot_HP_t.blue_7_robot_HP, NULL);
-            // Num_Painter("base_red", UI_Graph_ADD, UI_Graph_Int, standard_ID1, standard_ID2, 3, Graphic_Color_White, 3, 10, 690, 20, NULL, game_robot_HP_t.red_base_HP, NULL);
-            // Num_Painter("base_blue", UI_Graph_ADD, UI_Graph_Int, standard_ID1, standard_ID2, 4, Graphic_Color_White, 3, 100, 690, 20, NULL, game_robot_HP_t.blue_base_HP, NULL);
+            // Num_Painter("outpost_red", UI_Graph_ADD, UI_Graph_Int, standard_ID1, standard_ID2, 3, Graphic_Color_White, 3, 10, 770, 20, NULL, game_robot_HP.red_outpost_HP, NULL);
+            // Num_Painter("outpost_blue", UI_Graph_ADD, UI_Graph_Int, standard_ID1, standard_ID2, 4, Graphic_Color_White, 3, 100, 770, 20, NULL, game_robot_HP.blue_outpost_HP, NULL);
+            // Num_Painter("sentry_red", UI_Graph_ADD, UI_Graph_Int, standard_ID1, standard_ID2, 3, Graphic_Color_White, 3, 10, 730, 20, NULL, game_robot_HP.red_7_robot_HP, NULL);
+            // Num_Painter("sentry_blue", UI_Graph_ADD, UI_Graph_Int, standard_ID1, standard_ID2, 4, Graphic_Color_White, 3, 100, 730, 20, NULL, game_robot_HP.blue_7_robot_HP, NULL);
+            // Num_Painter("base_red", UI_Graph_ADD, UI_Graph_Int, standard_ID1, standard_ID2, 3, Graphic_Color_White, 3, 10, 690, 20, NULL, game_robot_HP.red_base_HP, NULL);
+            // Num_Painter("base_blue", UI_Graph_ADD, UI_Graph_Int, standard_ID1, standard_ID2, 4, Graphic_Color_White, 3, 100, 690, 20, NULL, game_robot_HP.blue_base_HP, NULL);
 
             //底盘相对角度
             Graph_Painter("Li1", UI_Graph_ADD, UI_Graph_Line, standard_ID1, standard_ID2, 3, Graphic_Color_White, 10, 960, 540, 960, 540, NULL, NULL, NULL);
@@ -130,17 +127,17 @@ void UIDraw_Task(void *pvParameters)
             Char_Painter("power", null, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Pink, 3, 25, 340, 720, Type_Flag_Speed_up);
         else if (chassis_UI->Flags.Speed_Up_Flag == 0) Char_Painter("power", null, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Green, 3, 25, 340, 720, Type_Flag_Speed_up);
 
-        // Num_Painter("outpost_red", UI_Graph_Change, UI_Graph_Int, standard_ID1, standard_ID2, 3, Graphic_Color_Purplish_red, 3, 10, 840, 20, NULL, game_robot_HP_t.red_outpost_HP, NULL);
+        // Num_Painter("outpost_red", UI_Graph_Change, UI_Graph_Int, standard_ID1, standard_ID2, 3, Graphic_Color_Purplish_red, 3, 10, 840, 20, NULL, game_robot_HP.red_outpost_HP, NULL);
         // delay_ms(10);
-        // Num_Painter("outpost_blue", UI_Graph_Change, UI_Graph_Int, standard_ID1, standard_ID2, 4, Graphic_Color_Cyan, 3, 100, 840, 20, NULL, game_robot_HP_t.blue_outpost_HP, NULL);
+        // Num_Painter("outpost_blue", UI_Graph_Change, UI_Graph_Int, standard_ID1, standard_ID2, 4, Graphic_Color_Cyan, 3, 100, 840, 20, NULL, game_robot_HP.blue_outpost_HP, NULL);
         // delay_ms(10);
-        // Num_Painter("sentry_red", UI_Graph_Change, UI_Graph_Int, standard_ID1, standard_ID2, 3, Graphic_Color_Purplish_red, 3, 10, 810, 20, NULL, game_robot_HP_t.red_7_robot_HP, NULL);
+        // Num_Painter("sentry_red", UI_Graph_Change, UI_Graph_Int, standard_ID1, standard_ID2, 3, Graphic_Color_Purplish_red, 3, 10, 810, 20, NULL, game_robot_HP.red_7_robot_HP, NULL);
         // delay_ms(10);
-        // Num_Painter("sentry_blue", UI_Graph_Change, UI_Graph_Int, standard_ID1, standard_ID2, 4, Graphic_Color_Cyan, 3, 100, 810, 20, NULL, game_robot_HP_t.blue_7_robot_HP, NULL);
+        // Num_Painter("sentry_blue", UI_Graph_Change, UI_Graph_Int, standard_ID1, standard_ID2, 4, Graphic_Color_Cyan, 3, 100, 810, 20, NULL, game_robot_HP.blue_7_robot_HP, NULL);
         // delay_ms(10);
-        // Num_Painter("base_red", UI_Graph_Change, UI_Graph_Int, standard_ID1, standard_ID2, 3, Graphic_Color_Purplish_red, 3, 10, 780, 20, NULL, game_robot_HP_t.red_base_HP, NULL);
+        // Num_Painter("base_red", UI_Graph_Change, UI_Graph_Int, standard_ID1, standard_ID2, 3, Graphic_Color_Purplish_red, 3, 10, 780, 20, NULL, game_robot_HP.red_base_HP, NULL);
         // delay_ms(10);
-        // Num_Painter("base_blue", UI_Graph_Change, UI_Graph_Int, standard_ID1, standard_ID2, 4, Graphic_Color_Cyan, 3, 100, 780, 20, NULL, game_robot_HP_t.blue_base_HP, NULL);
+        // Num_Painter("base_blue", UI_Graph_Change, UI_Graph_Int, standard_ID1, standard_ID2, 4, Graphic_Color_Cyan, 3, 100, 780, 20, NULL, game_robot_HP.blue_base_HP, NULL);
         // delay_ms(10);
 
         //超级电容
@@ -185,7 +182,7 @@ void UIDraw_Task(void *pvParameters)
         //         UserTaskStack = uxTaskGetStackHighWaterMark(NULL);
         // #endif
         
-        xQueueSend(Message_Queue, &Message_Data_UI, 0);
+        xQueueSend(Message_Queue, &ID_Data[UIdrawData], 0);
         vTaskDelay(10);
     }
 }

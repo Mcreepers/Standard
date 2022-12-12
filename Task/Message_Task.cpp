@@ -5,7 +5,6 @@
 #include "queue.h"
 #include "device.h"
  
-Message_Data_t Message_Data;
 Message_Ctrl Message;
 Guard_Ctrl *Message_Guard;
 
@@ -15,10 +14,10 @@ void Message_Task(void *pvParameters)
 	Message.Init();
 	while (1)
     {
-        if (xQueueReceive(Message_Queue, &Message_Data, portMAX_DELAY))
+		if (xQueueReceive(Message_Queue, &ID_Data[MessageData], portMAX_DELAY))
 		{
 			Message.Hook();
-			Message.Feed(&Message_Data.Data_ID);
+			Message.Feed(&ID_Data[MessageData].Data_ID);
 		}
 	}
 }
@@ -37,28 +36,28 @@ void Message_Ctrl::Feed(ID_e *ID)
 //消息处理
 void Message_Ctrl::Hook()
 {
-	switch (Message_Data.Data_ID)
+	switch (ID_Data[MessageData].Data_ID)
 	{
 	case CanData1:
-		CAN1_Process((CanRxMsg *)Message_Data.Data_Ptr);
+		CAN1_Process((CanRxMsg *)ID_Data[MessageData].Data_Ptr);
 		break;
 	case CanData2:
-		CAN2_Process((CanRxMsg *)Message_Data.Data_Ptr);
+		CAN2_Process((CanRxMsg *)ID_Data[MessageData].Data_Ptr);
 		break;
-	case serial3:
-		// Usart3_Hook();
+	case SerialData3:
+		// Usart3_Hook((Serial_Data_t *)ID_Data[MessageData].Data_Ptr);
 		break;
-	case serial6:
-		Usart6_Hook();
+	case SerialData6:
+		Usart6_Hook((Serial_Data_t *)ID_Data[MessageData].Data_Ptr);
 		break;
-	case serial7:
-		Usart7_Hook();
+	case SerialData7:
+		Usart7_Hook((Serial_Data_t *)ID_Data[MessageData].Data_Ptr);
 		break;
-	case serial8:
-		// Usart8_Hook();
+	case SerialData8:
+		// Usart8_Hook((Serial_Data_t *)ID_Data[MessageData].Data_Ptr);
 		break;
-	case RC_ctrl:
-		rc_key_v_fresh((RC_ctrl_t *)Message_Data.Data_Ptr);
+	case RC_Data:
+		rc_key_v_fresh((RC_ctrl_t *)ID_Data[MessageData].Data_Ptr);
 		break;
 	default:
 		break;
@@ -98,17 +97,17 @@ void Message_Ctrl::CAN2_Process(CanRxMsg *Rx_Message)
 	}
 }
 
-void Message_Ctrl::Usart3_Hook()
+void Message_Ctrl::Usart3_Hook(Serial_Data_t *Rx_Message)
 {
 
 }
 
-void Message_Ctrl::Usart6_Hook()
+void Message_Ctrl::Usart6_Hook(Serial_Data_t *Rx_Message)
 {
-	ecd_data.s[0] = Usart6.Data[1];
-	ecd_data.s[1] = Usart6.Data[2];
+	ecd_data.s[0] = Rx_Message->Data[1];
+	ecd_data.s[1] = Rx_Message->Data[2];
 	GimbalR.ECD = -motor_ecd_to_relative_ecd(ecd_data.d, Gimbal_Motor_Yaw_Offset_ECD);
-	GimbalR.goal = Usart6.Data[3];
+	GimbalR.goal = Rx_Message->Data[3];
 	if (GimbalR.ECD > 8192)
 	{
 	}
@@ -117,16 +116,16 @@ void Message_Ctrl::Usart6_Hook()
 	}
 }
 
-void Message_Ctrl::Usart7_Hook()
+void Message_Ctrl::Usart7_Hook(Serial_Data_t *Rx_Message)
 {
 	uart7_dma_get();
-	if (robo->game_robot_state_t.robot_id % 100 == RobotID)
+	if (robo->game_robot_state.robot_id % 100 == RobotID)
 	{//%100忽视红蓝
-		Message_Guard->Feed(robotid);
+		Message_Guard->Feed(RobotId);
 	}
 }
 
-void Message_Ctrl::Usart8_Hook()
+void Message_Ctrl::Usart8_Hook(Serial_Data_t *Rx_Message)
 {
 
 }

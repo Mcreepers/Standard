@@ -4,11 +4,12 @@
 #include "arm_math.h"
 
 #include "app_motor.h"
+#include "app_serial.h"
+
 #include "dev_can.h"
 #include "protocol_dbus.h"
 
 Chassis_Ctrl Chassis;
-Message_Data_t Message_Data_chassis;
 uint8_t UIsend = 0;
 //底盘速度环pid值
 const static fp32 Motor_Speed_Pid[3] = {M3505_MOTOR_SPEED_PID_KP, M3505_MOTOR_SPEED_PID_KI, M3505_MOTOR_SPEED_PID_KD};
@@ -27,8 +28,9 @@ const static fp32 MOTOR_6020_offset[4] = {MOTOR_6020_1_offset, MOTOR_6020_2_offs
 void Chassis_Task(void *pvParameters)
 {
 	CAN_ALL_Init();//所有电机控制都在一个类中
+	Serial_ALL_Init();
+
 	Chassis.Chassis_Init();
-	Message_Data_chassis.Data_ID = chassis;
 	while (1)
 	{
 		Chassis.Behaviour_Mode();
@@ -53,7 +55,7 @@ void Chassis_Task(void *pvParameters)
 #endif
 		}
 		
-        xQueueSend(Message_Queue, &Message_Data_chassis, 0);
+        xQueueSend(Message_Queue, &ID_Data[ChassisData], 0);
 		
 		vTaskDelay(CHASSIS_CONTROL_TIME_MS);
 	}
@@ -276,7 +278,7 @@ void Chassis_Ctrl::Behaviour_Mode(void)
 
 void Chassis_Ctrl::Flag_Behaviour_Control()
 {
-	if (Chassis_Guard->Return(supercap) == true)
+	if (Chassis_Guard->Return(SupercapData) == true)
 	{
 		Chassis_Message->SuperCapR.power_limit = 40;
 		Velocity.Speed_Set = Velocity.Speed_Set_m(Flags.Speed_Up_Flag, Velocity.Gear);

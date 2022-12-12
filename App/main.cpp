@@ -1,7 +1,6 @@
 #include "dev_system.h"
 
 #include "start_task.h"
-#include "Guard_Task.h"
 #include "app_power_ctrl.h"
 
 #include "protocol_dbus.h"
@@ -15,16 +14,10 @@ void SoftWareInit(void)
 	delay_init((uint32_t )1000);
 	power_ctrl_configuration();
 	
-	Message_Queue = xQueueCreate(Message_Q_NUM, sizeof(Message_Data_t));
-	
-	JUDGE_SERIAL.Serial_Init(JUDGE_SERIAL_BAUD);
-//	GIMBAL_SERIAL.Serial_Init(GIMBAL_SERIAL_BAUD);
-	// Serial8.Serial_Init(115200, SERIAL_8N1);
-	Serial6.Serial_Init(115200, 6, 2);
-	// Serial7.Serial_Init( 115200, SERIAL_8N1); //哪种初始化方式都可以
-	//Serial7.Serial_Init( 115200, 6,2);
-	
-	PWM_Init(PH6,30000,66);	//buzzer(id错误警告)
+	Message_Queue = xQueueCreate(Message_Q_NUM, sizeof(ID_Data_t));
+
+	Prefence_Init();
+	PWM_Init(PH6, 30000, 66);	//buzzer
 	pwmWrite(PH6,0);
 
 	for (uint8_t i = POWER1_CTRL_SWITCH; i < POWER4_CTRL_SWITCH + 1; i++)

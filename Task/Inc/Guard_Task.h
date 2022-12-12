@@ -11,7 +11,6 @@ extern "C" {
 #endif
 
 void Guard_Task(void *pvParameters);
-extern void Guard_Scan_Time(TimerHandle_t xTimer);
 
 #ifdef __cplusplus
 }

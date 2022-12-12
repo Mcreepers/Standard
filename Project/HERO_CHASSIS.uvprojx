@@ -404,6 +404,16 @@
               <FileType>8</FileType>
               <FilePath>..\App\app_power_ctrl.cpp</FilePath>
             </File>
+            <File>
+              <FileName>app_serial.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\App\app_serial.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>app_preference.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\App\app_preference.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

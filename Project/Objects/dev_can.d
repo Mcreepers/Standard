@@ -58,6 +58,8 @@
 .\objects\dev_can.o: ..\App\Inc\app_motor.h
 .\objects\dev_can.o: ..\Device\Inc\dev_system.h
 .\objects\dev_can.o: ..\Device\Inc\device.h
+.\objects\dev_can.o: ..\App\Inc\app_preference.h
+.\objects\dev_can.o: ..\App\Inc\preference_3.h
 .\objects\dev_can.o: ..\Device\Inc\dev_serial.h
 .\objects\dev_can.o: ..\ModuleDrivers\Inc\drivers_serial.h
 .\objects\dev_can.o: ..\ModuleDrivers\Inc\drivers_buffer.h
@@ -68,8 +70,8 @@
 .\objects\dev_can.o: ..\ModuleDrivers\Inc\drivers_led.h
 .\objects\dev_can.o: ..\ModuleDrivers\Inc\drivers_dma.h
 .\objects\dev_can.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdbool.h
-.\objects\dev_can.o: ..\App\Inc\app_preference.h
 .\objects\dev_can.o: ..\MiddleWare\FreeRTOS\include\queue.h
 .\objects\dev_can.o: ..\Task\Inc\Message_Task.h
+.\objects\dev_can.o: ..\App\Inc\app_serial.h
 .\objects\dev_can.o: ..\Protocol\Inc\protocol_dbus.h
 .\objects\dev_can.o: ..\Protocol\Inc\protocol_judgement.h

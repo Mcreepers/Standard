@@ -56,6 +56,8 @@
 .\objects\rtossystem_task.o: ..\Platform\Inc\platform_timer.h
 .\objects\rtossystem_task.o: ..\Platform\Inc\platform_systick.h
 .\objects\rtossystem_task.o: ..\Device\Inc\device.h
+.\objects\rtossystem_task.o: ..\App\Inc\app_preference.h
+.\objects\rtossystem_task.o: ..\App\Inc\preference_3.h
 .\objects\rtossystem_task.o: ..\Device\Inc\dev_serial.h
 .\objects\rtossystem_task.o: ..\ModuleDrivers\Inc\drivers_serial.h
 .\objects\rtossystem_task.o: ..\ModuleDrivers\Inc\drivers_buffer.h
@@ -68,5 +70,4 @@
 .\objects\rtossystem_task.o: ..\ModuleDrivers\Inc\drivers_led.h
 .\objects\rtossystem_task.o: ..\ModuleDrivers\Inc\drivers_dma.h
 .\objects\rtossystem_task.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\stdbool.h
-.\objects\rtossystem_task.o: ..\App\Inc\app_preference.h
 .\objects\rtossystem_task.o: ..\App\Inc\app_led.h
