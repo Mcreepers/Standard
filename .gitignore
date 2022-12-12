@@ -1,2 +1,7 @@
-Project/Object/*
+Project/Objects/*
 *.uvguix.*
+*.crf
+*.d
+*.o
+*.__i
+*.axf
