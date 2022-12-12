@@ -5,3 +5,4 @@ Project/Objects/*
 *.o
 *.__i
 *.axf
+Project/all.dis
