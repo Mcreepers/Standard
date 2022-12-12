@@ -61,15 +61,15 @@ void correspondence_ctrl::Corres_Feedback(void)
 {
 	uint8_t i;
     
-    GimbalS.Grade = robo->robo_level;
-	Gimbal_Union.F=robo->robo_17_Speed;
+    GimbalS.Grade = robo->game_robot_state_t.robot_level;
+	Gimbal_Union.F=robo->shoot_data_t.bullet_speed;
 	for(i=0;i<4;i++)
 	{
 		GimbalS.Shoot[i]=Gimbal_Union.I[i];
 	}
-	GimbalS.robo_ID = robo->robo_ID;
+	GimbalS.robo_ID = robo->game_robot_state_t.robot_id;
 
-	if ((Corres_Message->SuperCapR.situation == CAP_CLOSE || Corres_Message->SuperCapR.situation == CAP_OPEN) && robo->robo_HP > 1)
+	if ((Corres_Message->SuperCapR.situation == CAP_CLOSE || Corres_Message->SuperCapR.situation == CAP_OPEN) && robo->game_robot_state_t.robot_level >= 1)
 	{
 		SuperCapS.enable = 0xff;
 	}
@@ -86,7 +86,7 @@ void correspondence_ctrl::Corres_Feedback(void)
 	{
 		SuperCapS.mode = 0x00;
 	}
-	SuperCapS.power = (uint8_t)robo->chassis_power;
+	SuperCapS.power = (uint8_t)robo->power_heat_data_t.chassis_power;
 //	SuperCapS.power_limit = (uint8_t)robo->power_limit;
 	SuperCapS.power_limit = 60;
 }

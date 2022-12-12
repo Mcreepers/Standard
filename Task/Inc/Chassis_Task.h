@@ -7,13 +7,18 @@
 
 #include "app_motor.h"
 #include "Message_Task.h"
+#include "Guard_Task.h"
 
 #include "algorithm_pid.h"
 #include "algorithm_user_lib.h"
 
 #include "drivers_state_machines.h"
 
-#include "algorithm_matrix.h"
+extern "C++" 
+{
+#include "algorithm_matrix.hpp"
+}
+
 
 #ifdef __cplusplus
 extern "C" {

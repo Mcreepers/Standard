@@ -85,7 +85,7 @@ class Message_Ctrl
 public:
 	Gimbal_Receive_Data_t GimbalR;
 	supercap_Receive_Data_t SuperCapR;
-	const judge_type *robo;
+	const judge_type_t *robo;
 
 	union I ecd_data;
 

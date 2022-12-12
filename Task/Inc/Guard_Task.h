@@ -5,7 +5,6 @@
 #include "queue.h"
 #include "timers.h"
 #include "Message_Task.h"
-#include "Chassis_Task.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -42,7 +41,7 @@ struct SG_Data_t
 	void (*errcallback)(uint8_t id);//异常回调函数
 	void (*closecallback)(uint8_t id);//关闭回调函数
 };
-	
+
 class Guard_Ctrl
 {
 public:
@@ -56,9 +55,6 @@ public:
 
 	ID_e ID;
 private:
-	Chassis_Ctrl *Guard_Chassis;
-	Message_Ctrl *Guard_Message;
-	
 	void Guard_Enable(void);
 
 	SG_Data_t SG_Structure[GUARD_TOTAL_NUM];

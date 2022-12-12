@@ -24,7 +24,7 @@ uint32_t x1, x2, x3, x4, y1, y2, y3, y4;
 uint16_t standard_ID1, standard_ID2;
 
 const Chassis_Ctrl *chassis_UI;
-const robo_data_t *robo_data_UI;
+const judge_type_t *robo_data_UI;
 const Message_Ctrl *Message_UI;
 Message_Data_t Message_Data_UI;
 void UIDraw_Task(void *pvParameters)
@@ -39,8 +39,8 @@ void UIDraw_Task(void *pvParameters)
     {
         
         //uart7_dma_get();
-        standard_ID1 = robo_data_UI->robo_ID;
-        standard_ID2 = 0x100 + uint32_t(robo_data_UI->robo_ID);
+        standard_ID1 = robo_data_UI->game_robot_state_t.robot_id;
+        standard_ID2 = 0x100 + uint32_t(robo_data_UI->game_robot_state_t.robot_id);
 
         
         while (uisend > 1)

@@ -77,10 +77,13 @@
 .\objects\main.o: ..\Task\Inc\Message_Task.h
 .\objects\main.o: ..\MiddleWare\FreeRTOS\include\queue.h
 .\objects\main.o: ..\Protocol\Inc\protocol_judgement.h
+.\objects\main.o: ..\Task\Inc\Guard_Task.h
 .\objects\main.o: ..\Algorithm\inc\algorithm_pid.h
 .\objects\main.o: ..\Algorithm\inc\algorithm_user_lib.h
 .\objects\main.o: ..\ModuleDrivers\Inc\drivers_state_machines.h
+.\objects\main.o: ..\Algorithm\inc\algorithm_matrix.hpp
+.\objects\main.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\cassert
+.\objects\main.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\assert.h
 .\objects\main.o: ..\Task\Inc\UIDraw_Task.h
-.\objects\main.o: ..\Task\Inc\Guard_Task.h
 .\objects\main.o: ..\Task\Inc\Correspondence_Task.h
 .\objects\main.o: ..\App\Inc\app_power_ctrl.h

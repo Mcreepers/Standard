@@ -71,7 +71,7 @@ struct Cap_Data_t
 class correspondence_ctrl
 {
 public:
-    const robo_data_t *robo;
+    const judge_type_t *robo;
 
     void Corres_Init(void);
     void Corres_Send(void);

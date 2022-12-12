@@ -24,9 +24,6 @@ void Guard_Task(void *pvParameters)
 //警戒任务开始
 void Guard_Ctrl::Start(void)
 {
-    Guard_Chassis = get_chassis_ctrl_pointer();
-    Guard_Message = get_message_ctrl_pointer();
-
     // Init(CanData1, 1000 ,100, &System_RESET);
     // Init(CanData2, 1000, 100, &System_RESET);
     // Init(serial3, 1000, 100, &Error_Enable, true);
@@ -180,7 +177,7 @@ void Guard_Ctrl::Guard_Enable(void)
     }
 }
 
-void Guard_Return(void)
+void Guard_Return(uint8_t id)
 {
     return;
 }

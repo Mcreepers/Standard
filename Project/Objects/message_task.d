@@ -74,9 +74,12 @@
 .\objects\message_task.o: ..\Protocol\Inc\protocol_judgement.h
 .\objects\message_task.o: ..\Task\Inc\Chassis_Task.h
 .\objects\message_task.o: ..\App\Inc\app_motor.h
+.\objects\message_task.o: ..\Task\Inc\Guard_Task.h
+.\objects\message_task.o: ..\MiddleWare\FreeRTOS\include\timers.h
 .\objects\message_task.o: ..\Algorithm\inc\algorithm_pid.h
 .\objects\message_task.o: ..\Algorithm\inc\algorithm_user_lib.h
 .\objects\message_task.o: ..\ModuleDrivers\Inc\drivers_state_machines.h
-.\objects\message_task.o: ..\Task\Inc\Guard_Task.h
-.\objects\message_task.o: ..\MiddleWare\FreeRTOS\include\timers.h
+.\objects\message_task.o: ..\Algorithm\inc\algorithm_matrix.hpp
+.\objects\message_task.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\cassert
+.\objects\message_task.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\assert.h
 .\objects\message_task.o: ..\Task\Inc\Correspondence_Task.h

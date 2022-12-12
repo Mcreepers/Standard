@@ -81,6 +81,11 @@
 .\objects\uidraw_task.o: ..\Protocol\Inc\protocol_dbus.h
 .\objects\uidraw_task.o: ..\App\Inc\app_motor.h
 .\objects\uidraw_task.o: ..\Task\Inc\Message_Task.h
+.\objects\uidraw_task.o: ..\Task\Inc\Guard_Task.h
+.\objects\uidraw_task.o: ..\MiddleWare\FreeRTOS\include\timers.h
 .\objects\uidraw_task.o: ..\Algorithm\inc\algorithm_pid.h
 .\objects\uidraw_task.o: ..\Algorithm\inc\algorithm_user_lib.h
 .\objects\uidraw_task.o: ..\ModuleDrivers\Inc\drivers_state_machines.h
+.\objects\uidraw_task.o: ..\Algorithm\inc\algorithm_matrix.hpp
+.\objects\uidraw_task.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\cassert
+.\objects\uidraw_task.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\assert.h

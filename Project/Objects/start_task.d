@@ -77,9 +77,12 @@
 .\objects\start_task.o: ..\Task\Inc\Message_Task.h
 .\objects\start_task.o: ..\MiddleWare\FreeRTOS\include\queue.h
 .\objects\start_task.o: ..\Protocol\Inc\protocol_judgement.h
+.\objects\start_task.o: ..\Task\Inc\Guard_Task.h
 .\objects\start_task.o: ..\Algorithm\inc\algorithm_pid.h
 .\objects\start_task.o: ..\Algorithm\inc\algorithm_user_lib.h
 .\objects\start_task.o: ..\ModuleDrivers\Inc\drivers_state_machines.h
+.\objects\start_task.o: ..\Algorithm\inc\algorithm_matrix.hpp
+.\objects\start_task.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\cassert
+.\objects\start_task.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\assert.h
 .\objects\start_task.o: ..\Task\Inc\UIDraw_Task.h
-.\objects\start_task.o: ..\Task\Inc\Guard_Task.h
 .\objects\start_task.o: ..\Task\Inc\Correspondence_Task.h

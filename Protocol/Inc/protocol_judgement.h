@@ -89,8 +89,6 @@ typedef __packed struct
 	uint16_t stage_remaining_time;
 } ext_dart_status_t;
 
-
-
 //裁判警告信息cmd_id=0x0104
 typedef __packed struct
 {
@@ -98,6 +96,7 @@ typedef __packed struct
 	uint8_t level;               //警告等级
 	uint8_t foul_robot_id;       //犯规机器人ID
 }ext_referee_warning_t;
+
 //机器人状态cmd_id=0x0201
 typedef __packed struct
 {
@@ -110,11 +109,11 @@ typedef __packed struct
 	uint16_t shooter_id1_17mm_cooling_limit;  //机器人42mm枪口热量上限
 	uint16_t shooter_id1_17mm_speed_limit;   //机器人17mm枪口每秒冷却值
 
-	uint16_t shooter_id2_17mm_cooling_rate; //机器人42mm枪口热量上限
+	uint16_t shooter_id2_17mm_cooling_rate; 
 	uint16_t shooter_id2_17mm_cooling_limit;
 	uint16_t shooter_id2_17mm_speed_limit;
 
-	uint16_t shooter_id1_42mm_cooling_rate;
+	uint16_t shooter_id1_42mm_cooling_rate;//机器人42mm枪口热量上限
 	uint16_t shooter_id1_42mm_cooling_limit;
 	uint16_t shooter_id1_42mm_speed_limit;
 
@@ -133,7 +132,6 @@ typedef __packed struct
 	float bullet_speed;
 }ext_shoot_data_t;
 
-
 typedef enum
 {
 	Robot_Status_ID = 0x0201,//机器人状态  等级
@@ -142,7 +140,6 @@ typedef enum
 	shoot_data_ID = 0x0207,//射频射速
 	student_interactive_header_ID = 0x0301,
 } Judege_Cmd_ID;
-
 
 typedef enum
 {
@@ -202,8 +199,6 @@ typedef __packed struct
 	uint16_t shooter_id1_42mm_cooling_heat;       //机动17mm枪口热量
 }ext_power_heat_data_t;
 
-
-
 typedef __packed struct
 {
 	float x;
@@ -233,7 +228,12 @@ typedef struct
 	client_custom_data_t         robot_data_t;
 	client_custom_data_t          userinfo;
 
-}judge_type;
+}judge_type_t;
+
+
+
+
+
 
 typedef __packed struct
 {
@@ -390,7 +390,7 @@ typedef __packed struct
 extern	tMsg_head                    judgedatahead;
 extern  SelfDefineInfo_t             SelfDefineInfo;
 extern  tFrame						tframe;
-extern  judge_type                   judgetype;
+extern  judge_type_t                   judge_type;
 extern  ext_shoot_data_t			shoot_data_t;
 extern	uint8_t						rx7_buf[RX_BUF_NUM];
 extern  uint8_t						TX7_buf[TX_BUF_NUM];
@@ -405,7 +405,7 @@ extern	ext_client_custom_graphic_single_t   client_custom_graphic_single_t;
 void usart7_send_char(uint8_t c);
 void Usart_SendBuff(uint8_t *buf, uint16_t len);
 void chassis_to_judgeui(uint16_t txlen);
-const judge_type *get_robo_data_Point();
+const judge_type_t *get_robo_data_Point();
 extern void usart7_DMA_init(void);
 void uart7_dma_get(void);
 

@@ -79,3 +79,6 @@
 .\objects\guard_task.o: ..\Algorithm\inc\algorithm_pid.h
 .\objects\guard_task.o: ..\Algorithm\inc\algorithm_user_lib.h
 .\objects\guard_task.o: ..\ModuleDrivers\Inc\drivers_state_machines.h
+.\objects\guard_task.o: ..\Algorithm\inc\algorithm_matrix.hpp
+.\objects\guard_task.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\cassert
+.\objects\guard_task.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\assert.h

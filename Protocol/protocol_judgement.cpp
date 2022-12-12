@@ -5,18 +5,11 @@
 #include "device.h"
 //裁判系统串口
 
-static ext_game_robot_HP_t          game_robot_HP_t;
-static ext_game_status_t            game_status;
-static ext_game_robot_status_t      game_robot_state_t;
-static judge_type                   judgetype;
-static ext_power_heat_data_t        power_heat_data_t;
-//static ext_referee_warning_t        referee_warning_t;
 //static tFrame			                  tframe;
-static ext_shoot_data_t	  	        shoot_data_t;
 static tMsg_head                    judgedatahead;
-static ext_game_robot_pos_t	        game_robot_pos_t;
 //static ext_client_custom_graphic_single_t  ext_client_custom_graphic_single;
 //static draw_data_struct_t		draw_data_struct;
+static judge_type_t                   judge_type;
 
 
 uint8_t rx7_buf[RX_BUF_NUM];
@@ -92,8 +85,6 @@ void chassis_to_judgeui(uint16_t txlen)
 }
 
 //裁判系统相关
-static void get_receiver(robo_data_t *res);
-robo_data_t robo_data;
 static void referee_data_solve(void)
 {
 	static uint16_t start_pos = 0, next_start_pos = 0;
@@ -103,49 +94,49 @@ static void referee_data_solve(void)
 		&& (1 == Verify_CRC8_Check_Sum(&rx7_buf[start_pos], FrameHeader_Len)) \
 		&& (1 == Verify_CRC16_Check_Sum(&rx7_buf[start_pos], judgedatahead.DataLength + FrameHeader_Len + 4)))//数据位长度+帧头长度+命令码长度+校验码长度
 	{
-		memcpy(&judgetype.rxCmdId, (&rx7_buf[start_pos] + 5), sizeof(judgetype.rxCmdId));
+		memcpy(&judge_type.rxCmdId, (&rx7_buf[start_pos] + 5), sizeof(judge_type.rxCmdId));
 		rx7_buf[start_pos]++;//每处理完一次就在帧头加一防止再次处理这帧数据
 		next_start_pos = start_pos + 9 + judgedatahead.DataLength;//9为 5位帧头 2位数据长度 2校验位
-		switch (judgetype.rxCmdId)
+		switch (judge_type.rxCmdId)
 		{
 		case CmdID_8://机器人状态数据，10Hz发送；
 			{
-				memcpy(&judgetype.game_robot_state_t, (&rx7_buf[start_pos] + 7), judgedatahead.DataLength);//把数组中的数据复制到对应的结构体中去
+				memcpy(&judge_type.game_robot_state_t, (&rx7_buf[start_pos] + 7), judgedatahead.DataLength);//把数组中的数据复制到对应的结构体中去
 				break;
 			}
 
 		case CmdID_1:
 			{
-				memcpy(&judgetype.game_status, (rx7_buf + 7), judgedatahead.DataLength);
+				memcpy(&judge_type.game_status, (rx7_buf + 7), judgedatahead.DataLength);
 				break;
 			}
 
 		case CmdID_3:
 			{
-				memcpy(&judgetype.game_robot_HP_t, (&rx7_buf[start_pos] + 7), judgedatahead.DataLength);
+				memcpy(&judge_type.game_robot_HP_t, (&rx7_buf[start_pos] + 7), judgedatahead.DataLength);
 				break;
 			}
 
 		case CmdID_9://实时功率热量数据，50Hz周期发送；
 			{
-				memcpy(&judgetype.power_heat_data_t, (rx7_buf + 7), judgedatahead.DataLength);
+				memcpy(&judge_type.power_heat_data_t, (rx7_buf + 7), judgedatahead.DataLength);
 				break;
 			}
 
 		case CmdID_14://实时射击数据，弹丸发射后发送；
 			{
-				memcpy(&judgetype.shoot_data_t, (&rx7_buf[start_pos] + 7), judgedatahead.DataLength);
+				memcpy(&judge_type.shoot_data_t, (&rx7_buf[start_pos] + 7), judgedatahead.DataLength);
 				break;
 			}
 
 		case CmdID_10://读取机器人位置信息
 			{
-				memcpy(&judgetype.game_robot_pos_t, (&rx7_buf[start_pos] + 7), judgedatahead.DataLength);
+				memcpy(&judge_type.game_robot_pos_t, (&rx7_buf[start_pos] + 7), judgedatahead.DataLength);
 				break;
 			}
 		case CmdID_16:
 			{
-				memcpy(&judgetype.userinfo, (&rx7_buf[start_pos] + 7), judgedatahead.DataLength);//把数组中的数据复制到对应的结构体中去		
+				memcpy(&judge_type.userinfo, (&rx7_buf[start_pos] + 7), judgedatahead.DataLength);//把数组中的数据复制到对应的结构体中去		
 				break;
 			}
 		default:{
@@ -160,9 +151,9 @@ static void referee_data_solve(void)
 	}
 }
 
-const judge_type *get_robo_data_Point(void)
+const judge_type_t *get_robo_data_Point(void)
 {
-	return &judgetype;
+	return &judge_type;
 }
 
 void Usart_SendBuff(u8 *buf, u16 len)
