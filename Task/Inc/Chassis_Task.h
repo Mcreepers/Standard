@@ -13,6 +13,8 @@
 
 #include "drivers_state_machines.h"
 
+#include "algorithm_matrix.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -129,13 +131,16 @@ typedef struct
   fp32 vy_max_speed;  //左右方向最大速度 单位m/s
   fp32 vy_min_speed;  //左右方向最小速度 单位m/s
 
-  uint8_t Speed_Gear;  //速度档位
-  fp32    Speed_Set[4];//底盘速度
+  uint8_t Gear;  //等级
+  fp32 Speed;
+  fp32 Speed_Set;
+  Matrix<3, 4> Speed_Set_m;//底盘速度
 } Chassis_Velocity_t;
 
 class Chassis_Ctrl : public rc_key_c
 {
 public:
+  
   const RC_ctrl_t *RC_Ptr;
   const fp32 *chassis_yaw_relative_angle;   //底盘使用到yaw云台电机的相对角度来计算底盘的欧拉角
   fp32 chassis_relative_ECD;   //底盘使用到yaw云台电机的相对角度来计算底盘的欧拉角
@@ -143,6 +148,7 @@ public:
   
   Chassis_Motor_t Motor[Chassis_Motor_Numbers];
 
+  PidTypeDef  Velocity_Pid;
   PidTypeDef  Speed_Pid[Chassis_Motor_Numbers];
   PidTypeDef  Follow_Gimbal_Pid;
   PidTypeDef  chassis_setangle;
@@ -171,10 +177,12 @@ public:
 #endif
 private:
   Message_Ctrl *Chassis_Message;
-  
+  Guard_Ctrl *Chassis_Guard;
+
   void RC_to_Control(fp32 *vx_set, fp32 *vy_set);
   void Behaviour_Control(fp32 *vx_set, fp32 *vy_set, fp32 *angle_set);
   void Vector_to_Wheel_Speed(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set);
+  void Flag_Behaviour_Control(void);
 #ifdef  useSteering
   void Steering_Behaviour_Control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set);
   void Steering_Round_Calc(void);
@@ -185,6 +193,6 @@ private:
 extern void rc_key_v_fresh(RC_ctrl_t *RC);
 extern void System_Reset(void);
 extern fp32 motor_ecd_to_relative_ecd(uint16_t angle, uint16_t offset_ecd);
-Chassis_Ctrl *get_chassis_ctrl_pointer(void);
+extern Chassis_Ctrl *get_chassis_ctrl_pointer(void);
 
 #endif /* __CHASSIS_TASK_H */

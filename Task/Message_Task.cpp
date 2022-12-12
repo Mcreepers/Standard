@@ -31,7 +31,7 @@ void Message_Ctrl::Init()
 
 void Message_Ctrl::Feed(ID_e *ID)
 {
-	Message_Guard->Guard_Feed(*ID);
+	Message_Guard->Feed(*ID);
 }
 
 //消息处理
@@ -120,9 +120,9 @@ void Message_Ctrl::Usart6_Hook()
 void Message_Ctrl::Usart7_Hook()
 {
 	uart7_dma_get();
-	if (robo->robo_ID % 100 == RobotID)
+	if (robo->game_robot_state_t.robot_id % 100 == RobotID)
 	{//%100忽视红蓝
-		Message_Guard->Guard_Feed(robotid);
+		Message_Guard->Feed(robotid);
 	}
 }
 

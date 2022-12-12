@@ -1,20 +1,19 @@
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'D:\study\STM32\mdk1\ARM\ARMCC\Bin'
 Build target 'HERO_CHASSIS'
-compiling main.cpp...
-..\App\Inc\app_preference.h(7): warning:  #1215-D: #warning directive: RobotID位置提示, 请自行注释
-  #warning RobotID位置提示, 请自行注释
-..\App\main.cpp: 1 warning, 0 errors
-compiling Message_Task.cpp...
-..\App\Inc\app_preference.h(7): warning:  #1215-D: #warning directive: RobotID位置提示, 请自行注释
-  #warning RobotID位置提示, 请自行注释
-..\Task\Message_Task.cpp(70): warning:  #550-D: variable "q"  was set but never used
-  	uint8_t q;
-..\Task\Message_Task.cpp: 2 warnings, 0 errors
-compiling Guard_Task.cpp...
-..\App\Inc\app_preference.h(7): warning:  #1215-D: #warning directive: RobotID位置提示, 请自行注释
-  #warning RobotID位置提示, 请自行注释
-..\Task\Guard_Task.cpp: 1 warning, 0 errors
-linking...
-Program Size: Code=33590 RO-data=6298 RW-data=416 ZI-data=139800  
-".\Objects\HERO_CHASSIS.axf" - 0 Error(s), 4 Warning(s).
-Build Time Elapsed:  00:00:10
+compiling Chassis_Task.cpp...
+..\Task\Chassis_Task.cpp(106): warning:  #3337-D: list initialization syntax is a C++11 feature
+  	Matrix<3, 1> v {1.1f, 1.1f, 1.1f};
+..\Task\Chassis_Task.cpp(329): error:  #513: a value of type "fp32 *" cannot be assigned to an entity of type "fp32"
+  				vx_set_channel = Velocity.Speed_Set[Flags.Speed_Up_Flag];
+..\Task\Chassis_Task.cpp(333): error:  #848: expression must have arithmetic or enum type
+  				vx_set_channel = -Velocity.Speed_Set[Flags.Speed_Up_Flag];
+..\Task\Chassis_Task.cpp(341): error:  #848: expression must have arithmetic or enum type
+  				vy_set_channel = -Velocity.Speed_Set[Flags.Speed_Up_Flag];
+..\Task\Chassis_Task.cpp(345): error:  #513: a value of type "fp32 *" cannot be assigned to an entity of type "fp32"
+  				vy_set_channel = Velocity.Speed_Set[Flags.Speed_Up_Flag];
+..\Task\Chassis_Task.cpp(421): error:  #513: a value of type "fp32 *" cannot be assigned to an entity of type "fp32"
+  		*angle_set = Velocity.Speed_Set[2];
+..\Task\Chassis_Task.cpp: 1 warning, 5 errors
+".\Objects\HERO_CHASSIS.axf" - 5 Error(s), 1 Warning(s).
+Target not created.
+Build Time Elapsed:  00:00:14

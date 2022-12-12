@@ -16,7 +16,8 @@ const static fp32 Motor_Speed_Pid[3] = {M3505_MOTOR_SPEED_PID_KP, M3505_MOTOR_SP
 const static fp32 Chassis_Follow_Gimbal_Pid[3] = {CHASSIS_FOLLOW_GIMBAL_PID_KP, CHASSIS_FOLLOW_GIMBAL_PID_KI, CHASSIS_FOLLOW_GIMBAL_PID_KD};
 const static fp32 chassis_x_order_filter[1] = {CHASSIS_ACCEL_X_NUM};
 const static fp32 chassis_y_order_filter[1] = {CHASSIS_ACCEL_Y_NUM};
-const static fp32 chassis_z_order_filter[1] = {CHASSIS_ACCEL_Z_NUM};
+const static fp32 chassis_z_order_filter[1] = { CHASSIS_ACCEL_Z_NUM };
+const static fp32 Velocity_Speed_Pid[3] = {VELOCILY_SPEED_PID_KP, VELOCILY_SPEED_PID_KI, VELOCILY_SPEED_PID_KD};
 #ifdef useSteering
 const static fp32 m6020_motor_angle_pid[3] = {M6020_MOTOR_ANGLE_PID_KP, M6020_MOTOR_ANGLE_PID_KI, M6020_MOTOR_ANGLE_PID_KD};
 const static fp32 m6020_motor_speed_pid[3] = {M6020_MOTOR_SPEED_PID_KP, M6020_MOTOR_SPEED_PID_KI, M6020_MOTOR_SPEED_PID_KD};
@@ -63,8 +64,11 @@ void Chassis_Ctrl::Chassis_Init(void)
 {
 	RC_Ptr = get_remote_control_point();
 	Chassis_Message = get_message_ctrl_pointer();
+	Chassis_Guard = get_guard_ctrl_pointer();
 	chassis_yaw_relative_angle = &get_message_ctrl_pointer()->GimbalR.ECD;
 	Mode = CHASSIS_NO_MOVE;
+	
+	PID_Init(&Velocity_Pid, PID_POSITION, Velocity_Speed_Pid, VELOCILY_SPEED_PID_MAX_OUT, VELOCILY_SPEED_PID_MAX_IOUT);
 	
 	for ( uint8_t i = 0; i < 4; i++ )
 	{
@@ -93,22 +97,31 @@ void Chassis_Ctrl::Chassis_Init(void)
 
 	Velocity.vy_max_speed = NORMAL_MAX_CHASSIS_SPEED_Y;
 	Velocity.vy_min_speed = -NORMAL_MAX_CHASSIS_SPEED_Y;
-	
-	Velocity.Speed_Gear = 0;
-	Velocity.Speed_Set[0] = Velocity.Speed_Set[1] = Velocity.Speed_Set[2] = 0.2;	
-	
+
+	Velocity.Gear = 0;
+
+	Matrix<3, 1> v0 (CHASSIS_SPEED_GEAR_0);
+    Matrix<3, 1> v1 (CHASSIS_SPEED_GEAR_1);
+    Matrix<3, 1> v2 (CHASSIS_SPEED_GEAR_2);
+    Matrix<3, 1> v3 (CHASSIS_SPEED_GEAR_3);
+
+    Velocity.Speed_Set_m = Matrix<3, 4>::concat_from(v0, v1, v2, v3);
+
 	Feedback_Update();
 }
 //数据更新
 void Chassis_Ctrl::Feedback_Update( void )
 {
 	uint8_t i = 0;
+	Velocity.Speed = 0;
 	for (i = 0; i < 4; i++)
     {
         //更新电机速度，加速度是速度的PID微分
         Motor[i].speed = CHASSIS_MOTOR_RPM_TO_VECTOR_SEN * Motor[i].chassis_motor_measure->speed_rpm;
-        Motor[i].accel = Speed_Pid[i].Dbuf[0] * CHASSIS_CONTROL_FREQUENCE;
+		Motor[i].accel = Speed_Pid[i].Dbuf[0] * CHASSIS_CONTROL_FREQUENCE;
+		Velocity.Speed += abs(Motor[i].speed);
 	}
+	Velocity.Speed = Velocity.Speed / 4;
 	chassis_relative_ECD = *(chassis_yaw_relative_angle);//相对云台角度
 	chassis_relative_RAD = chassis_relative_ECD * ECD_TO_PI;
 #ifdef useMecanum
@@ -167,13 +180,13 @@ void Chassis_Ctrl::Behaviour_Mode(void)
 		//速度选择
 		if (read_key(&Key.shift,single,true))
 		{//加速  SHIFT
-			if (Velocity.Speed_Gear < 3)
-				Velocity.Speed_Gear++;
+			if (Velocity.Gear < 3)
+				Velocity.Gear++;
 		}
 		else if (read_key(&Key.ctrl, single,true))
 		{//减速  CTRL
-			if (Velocity.Speed_Gear > 0)
-				Velocity.Speed_Gear--;
+			if (Velocity.Gear > 0)
+				Velocity.Gear--;
 		}
 		//视觉开关
 		if (read_key(&Press.R, single, &Flags.Visual_Flag))
@@ -204,14 +217,11 @@ void Chassis_Ctrl::Behaviour_Mode(void)
 			Flags.Shoot_Flag = 0;
 		}
 		//提速开关
-		if (read_key(&Key.F, single, &Flags.Speed_Up_Flag))
-		{
-			// if(Chassis_Message->SuperCapR.mode == 0xff)
-		}
+		read_key(&Key.F, single, &Flags.Speed_Up_Flag);
 	}
 	else
 	{
-		Velocity.Speed_Gear=0;
+		Velocity.Gear=0;
 	}
 	//遥控控制模式切换
 	if (switch_is_down(RC_Ptr->rc.s[CHANNEL_RIGHT]))
@@ -264,6 +274,30 @@ void Chassis_Ctrl::Behaviour_Mode(void)
 	}
 }
 
+void Chassis_Ctrl::Flag_Behaviour_Control()
+{
+	if (Chassis_Guard->Return(supercap) == true)
+	{
+		Chassis_Message->SuperCapR.power_limit = 40;
+		Velocity.Speed_Set = Velocity.Speed_Set_m(Flags.Speed_Up_Flag, Velocity.Gear);
+		return;
+	}
+
+
+	if (Flags.Speed_Up_Flag == false)
+	{
+		PID_Calc(&Velocity_Pid, Chassis_Message->SuperCapR.power, Chassis_Message->SuperCapR.power_limit - 20.0f, 0);
+		Velocity.Speed_Set = Velocity_Pid.out;
+// 		if(Chassis_Message->SuperCapR.mode == 0xff)
+	}
+	else if (Flags.Speed_Up_Flag == true)
+	{
+		PID_Calc(&Velocity_Pid, Chassis_Message->SuperCapR.power, Chassis_Message->SuperCapR.power_limit + 20.0f, 0);
+		Velocity.Speed_Set = Velocity_Pid.out;
+// 		if(Chassis_Message->SuperCapR.mode == 0xff)
+		
+	}
+}
 //遥控器的数据处理成底盘的前进vx速度，vy速度
 void Chassis_Ctrl::RC_to_Control( fp32 *vx_set, fp32 *vy_set)
 {
@@ -275,21 +309,6 @@ void Chassis_Ctrl::RC_to_Control( fp32 *vx_set, fp32 *vy_set)
 	static int16_t vx_channel, vy_channel;
   	static fp32 vx_set_channel, vy_set_channel;
 	
-  	if( Velocity.Speed_Gear == 0 ){
-	  Velocity.Speed_Set[0] = 0.5;	Velocity.Speed_Set[1] = 1; Velocity.Speed_Set[2] = 1; 
-		
-	}else if( Velocity.Speed_Gear == 1 ){ 
-	  Velocity.Speed_Set[0] = 1;	Velocity.Speed_Set[1] = 1.5; Velocity.Speed_Set[2] = 1.5;
-		
-	}else if( Velocity.Speed_Gear == 2 ){ 
-	  Velocity.Speed_Set[0] = 2; Velocity.Speed_Set[1] = 2; Velocity.Speed_Set[2] = 2; 
-		
-	}else if( Velocity.Speed_Gear == 3 ){ 
-	  Velocity.Speed_Set[0] = 3;	Velocity.Speed_Set[1] = 2.5; Velocity.Speed_Set[2] = 2.5;
-		
-	}else{
-	  Velocity.Speed_Set[0] = 0.2;	Velocity.Speed_Set[1] = 0.2; Velocity.Speed_Set[2] = 0.2; 
-	}
 
 	if( Flags.RC_Flag == false )
 	{
@@ -298,11 +317,11 @@ void Chassis_Ctrl::RC_to_Control( fp32 *vx_set, fp32 *vy_set)
 		{
 			if (read_key(&Key.W,even,true))//方向可能改动
 			{
-				vx_set_channel = Velocity.Speed_Set[Flags.Speed_Up_Flag];
+				vx_set_channel = Velocity.Speed_Set;
 			}
 			else if (read_key(&Key.S,even,true))
 			{
-				vx_set_channel = -Velocity.Speed_Set[Flags.Speed_Up_Flag];
+				vx_set_channel = -Velocity.Speed_Set;
 			}
 			else
 			{
@@ -310,11 +329,11 @@ void Chassis_Ctrl::RC_to_Control( fp32 *vx_set, fp32 *vy_set)
 			}
 			if (read_key(&Key.A, even, true))
 			{
-				vy_set_channel = -Velocity.Speed_Set[Flags.Speed_Up_Flag];
+				vy_set_channel = -Velocity.Speed_Set;
 			}
 			else if (read_key(&Key.D,even,true))
 			{
-				vy_set_channel = Velocity.Speed_Set[Flags.Speed_Up_Flag];
+				vy_set_channel = Velocity.Speed_Set;
 			}
 			else
 			{
@@ -390,13 +409,13 @@ void Chassis_Ctrl::Behaviour_Control(fp32 *vx_set, fp32 *vy_set, fp32 *angle_set
 	{
 		RC_to_Control(vx_set, vy_set);
 
-		*angle_set = Velocity.Speed_Set[2];
+		*angle_set = Velocity.Speed_Set_m(2,Velocity.Gear);
 	}
 }
 //控制
 void Chassis_Ctrl::Control(void)
 {
-   //设置速度
+	//设置速度
 	fp32 vx_set = 0.0f, vy_set = 0.0f, angle_set = 0.0f;
 	fp32 sin_yaw = 0.0f, cos_yaw = 0.0f;
 	Behaviour_Control(&vx_set, &vy_set, &angle_set);

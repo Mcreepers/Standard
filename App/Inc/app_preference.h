@@ -4,7 +4,7 @@
 //id错误蜂鸣器会响
 //该id无关红蓝
 #define RobotID 3
-#warning RobotID位置提示, 请自行注释
+//#warning RobotID位置提示, 请自行注释
 #ifndef RobotID
 #define useMecanum
 #define RobotID 100
@@ -45,6 +45,12 @@
 #define CHASSIS_ANGLE_Z_RC_SEN 0.000002f
 //不跟随云台的时候 遥控器的yaw遥杆（max 660）转化成车体旋转速度的比例
 #define CHASSIS_WZ_RC_SEN 0.01f
+
+//等级速度对应表
+#define CHASSIS_SPEED_GEAR_0 (0.5f, 1.f, 1.f)
+#define CHASSIS_SPEED_GEAR_1 (1.f, 1.5f, 1.5f)
+#define CHASSIS_SPEED_GEAR_2 (2.f, 2.5f, 2.f)
+#define CHASSIS_SPEED_GEAR_3 (3.f, 3.5f, 2.f)
 
 //这两个宏用于低通滤波//值越大底盘越软
 #define CHASSIS_ACCEL_X_NUM 0.5f
@@ -137,6 +143,12 @@
 #define CHASSIS_ANGLE_Z_RC_SEN 0.000002f
 //不跟随云台的时候 遥控器的yaw遥杆（max 660）转化成车体旋转速度的比例
 #define CHASSIS_WZ_RC_SEN 0.01f
+
+//等级速度对应表
+#define CHASSIS_SPEED_GEAR_0 (0.5f, 1.f, 1.f)
+#define CHASSIS_SPEED_GEAR_1 (1.f, 1.5f, 1.5f)
+#define CHASSIS_SPEED_GEAR_2 (2.f, 2.5f, 2.f)
+#define CHASSIS_SPEED_GEAR_3 (3.f, 3.5f, 2.f)
 
 //这两个宏用于低通滤波//值越大底盘越软
 #define CHASSIS_ACCEL_X_NUM 0.5f
@@ -231,6 +243,12 @@
 //不跟随云台的时候 遥控器的yaw遥杆（max 660）转化成车体旋转速度的比例
 #define CHASSIS_WZ_RC_SEN 0.01f
 
+//等级速度对应表
+#define CHASSIS_SPEED_GEAR_0 (0.5f, 1.f, 1.f)
+#define CHASSIS_SPEED_GEAR_1 (1.f, 1.5f, 1.5f)
+#define CHASSIS_SPEED_GEAR_2 (2.f, 2.5f, 2.f)
+#define CHASSIS_SPEED_GEAR_3 (3.f, 3.5f, 2.f)
+
 //这两个宏用于低通滤波//值越大底盘越软
 #define CHASSIS_ACCEL_X_NUM 0.5f
 #define CHASSIS_ACCEL_Y_NUM 0.5f
@@ -273,6 +291,14 @@
 #define SWING_NO_MOVE_ANGLE 0.1f
 //摇摆过程底盘运动最大角度(rad)
 #define SWING_MOVE_ANGLE 0.5f
+
+//底盘功率速度控制PID
+#define VELOCILY_SPEED_PID_KP
+#define VELOCILY_SPEED_PID_KP 0.1f
+#define VELOCILY_SPEED_PID_KI 0.1f
+#define VELOCILY_SPEED_PID_KD 0.0f
+#define VELOCILY_SPEED_PID_MAX_OUT 5.0f
+#define VELOCILY_SPEED_PID_MAX_IOUT 1.0f
 
 //底盘电机速度环PID
 #define M3505_MOTOR_SPEED_PID_KP 15000.0f
@@ -342,6 +368,12 @@
 #define CHASSIS_ANGLE_Z_RC_SEN 0.000002f
 //不跟随云台的时候 遥控器的yaw遥杆（max 660）转化成车体旋转速度的比例
 #define CHASSIS_WZ_RC_SEN 0.01f
+
+//等级速度对应表
+#define CHASSIS_SPEED_GEAR_0 (0.5f, 1.f, 1.f)
+#define CHASSIS_SPEED_GEAR_1 (1.f, 1.5f, 1.5f)
+#define CHASSIS_SPEED_GEAR_2 (2.f, 2.5f, 2.f)
+#define CHASSIS_SPEED_GEAR_3 (3.f, 3.5f, 2.f)
 
 //这两个宏用于低通滤波//值越大底盘越软
 #define CHASSIS_ACCEL_X_NUM 0.5f

@@ -9,43 +9,43 @@ Error_Flags_t Error_Flag;
 //警戒任务
 void Guard_Task(void *pvParameters)
 {
-    Guard.Guard_Start();
+    Guard.Start();
     vTaskDelay(300);
     //    IWDG_Init(4, 100);
 
     while (1)
     {//scan才会检查任务运行
-        Guard.Guard_Scan();
+        Guard.Scan();
         IWDG_Feed();
 
         vTaskDelay(2);
     }
 }
 //警戒任务开始
-void Guard_Ctrl::Guard_Start(void)
+void Guard_Ctrl::Start(void)
 {
     Guard_Chassis = get_chassis_ctrl_pointer();
     Guard_Message = get_message_ctrl_pointer();
 
-    // Guard_Init(CanData1, 1000 ,100, &System_RESET);
-    // Guard_Init(CanData2, 1000, 100, &System_RESET);
-    // Guard_Init(serial3, 1000, 100, &Error_Enable, true);
-    // Guard_Init(serial6, 1000, 100, &Error_Enable, true);
-    // Guard_Init(serial7, 1000 ,100, &Error_Enable, true);
-    // Guard_Init(serial8, 1000 ,100, &Error_Enable, true);
-    // Guard_Init(RC_ctrl, 1000, 200, &System_RESET);
-    // Guard_Init(chassis, 1000, 100, &System_RESET);
-    // Guard_Init(UIdraw, 1000 ,100, &System_RESET);
-    // Guard_Init(correspondence, 1000 ,100, &System_RESET);
-    // Guard_Init(robotid, 20000, 5000, &Error_Enable, true, 30000, &Close_Enable);
+    // Init(CanData1, 1000 ,100, &System_RESET);
+    // Init(CanData2, 1000, 100, &System_RESET);
+    // Init(serial3, 1000, 100, &Error_Enable, true);
+    // Init(serial6, 1000, 100, &Error_Enable, true);
+    // Init(serial7, 1000 ,100, &Error_Enable, true);
+    // Init(serial8, 1000 ,100, &Error_Enable, true);
+    // Init(RC_ctrl, 1000, 200, &System_RESET);
+    // Init(chassis, 1000, 100, &System_RESET);
+    // Init(UIdraw, 1000 ,100, &System_RESET);
+    // Init(correspondence, 1000 ,100, &System_RESET);
+    // Init(robotid, 20000, 5000, &Error_Enable, true, 30000, &Close_Enable);
 }
 //警戒任务初始化
-void Guard_Ctrl::Guard_Init(ID_e Name, uint32_t StartValue, uint32_t MaxValue, void(*errcb)(uint8_t id), bool Close,uint32_t CloseValue, void(*closecb)(uint8_t id))
+void Guard_Ctrl::Init(ID_e Name, uint32_t StartValue, uint32_t MaxValue, void(*errcb)(uint8_t id), bool Close,uint32_t CloseValue, void(*closecb)(uint8_t id))
 {
     SG_Structure[Name].Enable = false;//默认关闭
     SG_Structure[Name].Start = true;//默认打开
     SG_Structure[Name].Time = 0;
-    SG_Structure[Name].Error = 0;
+    SG_Structure[Name].DiffValue = 0;
     SG_Structure[Name].Name = Name;
     SG_Structure[Name].StartValue = StartValue;
     SG_Structure[Name].MaxValue = MaxValue;
@@ -68,40 +68,42 @@ void Guard_Ctrl::Guard_Init(ID_e Name, uint32_t StartValue, uint32_t MaxValue, v
         SG_Structure[Name].closecallback = closecb;
     }
 }
-void Guard_Ctrl::Guard_Init(ID_e Name, uint32_t StartValue, uint32_t MaxValue, void(*errcb)(uint8_t id))
+void Guard_Ctrl::Init(ID_e Name, uint32_t StartValue, uint32_t MaxValue, void(*errcb)(uint8_t id))
 {
-    Guard_Init(Name, StartValue, MaxValue, errcb, false, 0, &Guard_Return);
+    Init(Name, StartValue, MaxValue, errcb, false, 0, &Guard_Return);
 }
-void Guard_Ctrl::Guard_Init(ID_e Name, uint32_t StartValue, uint32_t MaxValue, void(*errcb)(uint8_t id), bool Close)
+void Guard_Ctrl::Init(ID_e Name, uint32_t StartValue, uint32_t MaxValue, void(*errcb)(uint8_t id), bool Close)
 {//默认200ms
-    Guard_Init(Name, StartValue, MaxValue, errcb, Close, 200, &Guard_Return);
+    Init(Name, StartValue, MaxValue, errcb, Close, 200, &Guard_Return);
 }
 //警戒任务扫描
-void Guard_Ctrl::Guard_Scan(void)
+void Guard_Ctrl::Scan(void)
 {
     uint8_t i;
     for (i = 0;i < GUARD_TOTAL_NUM;i++)
     {
         if (SG_Structure[i].Start == true && (SG_Structure[i].StartValue != 0))
         {//初始化检测
-            SG_Structure[i].Error=xTaskGetTickCount()-SG_Structure[i].Time;
-            if (SG_Structure[i].Error > SG_Structure[i].StartValue)
+            SG_Structure[i].DiffValue=xTaskGetTickCount()-SG_Structure[i].Time;
+            if (SG_Structure[i].DiffValue > SG_Structure[i].StartValue)
             {//超时执行回调
                 SG_Structure[i].errcallback(i);
-                if (((int32_t)(SG_Structure[i].Error - SG_Structure[i].StartValue) > SG_Structure[i].CloseValue) && (SG_Structure[i].Close == true))
+                SG_Structure[i].Error = true;
+                if (((int32_t)(SG_Structure[i].DiffValue - SG_Structure[i].StartValue) > SG_Structure[i].CloseValue) && (SG_Structure[i].Close == true))
                 {//超时后等待关闭
-					SG_Structure[i].Start = false;
-					SG_Structure[i].closecallback(i);
+                    SG_Structure[i].Start = false;
+                    SG_Structure[i].closecallback(i);
 				}
 			}
 		}
 		else if ((SG_Structure[i].Enable == true) && (SG_Structure[i].MaxValue != 0))
 		{//运行检测
-			SG_Structure[i].Error=xTaskGetTickCount()-SG_Structure[i].Time;
-			if (SG_Structure[i].Error > SG_Structure[i].MaxValue)
+			SG_Structure[i].DiffValue=xTaskGetTickCount()-SG_Structure[i].Time;
+			if (SG_Structure[i].DiffValue > SG_Structure[i].MaxValue)
 			{//超时执行回调
 				SG_Structure[i].errcallback(i);
-                if (((int32_t)(SG_Structure[i].Error - SG_Structure[i].MaxValue) > SG_Structure[i].CloseValue) && (SG_Structure[i].Close == true))
+                SG_Structure[i].Error = true;
+                if (((int32_t)(SG_Structure[i].DiffValue - SG_Structure[i].MaxValue) > SG_Structure[i].CloseValue) && (SG_Structure[i].Close == true))
                 {//超时后等待关闭
 					SG_Structure[i].Enable = false;
 					SG_Structure[i].closecallback(i);
@@ -118,7 +120,7 @@ void Guard_Ctrl::Guard_Scan(void)
     }
 }
 //警戒任务喂狗
-void Guard_Ctrl::Guard_Feed(ID_e Name)
+void Guard_Ctrl::Feed(ID_e Name)
 {
     if (Name == fault)
     {
@@ -127,6 +129,7 @@ void Guard_Ctrl::Guard_Feed(ID_e Name)
     
     Guard.SG_Structure[Name].Enable = true;
     Guard.SG_Structure[Name].Start = false;
+    Guard.SG_Structure[Name].Error = false;
     Guard.SG_Structure[Name].Time = xTaskGetTickCount();
 }
 //错误处理函数
@@ -177,9 +180,14 @@ void Guard_Ctrl::Guard_Enable(void)
     }
 }
 
-void Guard_Return(uint8_t id)
+void Guard_Return(void)
 {
     return;
+}
+
+bool Guard_Ctrl::Return(ID_e Name)
+{
+    return Guard.SG_Structure[Name].Error;
 }
 
 Guard_Ctrl *get_guard_ctrl_pointer()

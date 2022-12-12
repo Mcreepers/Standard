@@ -51,6 +51,7 @@ typedef enum
 	UIdraw,
 	correspondence,
 	robotid,
+	supercap,
 	fault,
 	ID_e_count
 }ID_e;
@@ -84,7 +85,7 @@ class Message_Ctrl
 public:
 	Gimbal_Receive_Data_t GimbalR;
 	supercap_Receive_Data_t SuperCapR;
-	const robo_data_t *robo;
+	const judge_type *robo;
 
 	union I ecd_data;
 

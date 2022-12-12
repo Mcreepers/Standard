@@ -223,12 +223,12 @@ typedef struct
 {
 	tMsg_head                     judgedatahead;
 	uint16_t                      rxCmdId;
-	ext_game_status_t            game_status;           //比赛状态
 	ext_game_robot_status_t      game_robot_state_t;    //机器人状态
+	ext_game_status_t            game_status;           //比赛状态
 	ext_game_robot_HP_t          game_robot_HP_t;       //机器人血量
 	ext_power_heat_data_t        power_heat_data_t;     //机器人功率与热量
-	ext_game_robot_pos_t         game_robot_position;   //机器人位置
-	ext_shoot_data_t	         shoot_data_t;
+	ext_shoot_data_t	         shoot_data_t;			//机器人发射机构
+	ext_game_robot_pos_t         game_robot_pos_t;   //机器人位置
 	ext_referee_warning_t        referee_warning_t;     //裁判警告信息	
 	client_custom_data_t         robot_data_t;
 	client_custom_data_t          userinfo;
@@ -330,6 +330,9 @@ typedef  struct
 //裁判系统数据结构
 typedef struct
 {
+
+
+	
 	uint8_t  robo_level;//机器人当前等级
 	uint8_t  robo_ID;		//机器人当前ID
 	uint16_t robo_HP;
@@ -384,20 +387,13 @@ typedef __packed struct
 #define RX_BUF_NUM   1000u
 #define TX_BUF_NUM   512u
 
-extern  ext_game_robot_status_t      game_robot_state_t;
-extern  ext_game_status_t            game_status;
-extern  ext_game_robot_HP_t          game_robot_HP_t;
-extern  ext_power_heat_data_t        power_heat_data_t;
-extern  ext_referee_warning_t        referee_warning_t;
 extern	tMsg_head                    judgedatahead;
 extern  SelfDefineInfo_t             SelfDefineInfo;
 extern  tFrame						tframe;
 extern  judge_type                   judgetype;
-extern  ext_game_robot_pos_t         game_robot_position;
 extern  ext_shoot_data_t			shoot_data_t;
 extern	uint8_t						rx7_buf[RX_BUF_NUM];
 extern  uint8_t						TX7_buf[TX_BUF_NUM];
-extern	ext_game_robot_pos_t	game_robot_pos_t;
 extern	draw_data_struct_t		draw_data_struct;
 extern  char_data_struct_t    char_data_struct;
 extern  graph_data_struct_t   graph_data_struct;
@@ -409,7 +405,7 @@ extern	ext_client_custom_graphic_single_t   client_custom_graphic_single_t;
 void usart7_send_char(uint8_t c);
 void Usart_SendBuff(uint8_t *buf, uint16_t len);
 void chassis_to_judgeui(uint16_t txlen);
-const robo_data_t *get_robo_data_Point();
+const judge_type *get_robo_data_Point();
 extern void usart7_DMA_init(void);
 void uart7_dma_get(void);
 

@@ -12,7 +12,6 @@ static judge_type                   judgetype;
 static ext_power_heat_data_t        power_heat_data_t;
 //static ext_referee_warning_t        referee_warning_t;
 //static tFrame			                  tframe;
-//static ext_game_robot_pos_t         game_robot_position;
 static ext_shoot_data_t	  	        shoot_data_t;
 static tMsg_head                    judgedatahead;
 static ext_game_robot_pos_t	        game_robot_pos_t;
@@ -111,37 +110,37 @@ static void referee_data_solve(void)
 		{
 		case CmdID_8://机器人状态数据，10Hz发送；
 			{
-				memcpy(&game_robot_state_t, (&rx7_buf[start_pos] + 7), judgedatahead.DataLength);//把数组中的数据复制到对应的结构体中去
+				memcpy(&judgetype.game_robot_state_t, (&rx7_buf[start_pos] + 7), judgedatahead.DataLength);//把数组中的数据复制到对应的结构体中去
 				break;
 			}
 
 		case CmdID_1:
 			{
-				memcpy(&game_status, (rx7_buf + 7), judgedatahead.DataLength);
+				memcpy(&judgetype.game_status, (rx7_buf + 7), judgedatahead.DataLength);
 				break;
 			}
 
 		case CmdID_3:
 			{
-				memcpy(&game_robot_HP_t, (&rx7_buf[start_pos] + 7), judgedatahead.DataLength);
+				memcpy(&judgetype.game_robot_HP_t, (&rx7_buf[start_pos] + 7), judgedatahead.DataLength);
 				break;
 			}
 
 		case CmdID_9://实时功率热量数据，50Hz周期发送；
 			{
-				memcpy(&power_heat_data_t, (rx7_buf + 7), judgedatahead.DataLength);
+				memcpy(&judgetype.power_heat_data_t, (rx7_buf + 7), judgedatahead.DataLength);
 				break;
 			}
 
 		case CmdID_14://实时射击数据，弹丸发射后发送；
 			{
-				memcpy(&shoot_data_t, (&rx7_buf[start_pos] + 7), judgedatahead.DataLength);
+				memcpy(&judgetype.shoot_data_t, (&rx7_buf[start_pos] + 7), judgedatahead.DataLength);
 				break;
 			}
 
 		case CmdID_10://读取机器人位置信息
 			{
-				memcpy(&game_robot_pos_t, (&rx7_buf[start_pos] + 7), judgedatahead.DataLength);
+				memcpy(&judgetype.game_robot_pos_t, (&rx7_buf[start_pos] + 7), judgedatahead.DataLength);
 				break;
 			}
 		case CmdID_16:
@@ -159,22 +158,11 @@ static void referee_data_solve(void)
 	{
 		start_pos = 0;
 	}
-	get_receiver(&robo_data);
 }
 
-static void get_receiver(robo_data_t *res)
+const judge_type *get_robo_data_Point(void)
 {
-	res->robo_level = game_robot_state_t.robot_level;
-	res->robo_HP = game_robot_state_t.remain_HP;
-	res->robo_ID = game_robot_state_t.robot_id;
-	res->robo_17_Speed = shoot_data_t.bullet_speed;
-	res->chassis_power = power_heat_data_t.chassis_power;
-	res->power_limit = game_robot_state_t.chassis_power_limit;
-}
-
-const robo_data_t *get_robo_data_Point(void)
-{
-	return &robo_data;
+	return &judgetype;
 }
 
 void Usart_SendBuff(u8 *buf, u16 len)

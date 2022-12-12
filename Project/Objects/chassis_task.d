@@ -82,3 +82,6 @@
 .\objects\chassis_task.o: ..\MiddleWare\DSP\Include\arm_math.h
 .\objects\chassis_task.o: ..\Core\core_cm4.h
 .\objects\chassis_task.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\math.h
+.\objects\chassis_task.o: ..\Algorithm\inc\algorithm_matrix.h
+.\objects\chassis_task.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\cassert
+.\objects\chassis_task.o: D:\study\STM32\mdk1\ARM\ARMCC\Bin\..\include\assert.h

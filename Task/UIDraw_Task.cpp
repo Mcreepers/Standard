@@ -117,14 +117,14 @@ void UIDraw_Task(void *pvParameters)
         else if (chassis_UI->Flags.Energy_Flag == 0)
             Char_Painter("energy", Flase, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Orange, 3, 20, 1500, 670, Type_Flag_Energy);
 
-        if (chassis_UI->Velocity.Speed_Gear == 0)
-            Char_Painter("level", Speed_gears[chassis_UI->Velocity.Speed_Gear], UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Green, 3, 25, 340, 780, Type_Flag_Level);
-        else if (chassis_UI->Velocity.Speed_Gear == 1)
-            Char_Painter("level", Speed_gears[chassis_UI->Velocity.Speed_Gear], UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Cyan, 3, 25, 340, 780, Type_Flag_Level);
-        else if (chassis_UI->Velocity.Speed_Gear == 2)
-            Char_Painter("level", Speed_gears[chassis_UI->Velocity.Speed_Gear], UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Orange, 3, 25, 340, 780, Type_Flag_Level);
-        else if (chassis_UI->Velocity.Speed_Gear == 3)
-            Char_Painter("level", Speed_gears[chassis_UI->Velocity.Speed_Gear], UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Pink, 3, 25, 340, 780, Type_Flag_Level);
+        if (chassis_UI->Velocity.Gear == 0)
+            Char_Painter("level", Speed_gears[chassis_UI->Velocity.Gear], UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Green, 3, 25, 340, 780, Type_Flag_Level);
+        else if (chassis_UI->Velocity.Gear == 1)
+            Char_Painter("level", Speed_gears[chassis_UI->Velocity.Gear], UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Cyan, 3, 25, 340, 780, Type_Flag_Level);
+        else if (chassis_UI->Velocity.Gear == 2)
+            Char_Painter("level", Speed_gears[chassis_UI->Velocity.Gear], UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Orange, 3, 25, 340, 780, Type_Flag_Level);
+        else if (chassis_UI->Velocity.Gear == 3)
+            Char_Painter("level", Speed_gears[chassis_UI->Velocity.Gear], UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Pink, 3, 25, 340, 780, Type_Flag_Level);
 
         if (chassis_UI->Flags.Speed_Up_Flag == 1)
             Char_Painter("power", null, UI_Graph_Change, standard_ID1, standard_ID2, 2, Graphic_Color_Pink, 3, 25, 340, 720, Type_Flag_Speed_up);
