@@ -32,9 +32,11 @@ public:
     return m;
   }
 
-  Matrix &operator=(const Matrix &m) {
+
+  void operator=(const Matrix &m)
+  {
     for (int i = 0; i < Rows * Cols; i++) {
-      data_[i] = m.data_[i];
+      this->data_[i] = m.data_[i];
     }
   }
 

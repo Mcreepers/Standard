@@ -1,3 +1,6 @@
+
+
+
 #define useSteering
 
 #define JUDGE_SERIAL Serial7
@@ -33,10 +36,10 @@
 #define CHASSIS_WZ_RC_SEN 0.01f
 
 //等级速度对应表
-#define CHASSIS_SPEED_GEAR_0 (0.5f, 1.f, 1.f)
-#define CHASSIS_SPEED_GEAR_1 (1.f, 1.5f, 1.5f)
-#define CHASSIS_SPEED_GEAR_2 (2.f, 2.5f, 2.f)
-#define CHASSIS_SPEED_GEAR_3 (3.f, 3.5f, 2.f)
+#define CHASSIS_SPEED_GEAR_0 {0.5f, 1.f, 1.f}
+#define CHASSIS_SPEED_GEAR_1 {1.f, 1.5f, 1.5f}
+#define CHASSIS_SPEED_GEAR_2 {2.f, 2.5f, 2.f}
+#define CHASSIS_SPEED_GEAR_3 {3.f, 3.5f, 2.f}
 
 //这两个宏用于低通滤波//值越大底盘越软
 #define CHASSIS_ACCEL_X_NUM 0.5f

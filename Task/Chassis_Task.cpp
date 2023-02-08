@@ -8,6 +8,8 @@
 #include "dev_can.h"
 #include "protocol_dbus.h"
 
+#include <vector>
+
 Chassis_Ctrl Chassis;
 uint8_t UIsend = 0;
 //底盘速度环pid值
@@ -101,12 +103,18 @@ void Chassis_Ctrl::Chassis_Init(void)
 
 	Velocity.Gear = 0;
 
-	Matrix<3, 1> v0 (CHASSIS_SPEED_GEAR_0);
-    Matrix<3, 1> v1 (CHASSIS_SPEED_GEAR_1);
-    Matrix<3, 1> v2 (CHASSIS_SPEED_GEAR_2);
-    Matrix<3, 1> v3 (CHASSIS_SPEED_GEAR_3);
+
+
+	Matrix<3, 1> v0 CHASSIS_SPEED_GEAR_0;
+    Matrix<3, 1> v1 CHASSIS_SPEED_GEAR_1;
+    Matrix<3, 1> v2 CHASSIS_SPEED_GEAR_2;
+    Matrix<3, 1> v3 CHASSIS_SPEED_GEAR_3; 
 
     Velocity.Speed_Set_m = Matrix<3, 4>::concat_from(v0, v1, v2, v3);
+	
+	float abc = 0;
+	abc = Velocity.Speed_Set_m(2,3);
+	abc++;
 
 	Feedback_Update();
 }
@@ -273,6 +281,7 @@ void Chassis_Ctrl::Behaviour_Mode(void)
 	{
 		UIsend = 10;
 	}
+	Flag_Behaviour_Control();
 }
 
 void Chassis_Ctrl::Flag_Behaviour_Control()

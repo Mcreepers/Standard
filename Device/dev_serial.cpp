@@ -30,10 +30,8 @@ void Serialctrl::IRQHandler(void)
     
     if (USART_GetITStatus(USARTx, USART_IT_IDLE) != RESET)
 	{
-		int temp;
-		temp = USARTx->DR;
-		temp = USARTx->SR;
-		temp = 0;
+        uint8_t c = USART_ReceiveData(USARTx);
+        Buffer_Write(&_rx_buffer, c);
         if (USART_Function)
         {
             USART_Function();
