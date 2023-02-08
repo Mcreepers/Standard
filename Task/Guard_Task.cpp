@@ -9,7 +9,7 @@ void Guard_Task(void *pvParameters)
 {
     Guard.Start();
     vTaskDelay(300);
-    //    IWDG_Init(4, 100);
+//    IWDG_Init(4, 100);
 
     while (1)
     {//scan才会检查任务运行
@@ -117,7 +117,7 @@ void Guard_Ctrl::Scan(void)
 //警戒任务喂狗
 void Guard_Ctrl::Feed(ID_e Name)
 {
-    if (Name == Fault)
+    if (Name == FaultData)
     {
         return;
     }

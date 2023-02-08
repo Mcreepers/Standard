@@ -50,7 +50,7 @@ typedef enum
 	CorrespondenceData,
 	SupercapData,
 	RobotId,
-	Fault,
+	FaultData,
 	ID_e_count
 }ID_e;
 

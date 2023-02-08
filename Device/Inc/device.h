@@ -11,8 +11,6 @@ extern "C" {
 }
 #endif
 
-#include "app_preference.h"
-
 #include "dev_serial.h"
 #include "dev_can.h"
 

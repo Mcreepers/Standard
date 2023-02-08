@@ -69,7 +69,8 @@ void Serial7_Hook(void)
 //		}
 //		if(Usart7.Data[Usart7.Len-2]==Usart7.Tail)
 //		{
-//			xQueueSendFromISR(Message_Queue, &Message_Data_corres[3], 0);
+//			ID_Data[SerialData7].Data_Ptr = &Usart7;
+//			xQueueSendFromISR(Message_Queue, &ID_Data[SerialData7], 0);
 //		}
 //    }
 }

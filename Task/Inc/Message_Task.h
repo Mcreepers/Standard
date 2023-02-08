@@ -1,7 +1,6 @@
 #ifndef Message_TASK_H
 #define Message_TASK_H
 
-#include "dev_system.h"
 #include "app_serial.h"
 
 #include "queue.h"
