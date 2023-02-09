@@ -22,7 +22,7 @@ class Serialctrl : public Serialdev
 {
 public:
 	Serialctrl(USART_TypeDef *_USARTx, uint32_t BufferSize) : Serialdev(_USARTx, BufferSize) {}
-	Serialctrl(USART_TypeDef *_USARTx, uint32_t BufferSize, uint16_t USART_ITPending) : Serialdev(_USARTx, BufferSize, USART_ITPending) {}
+	Serialctrl(USART_TypeDef *_USARTx, uint32_t BufferSize, uint32_t USART_ITPending) : Serialdev(_USARTx, BufferSize, USART_ITPending) {}
 
 	void attachInterrupt(USART_CallbackFunction_t Function);
 	void IRQHandler(void);

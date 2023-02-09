@@ -7,6 +7,11 @@
 
 #define Chassis_Motor_Numbers      ( 4 )
 
+#define CAN_Group1_CAN              (CAN1_Ctrl)
+#define CAN_Group1_CAN              (CAN1_Ctrl)
+#define CAN_Group1_CAN              (CAN1_Ctrl)
+#define CAN_Group1_CAN              (CAN1_Ctrl)
+
 #define CAN_Gimbal_CAN             ( CAN1_Ctrl )
 #define CAN_Chassis_CAN            ( CAN2_Ctrl )
 #define CAN_Fric_CAN               ( CAN1_Ctrl )
@@ -45,24 +50,33 @@
 		
 typedef enum
 {
-    CAN_CHASSIS_ALL_ID = 0x200,
-    CAN_3508_M1_ID = 0x201,
-    CAN_3508_M2_ID = 0x202,
-    CAN_3508_M3_ID = 0x203,
-    CAN_3508_M4_ID = 0x204,
-	
-  	CAN_steering_ALL_ID = 0x1FF,
-    CAN_6020_M1_ID = 0x205,
-    CAN_6020_M2_ID = 0x206,
-    CAN_6020_M3_ID = 0x207,
-    CAN_6020_M4_ID = 0x208,
+  CAN_Group1_ALL_ID = 0x1ff,
+  CAN_Group2_ALL_ID = 0x200,
+  CAN_Group3_ALL_ID = 0x200,
+  CAN_Group4_ALL_ID = 0x1ff,
 
-    CAN_YAW_MOTOR_ID = 0x205,
-    CAN_FRIC_MOTOR_ID = 0x202,
-    CAN_GIMBAL_ALL_ID = 0x1FF,
-    
-    CAN_CAP_GET_ID = 0x301,
-    CAN_CAP_SENT_ID = 0x311,
+  CAN_M1_ID = 0x01,
+
+
+  
+  CAN_CHASSIS_ALL_ID = 0x200,
+  CAN_3508_M1_ID = 0x201,
+  CAN_3508_M2_ID = 0x202,
+  CAN_3508_M3_ID = 0x203,
+  CAN_3508_M4_ID = 0x204,
+
+  CAN_steering_ALL_ID = 0x1FF,
+  CAN_6020_M1_ID = 0x205,
+  CAN_6020_M2_ID = 0x206,
+  CAN_6020_M3_ID = 0x207,
+  CAN_6020_M4_ID = 0x208,
+
+  CAN_YAW_MOTOR_ID = 0x205,
+  CAN_FRIC_MOTOR_ID = 0x202,
+  CAN_GIMBAL_ALL_ID = 0x1FF,
+  
+  CAN_CAP_GET_ID = 0x301,
+  CAN_CAP_SENT_ID = 0x311,
 } can_msg_id_e;
 
 //rm电机统一数据结构体
@@ -90,6 +104,22 @@ typedef struct
 	int real_position;      //过零处理后的电机转子位置
 	int last_real_position;//上次过零处理后的电机转子位置	
 }gimbal_measure_t;
+
+class CAN_Group1_Ctrl
+{
+public:	
+  CANctrl *CAN_Group1;
+	motor_measure_t Group1_Measure[Chassis_Motor_Numbers];
+
+  CAN_Group1_Ctrl() : CAN_Group1( &CAN1_Ctrl ){}
+  const motor_measure_t *Get_Motor_Measure_Pointer( uint8_t i )
+	{
+	  return &Group1_Measure[(i & 0x03)];
+	}
+};
+
+
+
 
 class Chassis_Motor_Ctrl
 {
@@ -171,7 +201,9 @@ private:
 class CAN_Ctrl
 {
 public:
-  Chassis_Motor_Ctrl Chassis;
+
+
+Chassis_Motor_Ctrl Chassis;
   Gimbal_Motor_Ctrl  Gimbal;
   Fric_Motor_Ctrl    Fric;
 

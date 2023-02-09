@@ -7,50 +7,44 @@
 #define TRCENA               0X01000000
 
 extern "C" {
-	#pragma import(__use_no_semihosting)                
-	void _sys_exit(int returncode) 
-	{ 
-		printf("exit return code is: %d\r\n", returncode); 
-		abort();
-		while(1);
-	} 
+#pragma import(__use_no_semihosting)                
+    void _sys_exit(int returncode)
+    {
+        printf("exit return code is: %d\r\n", returncode);
+        abort();
+        while(1);
+    }
 
-	int fputc(int ch, FILE *f )
-	{ 	
-//		while((USART1->SR&0X40)==0);  
-//		USART1->DR = (u8) ch;      
-//		return ch;
-		if(DEMCR & TRCENA)
-		{
-			while(ITM_PORT32(0) == 0);                                                                                                                                                                                                                                                                                      
-			ITM_PORT8(0) = ch;
-		}
-		return ch;
-	}
+    int fputc(int ch, FILE *f)
+    {
+        while((USART1->SR & 0X40) == 0);
+        USART1->DR = (u8)ch;
+        return ch;
+    }
 }
 
-Serialdev::Serialdev( USART_TypeDef *_USARTx, uint32_t BufferSize )
+Serialdev::Serialdev(USART_TypeDef *_USARTx, uint32_t BufferSize)
 {
     this->USARTx = _USARTx;
-	  this->USART_ITPending = USART_ITPending_Default;
+    this->USART_ITPending = USART_ITPending_Default;
     USART_Function = 0;
-	  newBuffer( &_rx_buffer, BufferSize );
+    newBuffer(&_rx_buffer, BufferSize);
 }
 
-Serialdev::Serialdev( USART_TypeDef *_USARTx, uint32_t BufferSize, uint16_t USART_ITPending )
+Serialdev::Serialdev(USART_TypeDef *_USARTx, uint32_t BufferSize, uint32_t USART_ITPending)
 {
     this->USARTx = _USARTx;
-	
-	  if( IS_USART_CONFIG_IT( USART_ITPending ) )
-	    this->USART_ITPending = USART_ITPending;
-		else
-			USART_ITPending = USART_ITPending_Default;
-		
+
+    if(IS_USART_CONFIG_IT(USART_ITPending & 0xffff))
+        this->USART_ITPending = USART_ITPending;
+    else
+        USART_ITPending = USART_ITPending_Default;
+
     USART_Function = 0;
-	  newBuffer( &_rx_buffer, BufferSize );
+    newBuffer(&_rx_buffer, BufferSize);
 }
 
-void Serialdev::Serial_Init( uint32_t BaudRate, SERIAL_Config Config, uint8_t PreemptionPriority, uint8_t SubPriority )
+void Serialdev::Serial_Init(uint32_t BaudRate, SERIAL_Config Config, uint8_t PreemptionPriority, uint8_t SubPriority)
 {
     GPIO_InitTypeDef GPIO_InitStructure;
     USART_InitTypeDef USART_InitStructure;
@@ -92,8 +86,8 @@ void Serialdev::Serial_Init( uint32_t BaudRate, SERIAL_Config Config, uint8_t Pr
         RCC_AHB1Periph_GPIOx = RCC_AHB1Periph_GPIOE;
         RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART7, ENABLE);
         ItChannel = UART7_IRQn;
-	}
-	else if(USARTx == UART8)
+    }
+    else if(USARTx == UART8)
     {
         Tx_Pin = GPIO_Pin_1;
         Rx_Pin = GPIO_Pin_0;
@@ -109,7 +103,7 @@ void Serialdev::Serial_Init( uint32_t BaudRate, SERIAL_Config Config, uint8_t Pr
     GPIO_PinAFConfig(GPIOx, GPIO_GetPinSource(Tx_Pin), GPIO_AF_USARTx);
     GPIO_PinAFConfig(GPIOx, GPIO_GetPinSource(Rx_Pin), GPIO_AF_USARTx);
 
-    GPIO_InitStructure.GPIO_Pin =  Tx_Pin | Rx_Pin;
+    GPIO_InitStructure.GPIO_Pin = Tx_Pin | Rx_Pin;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
@@ -117,7 +111,7 @@ void Serialdev::Serial_Init( uint32_t BaudRate, SERIAL_Config Config, uint8_t Pr
     GPIO_Init(GPIOx, &GPIO_InitStructure);
 
     NVIC_InitStructure.NVIC_IRQChannel = ItChannel;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = PreemptionPriority ;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = PreemptionPriority;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = SubPriority;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
@@ -130,21 +124,24 @@ void Serialdev::Serial_Init( uint32_t BaudRate, SERIAL_Config Config, uint8_t Pr
     USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
 
     USART_Init(USARTx, &USART_InitStructure);
-    USART_ITConfig(USARTx, USART_ITPending, ENABLE);
+    USART_ITConfig(USARTx, (USART_ITPending & 0xffff), ENABLE);
+    if(IS_USART_CONFIG_IT((USART_ITPending >> 16) & 0xffff))
+        USART_ITConfig(USARTx, (USART_ITPending >> 16 & 0xffff), ENABLE);
+
     USART_Cmd(USARTx, ENABLE);
 }
 
-void Serialdev::Serial_Init( uint32_t BaudRate, uint8_t PreemptionPriority, uint8_t SubPriority  )
+void Serialdev::Serial_Init(uint32_t BaudRate, uint8_t PreemptionPriority, uint8_t SubPriority)
 {
-    Serial_Init( BaudRate, SERIAL_Config_Default, PreemptionPriority, SubPriority );
+    Serial_Init(BaudRate, SERIAL_Config_Default, PreemptionPriority, SubPriority);
 }
 
-void Serialdev::Serial_Init( uint32_t BaudRate, SERIAL_Config Config )
+void Serialdev::Serial_Init(uint32_t BaudRate, SERIAL_Config Config)
 {
-    Serial_Init( BaudRate, Config, USART_PreemptionPriority_Default, USART_SubPriority_Default );
+    Serial_Init(BaudRate, Config, USART_PreemptionPriority_Default, USART_SubPriority_Default);
 }
 
-void Serialdev::Serial_Init( uint32_t BaudRate )
+void Serialdev::Serial_Init(uint32_t BaudRate)
 {
-    Serial_Init( BaudRate, SERIAL_Config_Default, USART_PreemptionPriority_Default, USART_SubPriority_Default );
+    Serial_Init(BaudRate, SERIAL_Config_Default, USART_PreemptionPriority_Default, USART_SubPriority_Default);
 }

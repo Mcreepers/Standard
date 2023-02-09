@@ -14,6 +14,7 @@ extern "C" {
 
 #define SERIAL_Config_Default SERIAL_8N1
 #define USART_ITPending_Default USART_IT_RXNE
+#define USART_ITPending_Double (USART_IT_RXNE << 16 | USART_IT_IDLE)
 #define USART_PreemptionPriority_Default 10
 #define USART_SubPriority_Default 1
 
@@ -53,18 +54,18 @@ class Serialdev : public Buffer
 {
 public:
 		Serialdev( USART_TypeDef *_USARTx, uint32_t BufferSize );
-    Serialdev( USART_TypeDef *_USARTx, uint32_t BufferSize, uint16_t USART_ITPending );
+    Serialdev( USART_TypeDef *_USARTx, uint32_t BufferSize, uint32_t USART_ITPending );
 
 		void Serial_Init( uint32_t BaudRate, SERIAL_Config Config, uint8_t PreemptionPriority, uint8_t SubPriority );
     void Serial_Init( uint32_t BaudRate, uint8_t PreemptionPriority, uint8_t SubPriority );
     void Serial_Init( uint32_t BaudRate, SERIAL_Config Config );
     void Serial_Init( uint32_t BaudRate );
 protected:
-	  typedef void(*USART_CallbackFunction_t)(void);
+	  typedef void(*USART_CallbackFunction_t)(bool mode);
   
 		USART_TypeDef *USARTx;
 		USART_CallbackFunction_t USART_Function;
-    uint16_t USART_ITPending;
+    uint32_t USART_ITPending;
 		RingBuffer _rx_buffer;
 };
 
