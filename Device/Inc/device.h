@@ -11,7 +11,7 @@ extern "C" {
 }
 #endif
 
-#include "dev_serial.h"
+#include "app_serial.h"
 #include "dev_can.h"
 
 #include "drivers_buffer.h"
@@ -26,10 +26,10 @@ extern CANctrl CAN1_Ctrl;
 extern CANctrl CAN2_Ctrl;
 
 /* extren Serial class */
-extern Serialctrl Serial3;
-extern Serialctrl Serial6;
-extern Serialctrl Serial7;
-extern Serialctrl Serial8;
+extern Serial_Ctrl Serial3;
+extern Serial_Ctrl Serial6;
+extern Serial_Ctrl Serial7;
+extern Serial_Ctrl Serial8;
 
 /* extren DMA class */
 extern DMAdev usart3_TxDMA;

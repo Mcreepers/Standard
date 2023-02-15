@@ -14,7 +14,7 @@
 
 //无帧尾则为 NULL  接收
 #define Serial3_Data_Header 0xff
-#define Serial3_Data_tail 0xfe
+#define Serial3_Data_tail NULL
 #define Serial6_Data_Header 0xff
 #define Serial6_Data_tail 0xfe
 #define Serial7_Data_Header 0xff

@@ -45,16 +45,16 @@ void Message_Ctrl::Hook()
 		CAN2_Process((CanRxMsg *)ID_Data[MessageData].Data_Ptr);
 		break;
 	case SerialData3:
-		// Usart3_Hook((Serial_Data_t *)ID_Data[MessageData].Data_Ptr);
+		// Usart3_Hook((uint8_t *)ID_Data[MessageData].Data_Ptr);
 		break;
 	case SerialData6:
-		Usart6_Hook((Serial_Data_t *)ID_Data[MessageData].Data_Ptr);
+		Usart6_Hook((uint8_t *)ID_Data[MessageData].Data_Ptr);
 		break;
 	case SerialData7:
-		Usart7_Hook((Serial_Data_t *)ID_Data[MessageData].Data_Ptr);
+		Usart7_Hook((uint8_t *)ID_Data[MessageData].Data_Ptr);
 		break;
 	case SerialData8:
-		// Usart8_Hook((Serial_Data_t *)ID_Data[MessageData].Data_Ptr);
+		// Usart8_Hook((uint8_t *)ID_Data[MessageData].Data_Ptr);
 		break;
 	case RC_Data:
 		rc_key_v_fresh((RC_ctrl_t *)ID_Data[MessageData].Data_Ptr);
@@ -97,17 +97,19 @@ void Message_Ctrl::CAN2_Process(CanRxMsg *Rx_Message)
 	}
 }
 
-void Message_Ctrl::Usart3_Hook(Serial_Data_t *Rx_Message)
+void Message_Ctrl::Usart3_Hook(uint8_t *Rx_Message)
 {
-
+	uint8_t len = Rx_Message[0];
+	Message.comm.ReceiveData(&Rx_Message[1], len);
 }
 
-void Message_Ctrl::Usart6_Hook(Serial_Data_t *Rx_Message)
+void Message_Ctrl::Usart6_Hook(uint8_t *Rx_Message)
 {
-	ecd_data.s[0] = Rx_Message->Data[1];
-	ecd_data.s[1] = Rx_Message->Data[2];
+	uint8_t len = Rx_Message[0];
+	ecd_data.s[0] = Rx_Message[2];
+	ecd_data.s[1] = Rx_Message[3];
 	GimbalR.ECD = -motor_ecd_to_relative_ecd(ecd_data.d, Gimbal_Motor_Yaw_Offset_ECD);
-	GimbalR.goal = Rx_Message->Data[3];
+	GimbalR.goal = Rx_Message[4];
 	if (GimbalR.ECD > 8192)
 	{
 	}
@@ -116,7 +118,7 @@ void Message_Ctrl::Usart6_Hook(Serial_Data_t *Rx_Message)
 	}
 }
 
-void Message_Ctrl::Usart7_Hook(Serial_Data_t *Rx_Message)
+void Message_Ctrl::Usart7_Hook(uint8_t *Rx_Message)
 {
 	uart7_dma_get();
 	if (robo->game_robot_state.robot_id % 100 == RobotID)
@@ -125,7 +127,7 @@ void Message_Ctrl::Usart7_Hook(Serial_Data_t *Rx_Message)
 	}
 }
 
-void Message_Ctrl::Usart8_Hook(Serial_Data_t *Rx_Message)
+void Message_Ctrl::Usart8_Hook(uint8_t *Rx_Message)
 {
 
 }
@@ -251,86 +253,102 @@ bool rc_key_c::read_key(count_num_key *temp_count, key_count_e mode, bool *temp_
 //更新按键
 void rc_key_c::rc_key_v_set(RC_ctrl_t *RC)
 {
-	if (RC->key.v & KEY_PRESSED_OFFSET_W){
-		sum_key_count(1,&Key.W);
-	}else{
-		sum_key_count(0,&Key.W);
+	count_num_key *p = &Key.W;
+	for(uint8_t i = 0; i < 16; i++)
+	{
+		if(RC->key.v & (KEY_PRESSED_OFFSET_W << i))
+		{
+			sum_key_count(1, (p + i));
+		}
+		else
+		{
+			sum_key_count(0, (p + i));			
+		}
 	}
-	if(RC->key.v & KEY_PRESSED_OFFSET_S){
-		sum_key_count(1,&Key.S);
-	}else{
-		sum_key_count(0,&Key.S);
-	}
-	if(RC->key.v & KEY_PRESSED_OFFSET_A){
-		sum_key_count(1,&Key.A);
-	}else{
-		sum_key_count(0,&Key.A);
-	}
-	if(RC->key.v & KEY_PRESSED_OFFSET_D){
-		sum_key_count(1,&Key.D);
-	}else{
-		sum_key_count(0,&Key.D);
-	}
-	if(RC->key.v & KEY_PRESSED_OFFSET_SHIFT){
-		sum_key_count(1,&Key.shift);
-	}else{
-		sum_key_count(0,&Key.shift);
-	}
-	if(RC->key.v & KEY_PRESSED_OFFSET_CTRL){
-		sum_key_count(1,&Key.ctrl);
-	}else{
-		sum_key_count(0,&Key.ctrl);
-	}
-	if(RC->key.v & KEY_PRESSED_OFFSET_Q){
-		sum_key_count(1,&Key.Q);
-	}else{
-		sum_key_count(0,&Key.Q);
-	}
-	if(RC->key.v & KEY_PRESSED_OFFSET_E){
-		sum_key_count(1,&Key.E);
-	}else{
-		sum_key_count(0,&Key.E);
-	}
-	if(RC->key.v & KEY_PRESSED_OFFSET_R){
-		sum_key_count(1,&Key.R);
-	}else{
-		sum_key_count(0,&Key.R);
-	}
-	if(RC->key.v & KEY_PRESSED_OFFSET_F){
-		sum_key_count(1,&Key.F);
-	}else{
-		sum_key_count(0,&Key.F);
-	}
-	if(RC->key.v & KEY_PRESSED_OFFSET_G){
-		sum_key_count(1,&Key.G);
-	}else{
-		sum_key_count(0,&Key.G);
-	}
-	if(RC->key.v & KEY_PRESSED_OFFSET_Z){
-		sum_key_count(1,&Key.Z);
-	}else{
-		sum_key_count(0,&Key.Z);
-	}
-	if(RC->key.v & KEY_PRESSED_OFFSET_X){
-		sum_key_count(1,&Key.X);
-	}else{
-		sum_key_count(0,&Key.X);
-	}
-	if(RC->key.v & KEY_PRESSED_OFFSET_C){
-		sum_key_count(1,&Key.C);
-	}else{
-		sum_key_count(0,&Key.C);
-	}
-	if(RC->key.v & KEY_PRESSED_OFFSET_V){
-		sum_key_count(1,&Key.V);
-	}else{
-		sum_key_count(0,&Key.V);
-	}
-	if(RC->key.v & KEY_PRESSED_OFFSET_B){
-		sum_key_count(1,&Key.B);
-	}else{
-		sum_key_count(0,&Key.B);
-	}
+	
+
+	
+	// if(RC->key.v & KEY_PRESSED_OFFSET_W)
+	// {
+	// 	sum_key_count(1,&Key.W);
+	// }else{
+	// 	sum_key_count(0,&Key.W);
+	// }
+	// if(RC->key.v & KEY_PRESSED_OFFSET_S){
+	// 	sum_key_count(1,&Key.S);
+	// }else{
+	// 	sum_key_count(0,&Key.S);
+	// }
+	// if(RC->key.v & KEY_PRESSED_OFFSET_A){
+	// 	sum_key_count(1,&Key.A);
+	// }else{
+	// 	sum_key_count(0,&Key.A);
+	// }
+	// if(RC->key.v & KEY_PRESSED_OFFSET_D){
+	// 	sum_key_count(1,&Key.D);
+	// }else{
+	// 	sum_key_count(0,&Key.D);
+	// }
+	// if(RC->key.v & KEY_PRESSED_OFFSET_SHIFT){
+	// 	sum_key_count(1,&Key.shift);
+	// }else{
+	// 	sum_key_count(0,&Key.shift);
+	// }
+	// if(RC->key.v & KEY_PRESSED_OFFSET_CTRL){
+	// 	sum_key_count(1,&Key.ctrl);
+	// }else{
+	// 	sum_key_count(0,&Key.ctrl);
+	// }
+	// if(RC->key.v & KEY_PRESSED_OFFSET_Q){
+	// 	sum_key_count(1,&Key.Q);
+	// }else{
+	// 	sum_key_count(0,&Key.Q);
+	// }
+	// if(RC->key.v & KEY_PRESSED_OFFSET_E){
+	// 	sum_key_count(1,&Key.E);
+	// }else{
+	// 	sum_key_count(0,&Key.E);
+	// }
+	// if(RC->key.v & KEY_PRESSED_OFFSET_R){
+	// 	sum_key_count(1,&Key.R);
+	// }else{
+	// 	sum_key_count(0,&Key.R);
+	// }
+	// if(RC->key.v & KEY_PRESSED_OFFSET_F){
+	// 	sum_key_count(1,&Key.F);
+	// }else{
+	// 	sum_key_count(0,&Key.F);
+	// }
+	// if(RC->key.v & KEY_PRESSED_OFFSET_G){
+	// 	sum_key_count(1,&Key.G);
+	// }else{
+	// 	sum_key_count(0,&Key.G);
+	// }
+	// if(RC->key.v & KEY_PRESSED_OFFSET_Z){
+	// 	sum_key_count(1,&Key.Z);
+	// }else{
+	// 	sum_key_count(0,&Key.Z);
+	// }
+	// if(RC->key.v & KEY_PRESSED_OFFSET_X){
+	// 	sum_key_count(1,&Key.X);
+	// }else{
+	// 	sum_key_count(0,&Key.X);
+	// }
+	// if(RC->key.v & KEY_PRESSED_OFFSET_C){
+	// 	sum_key_count(1,&Key.C);
+	// }else{
+	// 	sum_key_count(0,&Key.C);
+	// }
+	// if(RC->key.v & KEY_PRESSED_OFFSET_V){
+	// 	sum_key_count(1,&Key.V);
+	// }else{
+	// 	sum_key_count(0,&Key.V);
+	// }
+	// if(RC->key.v & KEY_PRESSED_OFFSET_B){
+	// 	sum_key_count(1,&Key.B);
+	// }else{
+	// 	sum_key_count(0,&Key.B);
+	// }
 	//鼠标
 	if (RC->mouse.press_l == 1){
 		sum_key_count(1,&Press.L);

@@ -3,10 +3,13 @@
 #include "Message_Task.h"
 #include "protocol_judgement.h"
 
-Serialctrl Serial3(USART3, Serial3_Buffer_Size);
-Serialctrl Serial6(USART6, Serial6_Buffer_Size);
-Serialctrl Serial7(UART7, Serial7_Buffer_Size, USART_ITPending_Double);
-Serialctrl Serial8(UART8, Serial8_Buffer_Size, USART_IT_IDLE);
+#include <memory>
+#include <functional>
+
+// Serialctrl Serial3(USART3, Serial3_Buffer_Size,USART_IT_RXNE_AND_IDLE);
+// Serialctrl Serial6(USART6, Serial6_Buffer_Size);
+// Serialctrl Serial7(UART7, Serial7_Buffer_Size, USART_IT_IDLE);
+// Serialctrl Serial8(UART8, Serial8_Buffer_Size, USART_IT_IDLE);
 
 void Serialctrl::attachInterrupt(USART_CallbackFunction_t Function)
 {
@@ -29,7 +32,6 @@ void Serialctrl::IRQHandler(void)
     if (USART_GetITStatus(USARTx, USART_IT_IDLE) != RESET)
 	{
         uint8_t c = USART_ReceiveData(USARTx);
-        Buffer_Write(&_rx_buffer, c);
         if (USART_Function)
         {
             USART_Function(1);
@@ -93,21 +95,21 @@ void Serialctrl::flush(void)
     _rx_buffer.pr = _rx_buffer.pw;
 }
 
-extern "C"{
-    void USART3_IRQHandler(void)
-    {
-        Serial3.IRQHandler();
-    }
-    void USART6_IRQHandler(void)
-    {
-        Serial6.IRQHandler();
-    }
-    void UART7_IRQHandler(void)
-    {
-        Serial7.IRQHandler();
-    }
-    void UART8_IRQHandler(void)
-    {
-    	Serial8.IRQHandler();
-    }
-}
+//extern "C"{
+//    void USART3_IRQHandler(void)
+//    {
+//        Serial3.IRQHandler();
+//    }
+//    void USART6_IRQHandler(void)
+//    {
+//        Serial6.IRQHandler();
+//    }
+//    void UART7_IRQHandler(void)
+//    {
+//        Serial7.IRQHandler();
+//    }
+//    void UART8_IRQHandler(void)
+//    {
+//    	Serial8.IRQHandler();
+//    }
+//}

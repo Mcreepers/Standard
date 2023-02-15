@@ -13,16 +13,16 @@ extern "C" {
 
 #include "drivers_serial.h"
 
-#define Serial3_Buffer_Size 7
+#define Serial3_Buffer_Size 35
 #define Serial6_Buffer_Size 6
 #define Serial7_Buffer_Size 7
 #define Serial8_Buffer_Size 7
 
-class Serialctrl : public Serialdev
+class Serialctrl: public Serialdev
 {
-public:
-	Serialctrl(USART_TypeDef *_USARTx, uint32_t BufferSize) : Serialdev(_USARTx, BufferSize) {}
-	Serialctrl(USART_TypeDef *_USARTx, uint32_t BufferSize, uint32_t USART_ITPending) : Serialdev(_USARTx, BufferSize, USART_ITPending) {}
+	public:
+	Serialctrl(USART_TypeDef *_USARTx, uint32_t BufferSize): Serialdev(_USARTx, BufferSize) {}
+	Serialctrl(USART_TypeDef *_USARTx, uint32_t BufferSize, uint32_t USART_ITPending): Serialdev(_USARTx, BufferSize, USART_ITPending) {}
 
 	void attachInterrupt(USART_CallbackFunction_t Function);
 	void IRQHandler(void);
@@ -34,7 +34,7 @@ public:
 	int available(void);
 	uint8_t read(void);
 	int peek(void);
-private:
+	private:
 
 	void flush(void);
 };
