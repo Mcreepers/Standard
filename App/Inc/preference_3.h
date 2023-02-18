@@ -19,8 +19,8 @@
 #define Serial6_Data_Header 0xff
 #define Serial6_Data_Tail 0xfe
 #define Serial6_Data_Lenth NULL
-#define Serial7_Data_Header 0xff
-#define Serial7_Data_Tail 0xfe
+#define Serial7_Data_Header NULL
+#define Serial7_Data_Tail NULL
 #define Serial7_Data_Lenth NULL
 #define Serial8_Data_Header 0xff
 #define Serial8_Data_Tail 0xfe

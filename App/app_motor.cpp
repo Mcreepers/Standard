@@ -29,13 +29,13 @@ void CAN_ALL_Init(void)
 	CAN2_Ctrl.attachInterrupt(CAN2_Send);
 }
 
-void CAN_Ctrl::SendData(CANctrl *CANx_Ctrl, uint32_t StdID, void *buf, uint8_t len)
+void CAN_Ctrl::SendData(CANctrl *CANx_Ctrl, uint32_t StdID, const void *buf, uint8_t len)
 {
 	CANx_Ctrl->ChangeID(StdID);
 	CANx_Ctrl->SendData(buf, len);
 }
 
-void CAN_Ctrl::SendData(CAN_TypeDef *CANx, uint32_t StdID, void *buf, uint8_t len)
+void CAN_Ctrl::SendData(CAN_TypeDef *CANx, uint32_t StdID, const void *buf, uint8_t len)
 {
 	if(CANx == CAN1)
 	{

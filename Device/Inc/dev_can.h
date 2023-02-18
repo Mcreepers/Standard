@@ -22,7 +22,7 @@ public:
 
 	void ChangeID(uint16_t StdID);
 
-	void SendData(void *buf, uint8_t len);
+	void SendData(const void *buf, uint8_t len);
 
 	void IRQHandler(void);
 

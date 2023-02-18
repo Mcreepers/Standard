@@ -37,9 +37,18 @@ public:
 
     void Hook(USART_TypeDef *SERIAL, bool mode);
     void Handle(Serialctrl *Serial, Serial_Data_t *Usart, bool mode);
-    uint8_t Get_Data(Serial_Data_t *Serial, uint8_t *buf);
     void Send_to_Message(Serialctrl *SerialCtrl);
-    void IRQHandler();
+
+    Serialctrl *Tran(USART_TypeDef *SERIAL);
+
+    uint8_t Get_Data(Serial_Data_t *Serial, uint8_t *buf);
+
+    void SendData(USART_TypeDef *SERIAL, uint8_t ch);
+    void SendData(USART_TypeDef *SERIAL, const void *str);
+    void SendData(USART_TypeDef *SERIAL, const void *buf, uint8_t len);
+    void SendData(Serialctrl *Serial, uint8_t ch);
+    void SendData(Serialctrl *Serial, const void *str);
+    void SendData(Serialctrl *Serial, const void *buf, uint8_t len);
 
     void Serial3_Hook();
 
@@ -57,6 +66,8 @@ private:
 
 void Serial_ALL_Init(void);
 
+//木鸢通讯协议
+//https://birdiebot.github.io/bubble_documentation/guide/%E6%9C%A8%E9%B8%A2%E9%80%9A%E8%AE%AF%E5%8D%8F%E8%AE%AE.html
 class Serial_Comm
 {
 public:

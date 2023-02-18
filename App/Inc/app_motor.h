@@ -137,7 +137,7 @@ public:
 	Motor_CAN_Ctrl *Chassis;
 	Motor_CAN_Ctrl *Gimbal;
 
-	void SendData(CAN_TypeDef *CANx, uint32_t StdID, void *buf, uint8_t len);
+	void SendData(CAN_TypeDef *CANx, uint32_t StdID, const void *buf, uint8_t len);
 	void SendData(Motor_CAN_Ctrl *Motor, int16_t Motor1, int16_t Motor2, int16_t Motor3, int16_t Motor4);
 	void SendData(Motor_CAN_Ctrl *Motor, int16_t Motor1, int16_t Motor2, int16_t Motor3);
 	void SendData(Motor_CAN_Ctrl *Motor, int16_t Motor1, int16_t Motor2);
@@ -145,7 +145,7 @@ public:
 
 	void CAN_CMD_RESET_ID(Motor_CAN_Ctrl *Motor);
 private:
-	void SendData(CANctrl *CANx_Ctrl, uint32_t StdID, void *buf, uint8_t len);
+	void SendData(CANctrl *CANx_Ctrl, uint32_t StdID, const void *buf, uint8_t len);
 };
 
 void CAN_ALL_Init(void);

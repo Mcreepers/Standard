@@ -16,7 +16,7 @@ void CANctrl::ChangeID(uint16_t StdID)
     this->StdId = StdID;
 }
 
-void CANctrl::SendData(void *buf, uint8_t len)
+void CANctrl::SendData(const void *buf, uint8_t len)
 {
     uint8_t *ch = (uint8_t *)buf;
     CanTxMsg TxMessage;

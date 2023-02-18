@@ -39,6 +39,26 @@ void Serial_ALL_Init(void)
     Serial8_Ctrl.attachInterrupt(Serial8_Hook);
 }
 
+Serialctrl *Serial_Ctrl::Tran(USART_TypeDef *SERIAL)
+{
+    if(SERIAL == SERIAL3)
+    {
+        return &Serial3_Ctrl;
+    }
+    if(SERIAL == SERIAL6)
+    {
+        return &Serial6_Ctrl;
+    }
+    if(SERIAL == SERIAL7)
+    {
+        return &Serial7_Ctrl;
+    }
+    if(SERIAL == SERIAL8)
+    {
+        return &Serial8_Ctrl;
+    }
+}
+
 void Serial_Ctrl::Hook(USART_TypeDef *SERIAL, bool mode)
 {
     if(SERIAL == SERIAL3)
@@ -124,6 +144,39 @@ void Serial_Ctrl::Send_to_Message(Serialctrl *SerialCtrl)
         ID_Data[SerialData3].Data_Ptr = Serial3->Data;
         xQueueSendFromISR(Message_Queue, &ID_Data[SerialData7], 0);
     }
+}
+
+void Serial_Ctrl::SendData(USART_TypeDef *SERIAL, const void *buf, uint8_t len)
+{
+    Serialctrl *Serial = Tran(SERIAL);
+    SendData(Serial, buf, len);
+}
+
+void Serial_Ctrl::SendData(USART_TypeDef *SERIAL, uint8_t ch)
+{
+    Serialctrl *Serial = Tran(SERIAL);
+    SendData(Serial, ch);
+}
+
+void Serial_Ctrl::SendData(USART_TypeDef *SERIAL, const void *str)
+{
+    Serialctrl *Serial = Tran(SERIAL);
+    SendData(Serial, str);
+}
+
+void Serial_Ctrl::SendData(Serialctrl *Serial, const void *buf, uint8_t len)
+{
+    Serial->sendData(buf, len);
+}
+
+void Serial_Ctrl::SendData(Serialctrl *Serial, uint8_t ch)
+{
+    Serial->sendData(ch);
+}
+
+void Serial_Ctrl::SendData(Serialctrl *Serial, const void *str)
+{
+    Serial->sendData(str);
 }
 
 void Serial_Comm::SendData()
