@@ -20,7 +20,7 @@ extern "C" {
 
 class Serialctrl: public Serialdev
 {
-	public:
+public:
 	Serialctrl(USART_TypeDef *_USARTx, uint32_t BufferSize): Serialdev(_USARTx, BufferSize) {}
 	Serialctrl(USART_TypeDef *_USARTx, uint32_t BufferSize, uint32_t USART_ITPending): Serialdev(_USARTx, BufferSize, USART_ITPending) {}
 
@@ -34,8 +34,7 @@ class Serialctrl: public Serialdev
 	int available(void);
 	uint8_t read(void);
 	int peek(void);
-	private:
-
+private:
 	void flush(void);
 };
 

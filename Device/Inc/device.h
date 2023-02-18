@@ -4,15 +4,15 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-	
-//#include "platform.h"
-	
+
+    //#include "platform.h"
+
 #ifdef __cplusplus
 }
 #endif
 
-#include "app_serial.h"
 #include "dev_can.h"
+#include "dev_serial.h"
 
 #include "drivers_buffer.h"
 #include "drivers_serial.h"
@@ -26,10 +26,10 @@ extern CANctrl CAN1_Ctrl;
 extern CANctrl CAN2_Ctrl;
 
 /* extren Serial class */
-extern Serial_Ctrl Serial3;
-extern Serial_Ctrl Serial6;
-extern Serial_Ctrl Serial7;
-extern Serial_Ctrl Serial8;
+extern Serialctrl Serial3_Ctrl;
+extern Serialctrl Serial6_Ctrl;
+extern Serialctrl Serial7_Ctrl;
+extern Serialctrl Serial8_Ctrl;
 
 /* extren DMA class */
 extern DMAdev usart3_TxDMA;

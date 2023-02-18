@@ -136,7 +136,7 @@ void Message_Ctrl::CAN2_Process(CanRxMsg *Rx_Message)
 void Message_Ctrl::Usart3_Hook(uint8_t *Rx_Message)
 {
 	uint8_t len = Rx_Message[0];
-	Message.comm.ReceiveData(&Rx_Message[1], len);
+//	Message.comm.ReceiveData(&Rx_Message[1], len);
 }
 
 void Message_Ctrl::Usart6_Hook(uint8_t *Rx_Message)

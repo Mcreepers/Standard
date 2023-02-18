@@ -3,10 +3,10 @@
 
 #define useSteering
 
-#define JUDGE_SERIAL Serial7
+#define JUDGE_SERIAL Serial7_Ctrl
 #define JUDGE_SERIAL_BAUD 115200
 //(光改上面的id不能直接使用)
-#define GIMBAL_SERIAL Serial6
+#define GIMBAL_SERIAL Serial6_Ctrl
 #define GIMBAL_SERIAL_BAUD 115200
 //发送
 #define GIMBAL_SERIAL_HEADER 0xff
@@ -14,13 +14,17 @@
 
 //无帧尾则为 NULL  接收
 #define Serial3_Data_Header 0xff
-#define Serial3_Data_tail NULL
+#define Serial3_Data_Tail NULL
+#define Serial3_Data_Lenth NULL
 #define Serial6_Data_Header 0xff
-#define Serial6_Data_tail 0xfe
+#define Serial6_Data_Tail 0xfe
+#define Serial6_Data_Lenth NULL
 #define Serial7_Data_Header 0xff
-#define Serial7_Data_tail 0xfe
+#define Serial7_Data_Tail 0xfe
+#define Serial7_Data_Lenth NULL
 #define Serial8_Data_Header 0xff
-#define Serial8_Data_tail 0xfe
+#define Serial8_Data_Tail 0xfe
+#define Serial8_Data_Lenth NULL
 
 #define Gimbal_Motor_Yaw_Offset_ECD 3243// 5 7631
 

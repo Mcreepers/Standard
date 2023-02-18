@@ -2,125 +2,26 @@
 
 #include "Message_Task.h"
 
-Serial_Ctrl Serial3(
-    USART3, Serial3_Buffer_Size, USART_IT_RXNE_AND_IDLE, Serial3_Data_Header, Serial3_Data_tail, 0);
-Serial_Ctrl Serial6(
-    USART6, Serial6_Buffer_Size, USART_IT_RXNE_AND_IDLE, Serial6_Data_Header, Serial6_Data_tail, 0);
-Serial_Ctrl Serial7(
-    UART7, Serial7_Buffer_Size, USART_IT_IDLE, Serial7_Data_Header, Serial7_Data_tail, 0);
-Serial_Ctrl Serial8(
-    UART8, Serial8_Buffer_Size, USART_IT_IDLE, Serial8_Data_Header, Serial8_Data_tail, 0);
+Serial_Ctrl Serial_Com;
 
-Serial_Ctrl::Serial_Ctrl(
-    USART_TypeDef *_USARTx, uint32_t BufferSize, uint8_t header, uint8_t tail, uint8_t lenth)
-    : Serialctrl(_USARTx, BufferSize)
+void Serial3_Hook(bool mode)
 {
-    this->buffer_size = BufferSize;
-    this->Header = header;
-    this->Tail = tail;
-    this->Lenth = lenth;
-    Data = new uint8_t[BufferSize + 1];
+    Serial_Com.Hook(SERIAL3, mode);
 }
 
-Serial_Ctrl::Serial_Ctrl(
-    USART_TypeDef *_USARTx, uint32_t BufferSize, uint32_t USART_ITPending, uint8_t header,
-    uint8_t tail, uint8_t lenth)
-    : Serialctrl(_USARTx, BufferSize, USART_ITPending)
+void Serial6_Hook(bool mode)
 {
-    this->buffer_size = BufferSize;
-    this->Header = header;
-    this->Tail = tail;
-    this->Lenth = lenth;
-    Data = new uint8_t[BufferSize + 1];
+    Serial_Com.Hook(SERIAL6, mode);
 }
 
-void Serial_Ctrl::Hook(bool mode)
+void Serial7_Hook(bool mode)
 {
-    if(mode == 0)
-    {
-        if(Header == NULL && Tail == NULL)
-        {
-            return;
-        }
-        if(Header != NULL && this->peek() != Header)
-        {
-            Temp = this->read();
-        }
-    }
-    else if(mode == 1)
-    {
-        Len = this->available();
-        Data[0] = Len;
-        for(uint8_t i = 0; i < Len; i++)
-        {
-            Data[i + 1] = this->read();
-        }
-        if(Lenth != NULL && Lenth != Len)
-        {
-            Data[0] = 0;
-        }
-        if(Tail != NULL && Data[Len + 1] != Tail)
-        {
-            Data[0] = 0;
-        }
-        Send_to_Message();
-    }
+    Serial_Com.Hook(SERIAL7, mode);
 }
 
-uint8_t Serial_Ctrl::Get_Data(void *buf)
+void Serial8_Hook(bool mode)
 {
-    if(Len == 0)
-    {
-        return 0;
-    }
-    buf = Data;
-    return Len;
-}
-
-void Serial_Ctrl::Send_to_Message()
-{
-    if(this == &Serial3)
-    {
-        ID_Data[SerialData3].Data_Ptr = Data;
-        xQueueSendFromISR(Message_Queue, &ID_Data[SerialData3], 0);
-    }
-    if(this == &Serial6)
-    {
-        ID_Data[SerialData3].Data_Ptr = Data;
-        xQueueSendFromISR(Message_Queue, &ID_Data[SerialData6], 0);
-    }
-    if(this == &Serial7)
-    {
-        ID_Data[SerialData3].Data_Ptr = Data;
-        xQueueSendFromISR(Message_Queue, &ID_Data[SerialData7], 0);
-    }
-    if(this == &Serial8)
-    {
-        ID_Data[SerialData3].Data_Ptr = Data;
-        xQueueSendFromISR(Message_Queue, &ID_Data[SerialData7], 0);
-    }
-}
-
-void Serial_Ctrl::IRQHandler()
-{
-    if(USART_GetITStatus(USARTx, USART_IT_RXNE) != RESET)
-    {
-        uint8_t c = USART_ReceiveData(USARTx);
-        Buffer_Write(&_rx_buffer, c);
-
-        Hook(0);
-
-        USART_ClearITPendingBit(USARTx, USART_IT_RXNE);
-    }
-
-    if(USART_GetITStatus(USARTx, USART_IT_IDLE) != RESET)
-    {
-        uint8_t c = USART_ReceiveData(USARTx);
-
-        Hook(1);
-
-        USART_ClearITPendingBit(USARTx, USART_IT_IDLE);
-    }
+    Serial_Com.Hook(SERIAL8, mode);
 }
 
 void Serial_ALL_Init(void)
@@ -128,58 +29,126 @@ void Serial_ALL_Init(void)
     JUDGE_SERIAL.Serial_Init(JUDGE_SERIAL_BAUD);
     //	GIMBAL_SERIAL.Serial_Init(GIMBAL_SERIAL_BAUD);
     // Serial8.Serial_Init(115200, SERIAL_8N1);
-    Serial6.Serial_Init(115200, 6, 2);
+    Serial6_Ctrl.Serial_Init(115200, 6, 2);
     // Serial7.Serial_Init( 115200, SERIAL_8N1); //哪种初始化方式都可以
     //Serial7.Serial_Init( 115200, 6,2);
 
-    // Serial3.attachInterrupt(Serial3_Hook);
-    // Serial6.attachInterrupt(Serial6_Hook);
-    // Serial7.attachInterrupt(Serial7_Hook);
-    // Serial8.attachInterrupt(Serial8_Hook);
+    Serial3_Ctrl.attachInterrupt(Serial3_Hook);
+    Serial6_Ctrl.attachInterrupt(Serial6_Hook);
+    Serial7_Ctrl.attachInterrupt(Serial7_Hook);
+    Serial8_Ctrl.attachInterrupt(Serial8_Hook);
 }
 
-extern "C" {
-    void USART3_IRQHandler(void)
+void Serial_Ctrl::Hook(USART_TypeDef *SERIAL, bool mode)
+{
+    if(SERIAL == SERIAL3)
     {
-        Serial3.IRQHandler();
+        Handle(&Serial3_Ctrl, Serial3, mode);
     }
-    void USART6_IRQHandler(void)
+    if(SERIAL == SERIAL6)
     {
-        Serial6.IRQHandler();
+        Handle(&Serial6_Ctrl, Serial6, mode);
     }
-    void UART7_IRQHandler(void)
+    if(SERIAL == SERIAL7)
     {
-        Serial7.IRQHandler();
+        Handle(&Serial7_Ctrl, Serial7, mode);
     }
-    void UART8_IRQHandler(void)
+    if(SERIAL == SERIAL8)
     {
-        Serial8.IRQHandler();
+        Handle(&Serial8_Ctrl, Serial8, mode);
     }
 }
 
-void Serial_Com::SendData()
+void Serial_Ctrl::Handle(Serialctrl *SerialCtrl, Serial_Data_t *Serial, bool mode)
+{
+    if(mode == 0)
+    {
+        if(Serial->Header == NULL && Serial->Tail == NULL)
+        {
+            return;
+        }
+        if(Serial->Header != NULL && SerialCtrl->peek() != Serial->Header)
+        {
+            Serial->Temp = SerialCtrl->read();
+        }
+    }
+    else if(mode == 1)
+    {
+        Serial->Len = SerialCtrl->available();
+        Serial->Data[0] = Serial->Len;
+        for(uint8_t i = 0; i < Serial->Len; i++)
+        {
+            Serial->Data[i + 1] = SerialCtrl->read();
+        }
+        if(Serial->Lenth != NULL && Serial->Lenth != Serial->Len)
+        {
+            Serial->Data[0] = 0;
+        }
+        if(Serial->Tail != NULL && Serial->Data[Serial->Len + 1] != Serial->Tail)
+        {
+            Serial->Data[0] = 0;
+        }
+        Send_to_Message(SerialCtrl);
+    }
+}
+
+uint8_t Serial_Ctrl::Get_Data(Serial_Data_t *Serial, uint8_t *buf)
+{
+    if(Serial->Len == 0)
+    {
+        return 0;
+    }
+    buf = Serial->Data;
+    return Serial->Len;
+}
+
+void Serial_Ctrl::Send_to_Message(Serialctrl *SerialCtrl)
+{
+    if(SerialCtrl == &Serial3_Ctrl)
+    {
+        ID_Data[SerialData3].Data_Ptr = Serial3->Data;
+        xQueueSendFromISR(Message_Queue, &ID_Data[SerialData3], 0);
+    }
+    if(SerialCtrl == &Serial6_Ctrl)
+    {
+        ID_Data[SerialData3].Data_Ptr = Serial3->Data;
+        xQueueSendFromISR(Message_Queue, &ID_Data[SerialData6], 0);
+    }
+    if(SerialCtrl == &Serial7_Ctrl)
+    {
+        ID_Data[SerialData3].Data_Ptr = Serial3->Data;
+        xQueueSendFromISR(Message_Queue, &ID_Data[SerialData7], 0);
+    }
+    if(SerialCtrl == &Serial8_Ctrl)
+    {
+        ID_Data[SerialData3].Data_Ptr = Serial3->Data;
+        xQueueSendFromISR(Message_Queue, &ID_Data[SerialData7], 0);
+    }
+}
+
+void Serial_Comm::SendData()
 {
     SumCheck = 0;
     AddCheck = 0;
     uint8_t *ch = (uint8_t *)buf;
 
     Check_Calc(Head);
-    Serial3.sendData(Head);
+    SerialCtrl->sendData(Head);
     Check_Calc(Addr);
-    Serial3.sendData(Addr);
+    SerialCtrl->sendData(Addr);
     Check_Calc(ID);
-    Serial3.sendData(ID);
+    SerialCtrl->sendData(ID);
     Check_Calc(len);
-    Serial3.sendData(len);
+    SerialCtrl->sendData(len);
     while(len--)
     {
         Check_Calc(*ch++);
     }
-    Serial3.sendData(int(SumCheck) & 0xff);
-    Serial3.sendData(int(AddCheck) & 0xff);
+    SerialCtrl->sendData(int(SumCheck) & 0xff);
+    SerialCtrl->sendData(int(AddCheck) & 0xff);
 }
 
-void Serial_Com::ReceiveData(void *buf, uint8_t len)
+void Serial_Comm::ReceiveData(void *buf, uint8_t len)
 {
     SumCheck = 0;
     AddCheck = 0;
@@ -214,13 +183,13 @@ void Serial_Com::ReceiveData(void *buf, uint8_t len)
     }
 }
 
-void Serial_Com::Check_Calc(uint8_t data)
+void Serial_Comm::Check_Calc(uint8_t data)
 {
     SumCheck += data;
     AddCheck += SumCheck;
 };
 
-void Serial_Com::SendHeartBeat()
+void Serial_Comm::SendHeartBeat()
 {
     HeartBeat[0].heartbeat != HeartBeat[0].heartbeat;
     buf = &HeartBeat;
@@ -229,7 +198,7 @@ void Serial_Com::SendHeartBeat()
     SendData();
 }
 
-void Serial_Com::SendChassisVelocity()
+void Serial_Comm::SendChassisVelocity()
 {
     buf = &ChassisVelocity;
     ID = 0x30;
