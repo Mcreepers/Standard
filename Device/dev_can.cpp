@@ -3,85 +3,42 @@
 #include "queue.h"
 #include "Message_Task.h"
 
-CANctrl CAN1_Ctrl(CAN1, CAN_GIMBAL_ALL_ID);
-CANctrl CAN2_Ctrl( CAN2, CAN_CHASSIS_ALL_ID );
+CANctrl CAN1_Ctrl(CAN1);
+CANctrl CAN2_Ctrl(CAN2);
 
-void CANctrl::attachInterrupt( CAN_CallbackFunction_t Function )
+void CANctrl::attachInterrupt(CAN_CallbackFunction_t Function)
 {
     this->CAN_Function = Function;
 }
 
-void CANctrl::SendData( int16_t data1, int16_t data2, int16_t data3, int16_t data4 )
+void CANctrl::ChangeID(uint16_t StdID)
 {
+    this->StdId = StdID;
+}
+
+void CANctrl::SendData(void *buf, uint8_t len)
+{
+    uint8_t *ch = (uint8_t *)buf;
     CanTxMsg TxMessage;
     TxMessage.StdId = StdId;
     TxMessage.IDE = CAN_ID_STD;
     TxMessage.RTR = CAN_RTR_DATA;
-    TxMessage.DLC = 0x08;
-    TxMessage.Data[0] = data1 >> 8;
-    TxMessage.Data[1] = data1;
-    TxMessage.Data[2] = data2 >> 8;
-    TxMessage.Data[3] = data2;
-    TxMessage.Data[4] = data3 >> 8;
-    TxMessage.Data[5] = data3;
-    TxMessage.Data[6] = data4 >> 8;
-    TxMessage.Data[7] = data4;
-
-    CAN_Transmit( CANx, &TxMessage );
-}
-
-void CANctrl::SendData( int16_t data1, int16_t data2, int16_t data3 )
-{
-    CanTxMsg TxMessage;
-    TxMessage.StdId = StdId;
-    TxMessage.IDE = CAN_ID_STD;
-    TxMessage.RTR = CAN_RTR_DATA;
-    TxMessage.DLC = 0x08;
-    TxMessage.Data[0] = data1 >> 8;
-    TxMessage.Data[1] = data1;
-    TxMessage.Data[2] = data2 >> 8;
-    TxMessage.Data[3] = data2;
-    TxMessage.Data[4] = data3 >> 8;
-    TxMessage.Data[5] = data3;
-
-    CAN_Transmit( CANx, &TxMessage );
-}
-
-void CANctrl::SendData( int16_t data1, int16_t data2 )
-{
-    CanTxMsg TxMessage;
-    TxMessage.StdId = StdId;
-    TxMessage.IDE = CAN_ID_STD;
-    TxMessage.RTR = CAN_RTR_DATA;
-    TxMessage.DLC = 0x08;
-    TxMessage.Data[0] = data1 >> 8;
-    TxMessage.Data[1] = data1;
-    TxMessage.Data[2] = data2 >> 8;
-    TxMessage.Data[3] = data2;
-
-    CAN_Transmit( CANx, &TxMessage );
-}
-
-void CANctrl::SendData( int16_t data1 )
-{
-    CanTxMsg TxMessage;
-    TxMessage.StdId = StdId;
-    TxMessage.IDE = CAN_ID_STD;
-    TxMessage.RTR = CAN_RTR_DATA;
-    TxMessage.DLC = 0x08;
-    TxMessage.Data[0] = data1 >> 8;
-    TxMessage.Data[1] = data1;
-
-    CAN_Transmit( CANx, &TxMessage );
-}
-
-void CANctrl::IRQHandler( void )
-{
-    if (CAN_GetITStatus(CANx, CAN_IT_FMP0) != RESET)
+    TxMessage.DLC = len;
+    do
     {
-        CAN_ClearITPendingBit( CANx, CAN_IT_FMP0 );
+        TxMessage.Data[len] = ch[len];
+    } while(len--);
+
+    CAN_Transmit(CANx, &TxMessage);
+}
+
+void CANctrl::IRQHandler(void)
+{
+    if(CAN_GetITStatus(CANx, CAN_IT_FMP0) != RESET)
+    {
+        CAN_ClearITPendingBit(CANx, CAN_IT_FMP0);
         CAN_Receive(CANx, CAN_FIFO0, &Rx_Message);
-        if( CAN_Function )
+        if(CAN_Function)
         {
             CAN_Function(&Rx_Message);
         }
@@ -90,7 +47,7 @@ void CANctrl::IRQHandler( void )
 
 extern"C"
 {
-	void CAN1_RX0_IRQHandler(void)
+    void CAN1_RX0_IRQHandler(void)
     {
         CAN1_Ctrl.IRQHandler();
     }

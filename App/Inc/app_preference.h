@@ -1,6 +1,11 @@
 #ifndef __APP_PREFERENCE_H
 #define __APP_PREFERENCE_H
 
+//ºöÂÔ¾¯¸æ£¬°ÚÀÃ
+#pragma diag_suppress 117
+#pragma diag_suppress 550
+#pragma diag_suppress 3337
+
 //id´íÎó·äÃùÆ÷¾¯¸æ
 #define RobotID 3
 

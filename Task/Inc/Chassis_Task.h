@@ -14,7 +14,7 @@
 
 #include "drivers_state_machines.h"
 
-extern "C++" 
+extern "C++"
 {
 #include "algorithm_matrix.hpp"
 }
@@ -24,7 +24,7 @@ extern "C++"
 extern "C" {
 #endif
 
-void Chassis_Task(void *pvParameters);
+  void Chassis_Task(void *pvParameters);
 
 #ifdef __cplusplus
 }
@@ -74,7 +74,7 @@ typedef struct
   fp32 speed_set;
 
   uint32_t offset_ecd;
-  
+
   fp32 angle_real;
   fp32 angle_set_real;
 
@@ -142,19 +142,19 @@ typedef struct
   Matrix<3, 4> Speed_Set_m;//底盘速度
 } Chassis_Velocity_t;
 
-class Chassis_Ctrl : public rc_key_c
+class Chassis_Ctrl: public rc_key_c
 {
 public:
-  
+
   const RC_ctrl_t *RC_Ptr;
   const fp32 *chassis_yaw_relative_angle;   //底盘使用到yaw云台电机的相对角度来计算底盘的欧拉角
   fp32 chassis_relative_ECD;   //底盘使用到yaw云台电机的相对角度来计算底盘的欧拉角
   fp32 chassis_relative_RAD;
-  
-  Chassis_Motor_t Motor[Chassis_Motor_Numbers];
+
+  Chassis_Motor_t Motor[4];
 
   PidTypeDef  Velocity_Pid;
-  PidTypeDef  Speed_Pid[Chassis_Motor_Numbers];
+  PidTypeDef  Speed_Pid[4];
   PidTypeDef  Follow_Gimbal_Pid;
   PidTypeDef  chassis_setangle;
   PidTypeDef  chassis_setangle_gyro;

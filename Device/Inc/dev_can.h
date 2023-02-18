@@ -5,31 +5,33 @@
 extern "C" {
 #endif
 
-	
-	
+
+
 #ifdef __cplusplus
 }
 #endif
 
 #include "drivers_can.h"
 
-class CANctrl : public CANdev
+class CANctrl: public CANdev
 {
 public:
-	CANctrl( CAN_TypeDef *CANx, uint32_t StdId ) : CANdev( CANx ), StdId( StdId ){}
-	
-	void attachInterrupt( CAN_CallbackFunction_t Function );	
-		
-	void SendData( int16_t data1, int16_t data2, int16_t data3, int16_t data4 );
-	void SendData( int16_t data1, int16_t data2, int16_t data3 );
-	void SendData( int16_t data1, int16_t data2 );
-	void SendData( int16_t data1 );
+	CANctrl(CAN_TypeDef *CANx): CANdev(CANx) {}
+
+	void attachInterrupt(CAN_CallbackFunction_t Function);
+
+	void ChangeID(uint16_t StdID);
+
+	void SendData(void *buf, uint8_t len);
 
 	void IRQHandler(void);
-	
+
 	CanRxMsg Rx_Message;
 private:
 	uint32_t StdId;
 };
+
+extern CANctrl CAN1_Ctrl;
+extern CANctrl CAN2_Ctrl;
 
 #endif /* __DEVICE_CAN_H */

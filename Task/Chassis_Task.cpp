@@ -37,9 +37,9 @@ void Chassis_Task(void *pvParameters)
 		Chassis.Behaviour_Mode();
 		if (Chassis.Mode == CHASSIS_NO_MOVE)
 		{
-			CAN_Cmd.Chassis.CAN_Chassis->SendData(0, 0, 0, 0);
+			CAN_Cmd.SendData(CAN_Cmd.Chassis,0, 0, 0, 0);
 #ifdef useSteering
-			CAN_Cmd.Gimbal.CAN_Gimbal->SendData(0, 0, 0, 0);
+			CAN_Cmd.SendData(CAN_Cmd.Gimbal,0, 0, 0, 0);
 #endif
 		}
 		else
@@ -48,10 +48,10 @@ void Chassis_Task(void *pvParameters)
 			Chassis.Control();
 			Chassis.Control_loop();
 			
-			CAN_Cmd.Chassis.CAN_Chassis->SendData(Chassis.Motor[0].give_current, Chassis.Motor[1].give_current,
+			CAN_Cmd.SendData(CAN_Cmd.Chassis,Chassis.Motor[0].give_current, Chassis.Motor[1].give_current,
 				Chassis.Motor[2].give_current, Chassis.Motor[3].give_current);
 #ifdef useSteering
-			CAN_Cmd.Gimbal.CAN_Gimbal->SendData(Chassis.Steering[0].give_current, Chassis.Steering[1].give_current,
+			CAN_Cmd.SendData(CAN_Cmd.Gimbal,Chassis.Steering[0].give_current, Chassis.Steering[1].give_current,
 				Chassis.Steering[2].give_current, Chassis.Steering[3].give_current);
 #endif
 		}
@@ -75,13 +75,13 @@ void Chassis_Ctrl::Chassis_Init(void)
 	
 	for ( uint8_t i = 0; i < 4; i++ )
 	{
-		Motor[i].chassis_motor_measure = Motor_Ctrl.Chassis.Get_Motor_Measure_Pointer(i);
+		Motor[i].chassis_motor_measure = CAN_Cmd.Chassis->Get_Motor_Measure_Pointer(i);
 		PID_Init( &Speed_Pid[i], PID_POSITION, Motor_Speed_Pid, M3505_MOTOR_SPEED_PID_MAX_OUT, M3505_MOTOR_SPEED_PID_MAX_IOUT );
 	}
 #ifdef useSteering/* useSteering */
 	for ( uint8_t i = 0; i < 4; i++ )
 	{
-		Steering[i].chassis_motor_measure = Motor_Ctrl.Gimbal.Get_Motor_Measure_Pointer(i);
+		Steering[i].chassis_motor_measure = CAN_Cmd.Gimbal->Get_Motor_Measure_Pointer(i);
 		PID_Init( &steering_Angle_Pid[i], PID_POSITION, m6020_motor_angle_pid, M6020_MOTOR_ANGLE_PID_MAX_OUT, M6020_MOTOR_ANGLE_PID_MAX_IOUT );
 		PID_Init( &steering_Speed_Pid[i], PID_POSITION, m6020_motor_speed_pid, M6020_MOTOR_SPEED_PID_MAX_OUT, M6020_MOTOR_SPEED_PID_MAX_IOUT );
 		Steering[i].offset_ecd = MOTOR_6020_offset[i];

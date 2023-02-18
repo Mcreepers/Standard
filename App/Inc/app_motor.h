@@ -5,88 +5,54 @@
 
 //#define USE_PWM_CONTROL_FRIC
 
-#define Chassis_Motor_Numbers      ( 4 )
-
-#define CAN_Group1_CAN              (CAN1_Ctrl)
-#define CAN_Group1_CAN              (CAN1_Ctrl)
-#define CAN_Group1_CAN              (CAN1_Ctrl)
-#define CAN_Group1_CAN              (CAN1_Ctrl)
-
-#define CAN_Gimbal_CAN             ( CAN1_Ctrl )
-#define CAN_Chassis_CAN            ( CAN2_Ctrl )
-#define CAN_Fric_CAN               ( CAN1_Ctrl )
-
-#define CAN_Gimbal_StdId           ( CAN_GIMBAL_ALL_ID )
-#define CAN_Chassis_StdId          ( CAN_CHASSIS_ALL_ID )
-#define CAN_Fric_StdId             ( CAN_CHASSIS_ALL_ID )
-
-#define Motor_Ctrl                 ( CAN_Cmd )
-
 #ifdef USE_PWM_CONTROL_FRIC
 #define LEFT_FRIC_PWM_PIN          PA2
 #define RIGHT_FRIC_PWM_PIN         PA1
 #define FRIC_MOTOR_STOP_DUTY_CYCLE 1000
 #endif
 
-//底盘电机数据读取
-#define get_motor_measure(ptr, rx_message)                                                     \
-    {                                                                                          \
-        (ptr)->last_ecd = (ptr)->ecd;                                                          \
-        (ptr)->ecd = (uint16_t)((rx_message)->Data[0] << 8 | (rx_message)->Data[1]);           \
-        (ptr)->speed_rpm = (int16_t)((rx_message)->Data[2] << 8 | (rx_message)->Data[3]);     \
-        (ptr)->given_current = (int16_t)((rx_message)->Data[4] << 8 | (rx_message)->Data[5]); \
-        (ptr)->temperate = (rx_message)->Data[6];                                              \
-    }
-		
-//云台电机数据读取
-#define get_gimbal_motor_measuer(ptr, rx_message)                                              \
-    {                                                                                          \
-        (ptr)->last_ecd = (ptr)->ecd;                                                          \
-        (ptr)->ecd = (uint16_t)((rx_message)->Data[0] << 8 | (rx_message)->Data[1]);           \
-        (ptr)->given_current = (int16_t)((rx_message)->Data[4] << 8 | (rx_message)->Data[5]); \
-        (ptr)->speed_rpm = (int16_t)((rx_message)->Data[2] << 8 | (rx_message)->Data[3]);     \
-        (ptr)->temperate = (rx_message)->Data[6];                                              \
-    }
-		
+//大疆电机数据读取
+#define get_motor_measure(ptr, rx_message)                                                \
+{                                                                                         \
+	(ptr)->last_ecd = (ptr)->ecd;                                                         \
+	(ptr)->ecd = (uint16_t)((rx_message)->Data[0] << 8 | (rx_message)->Data[1]);          \
+	(ptr)->speed_rpm = (int16_t)((rx_message)->Data[2] << 8 | (rx_message)->Data[3]);     \
+	(ptr)->given_current = (int16_t)((rx_message)->Data[4] << 8 | (rx_message)->Data[5]); \
+	(ptr)->temperate = (rx_message)->Data[6];                                             \
+}
+
 typedef enum
 {
-  CAN_Group1_ALL_ID = 0x1ff,
-  CAN_Group2_ALL_ID = 0x200,
-  CAN_Group3_ALL_ID = 0x200,
-  CAN_Group4_ALL_ID = 0x1ff,
+	CAN_DJI_Motor_Group1_ID = 0x1ff,
+	CAN_DJI_Motor_Group2_ID = 0x200,
+	CAN_DJI_Motor_Group3_ID = 0x2ff,
 
-  CAN_M1_ID = 0x01,
+	CAN_DJI_Motor1_ID = 0x201,
+	CAN_DJI_Motor2_ID = 0x202,
+	CAN_DJI_Motor3_ID = 0x203,
+	CAN_DJI_Motor4_ID = 0x204,
 
+	CAN_DJI_Motor5_ID = 0x205,
+	CAN_DJI_Motor6_ID = 0x206,
+	CAN_DJI_Motor7_ID = 0x207,
+	CAN_DJI_Motor8_ID = 0x208,
 
-  
-  CAN_CHASSIS_ALL_ID = 0x200,
-  CAN_3508_M1_ID = 0x201,
-  CAN_3508_M2_ID = 0x202,
-  CAN_3508_M3_ID = 0x203,
-  CAN_3508_M4_ID = 0x204,
+	CAN_DJI_Motor9_ID = 0x209,
+	CAN_DJI_Motor10_ID = 0x210,
+	CAN_DJI_Motor11_ID = 0x211,
 
-  CAN_steering_ALL_ID = 0x1FF,
-  CAN_6020_M1_ID = 0x205,
-  CAN_6020_M2_ID = 0x206,
-  CAN_6020_M3_ID = 0x207,
-  CAN_6020_M4_ID = 0x208,
-
-  CAN_YAW_MOTOR_ID = 0x205,
-  CAN_FRIC_MOTOR_ID = 0x202,
-  CAN_GIMBAL_ALL_ID = 0x1FF,
-  
-  CAN_CAP_GET_ID = 0x301,
-  CAN_CAP_SENT_ID = 0x311,
+	CAN_CAP_GET_ID = 0x301,
+	CAN_CAP_SENT_ID = 0x311,
 } can_msg_id_e;
 
 //rm电机统一数据结构体
 typedef struct
 {
-  uint16_t ecd;
-  int16_t speed_rpm;
-  int16_t given_current;
-  uint8_t temperate;
-  int16_t last_ecd;
+	uint16_t ecd;
+	int16_t speed_rpm;
+	int16_t given_current;
+	uint8_t temperate;
+	int16_t last_ecd;
 	uint8_t cnt;
 	uint16_t offset;
 	uint16_t angle_ecd;
@@ -105,112 +71,84 @@ typedef struct
 	int last_real_position;//上次过零处理后的电机转子位置	
 }gimbal_measure_t;
 
-class CAN_Group1_Ctrl
-{
-public:	
-  CANctrl *CAN_Group1;
-	motor_measure_t Group1_Measure[Chassis_Motor_Numbers];
-
-  CAN_Group1_Ctrl() : CAN_Group1( &CAN1_Ctrl ){}
-  const motor_measure_t *Get_Motor_Measure_Pointer( uint8_t i )
-	{
-	  return &Group1_Measure[(i & 0x03)];
-	}
-};
-
-
-
-
-class Chassis_Motor_Ctrl
-{
-public:	
-  CANctrl *CAN_Chassis;
-	motor_measure_t Chassis_Measure[Chassis_Motor_Numbers];
-
-  Chassis_Motor_Ctrl() : CAN_Chassis( &CAN_Chassis_CAN ){}
-  const motor_measure_t *Get_Motor_Measure_Pointer( uint8_t i )
-	{
-	  return &Chassis_Measure[(i & 0x03)];
-	}
-};
-//舵轮中使用云台电机处理函数平替舵向电机
-class Gimbal_Motor_Ctrl
-{
-#ifdef useSteering
-  public:
-    CANctrl *CAN_Gimbal;
-    motor_measure_t Steering_Measure[Chassis_Motor_Numbers];
-
-    Gimbal_Motor_Ctrl() : CAN_Gimbal( &CAN_Gimbal_CAN ){}
-    const motor_measure_t *Get_Motor_Measure_Pointer( uint8_t i )
-    {
-      return &Steering_Measure[(i & 0x03)];
-    }
-#endif
-#ifdef useMecanum
-public:
-    CANctrl *CAN_Gimbal;
-    motor_measure_t Yaw_Measure;
-    //  motor_measure_t Motor_Pitch;
-    
-    Gimbal_Motor_Ctrl() : CAN_Gimbal( &CAN_Gimbal_CAN ){}
-    const motor_measure_t *Get_Motor_Measure_Pointer( void )
-    {
-      return &Yaw_Measure;
-    }
-#endif
-};
-
-class Fric_Motor_Ctrl
+class Motor_CAN_Ctrl
 {
 public:
-#ifndef USE_PWM_CONTROL_FRIC
-	CANctrl *CAN_Fric;
-  motor_measure_t Fric_Measure;
-
-//	Fric_Motor_Ctrl() : CAN_Fric( &CAN_Fric_CAN ){}
-  const motor_measure_t *Get_Motor_Measure_Pointer( void )
+	Motor_CAN_Ctrl(CAN_TypeDef *CANx_, uint32_t StdID_, uint8_t Num_)
 	{
-	  return &Fric_Measure;
+		this->CANx = CANx_;
+		this->StdID = StdID_;
+		this->Num = Num_;
+		Motor_Measure = new motor_measure_t[Num_];
 	}
-#else
-public:
-	Fric_Motor_Ctrl() : Left_PWM_Pin( LEFT_FRIC_PWM_PIN ), Right_PWM_Pin( RIGHT_FRIC_PWM_PIN ){}
-	void Fric_Motor_Init( void )
+	const motor_measure_t *Get_Motor_Measure_Pointer(uint8_t i)
 	{
-	  PWM_Init( Left_PWM_Pin,  ( F_CPU / 1000000 ), 100 ); //100HZ
-		PWM_Init( Right_PWM_Pin, ( F_CPU / 1000000 ), 100 ); //100HZ
+		return &Motor_Measure[i];
 	}
-	
-	void Fric_On( uint16_t Speed )
+	void GetData(CAN_TypeDef *CANx_, uint32_t &StdID_, uint8_t &Num_)
 	{
-	  pwmWrite( Left_PWM_Pin,  Speed );
-		pwmWrite( Right_PWM_Pin, Speed );
+		CANx_ = this->CANx;
+		StdID_ = this->StdID;
+		Num_ = this->Num;
 	}
-	
-	void Fric_Off( void )
+	motor_measure_t *GetData(uint8_t i)
 	{
-	  pwmWrite( Left_PWM_Pin,  FRIC_MOTOR_STOP_DUTY_CYCLE );
-		pwmWrite( Right_PWM_Pin, FRIC_MOTOR_STOP_DUTY_CYCLE );
+		return &Motor_Measure[(i & 3)];
 	}
 private:
-  uint8_t Left_PWM_Pin, Right_PWM_Pin;
-#endif
+	CAN_TypeDef *CANx;
+	uint16_t StdID;
+	uint8_t Num;
+	motor_measure_t *Motor_Measure;
+};
+
+class Motor_PWM_Ctrl
+{
+public:
+	Motor_PWM_Ctrl(uint8_t Pin_):Pin(Pin_) {}
+	void Init()
+	{
+		PWM_Init(Pin, (F_CPU / 1000000), 100);
+	}
+	void Open()
+	{//Snail电机需要先启动,数据仅参考
+		pwmWrite(Pin, 1500);
+	}
+	void Run(uint16_t Speed)
+	{
+		pwmWrite(Pin, Speed);
+	}
+	void Close()
+	{//数据仅参考
+		pwmWrite(Pin, 1000);
+	}
+private:
+	uint16_t Pin;
 };
 
 class CAN_Ctrl
 {
 public:
+	CAN_Ctrl()
+	{
+		Chassis = new Motor_CAN_Ctrl(CAN1, CAN_DJI_Motor_Group2_ID, 4);
+		Gimbal = new Motor_CAN_Ctrl(CAN2, CAN_DJI_Motor_Group1_ID, 4);
+	}
+	Motor_CAN_Ctrl *Chassis;
+	Motor_CAN_Ctrl *Gimbal;
 
+	void SendData(CAN_TypeDef *CANx, uint32_t StdID, void *buf, uint8_t len);
+	void SendData(Motor_CAN_Ctrl *Motor, int16_t Motor1, int16_t Motor2, int16_t Motor3, int16_t Motor4);
+	void SendData(Motor_CAN_Ctrl *Motor, int16_t Motor1, int16_t Motor2, int16_t Motor3);
+	void SendData(Motor_CAN_Ctrl *Motor, int16_t Motor1, int16_t Motor2);
+	void SendData(Motor_CAN_Ctrl *Motor, int16_t Motor1);
 
-Chassis_Motor_Ctrl Chassis;
-  Gimbal_Motor_Ctrl  Gimbal;
-  Fric_Motor_Ctrl    Fric;
-
-  void CAN_CMD_RESET_ID( uint32_t StdId );
+	void CAN_CMD_RESET_ID(Motor_CAN_Ctrl *Motor);
+private:
+	void SendData(CANctrl *CANx_Ctrl, uint32_t StdID, void *buf, uint8_t len);
 };
-	
-void CAN_ALL_Init( void );
+
+void CAN_ALL_Init(void);
 
 extern CAN_Ctrl CAN_Cmd;
 extern void CAN1_Hook(CanRxMsg *Rx_Message);

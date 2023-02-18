@@ -3,65 +3,6 @@
 #include "Message_Task.h"
 CAN_Ctrl CAN_Cmd;
 
-void CAN2_Hook(CanRxMsg *Rx_Message)
-{
-	switch (Rx_Message->StdId)
-	{
-	case CAN_3508_M1_ID:
-	case CAN_3508_M2_ID:
-	case CAN_3508_M3_ID:
-	case CAN_3508_M4_ID:
-	{
-		static uint8_t i = 0;
-		//处理电机ID号
-		i = Rx_Message->StdId - CAN_3508_M1_ID;
-		//处理电机数据宏函数
-		get_motor_measure(&CAN_Cmd.Chassis.Chassis_Measure[i], Rx_Message);
-		break;
-	}
-	default:
-	{
-		break;
-	}
-	}
-}
-
-void CAN1_Hook(CanRxMsg *Rx_Message)
-{
-	switch (Rx_Message->StdId)
-	{
-#ifdef useMecanum
-	case CAN_YAW_MOTOR_ID:
-	{
-		//处理电机数据宏函数
-		get_gimbal_motor_measuer(&CAN_Cmd.Gimbal.Yaw_Measure, Rx_Message);
-		break;
-	}
-	case CAN_FRIC_MOTOR_ID:
-	{
-		get_motor_measure(&CAN_Cmd.Fric.Fric_Measure, Rx_Message);//底盘大弹丸拨弹轮电机
-		break;
-	}
-#endif
-#ifdef useSteering
-	case CAN_6020_M1_ID:
-	case CAN_6020_M2_ID:
-	case CAN_6020_M3_ID:
-	case CAN_6020_M4_ID:
-	{
-		static uint8_t i = 0;
-		//处理电机ID号
-		i = Rx_Message->StdId - CAN_6020_M1_ID;
-		//处理电机数据宏函数
-		get_motor_measure(&CAN_Cmd.Gimbal.Steering_Measure[i], Rx_Message);
-		break;
-	}
-#endif
-	default:
-		break;
-	}
-}
-
 void CAN1_Send(CanRxMsg *Rx_Message)
 {
 	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
@@ -78,13 +19,109 @@ void CAN2_Send(CanRxMsg *Rx_Message)
 	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
-
 void CAN_ALL_Init(void)
 {
-	//必须先初始化CAN1，在初始化CAN2
+	//必须先初始化CAN1，再初始化CAN2
 	CAN1_Ctrl.CANx_Init();
 	CAN2_Ctrl.CANx_Init();
-	
+
 	CAN1_Ctrl.attachInterrupt(CAN1_Send);
 	CAN2_Ctrl.attachInterrupt(CAN2_Send);
+}
+
+void CAN_Ctrl::SendData(CANctrl *CANx_Ctrl, uint32_t StdID, void *buf, uint8_t len)
+{
+	CANx_Ctrl->ChangeID(StdID);
+	CANx_Ctrl->SendData(buf, len);
+}
+
+void CAN_Ctrl::SendData(CAN_TypeDef *CANx, uint32_t StdID, void *buf, uint8_t len)
+{
+	if(CANx == CAN1)
+	{
+		SendData(&CAN1_Ctrl, StdID, buf, len);
+	}
+	if(CANx == CAN2)
+	{
+		SendData(&CAN2_Ctrl, StdID, buf, len);
+	}
+}
+
+void CAN_Ctrl::SendData(Motor_CAN_Ctrl *Motor, int16_t Motor1, int16_t Motor2, int16_t Motor3, int16_t Motor4)
+{
+	CAN_TypeDef *CANx;
+	uint32_t StdID;
+	uint8_t Num;
+	uint8_t Data[8];
+	Data[0] = Motor1 >> 8;
+	Data[1] = Motor1;
+	Data[2] = Motor2 >> 8;
+	Data[3] = Motor2;
+	Data[4] = Motor3 >> 8;
+	Data[5] = Motor3;
+	Data[6] = Motor4 >> 8;
+	Data[7] = Motor4;
+
+	Motor->GetData(CANx, StdID, Num);
+	SendData(CANx, StdID, Data, 8);
+}
+
+void CAN_Ctrl::SendData(Motor_CAN_Ctrl *Motor, int16_t Motor1, int16_t Motor2, int16_t Motor3)
+{
+	CAN_TypeDef *CANx;
+	uint32_t StdID;
+	uint8_t Num;
+	uint8_t Data[6];
+	Data[0] = Motor1 >> 8;
+	Data[1] = Motor1;
+	Data[2] = Motor2 >> 8;
+	Data[3] = Motor2;
+	Data[4] = Motor3 >> 8;
+	Data[5] = Motor3;
+
+	Motor->GetData(CANx, StdID, Num);
+	SendData(CANx, StdID, Data, 6);
+}
+
+void CAN_Ctrl::SendData(Motor_CAN_Ctrl *Motor, int16_t Motor1, int16_t Motor2)
+{
+	CAN_TypeDef *CANx;
+	uint32_t StdID;
+	uint8_t Num;
+	uint8_t Data[4];
+	Data[0] = Motor1 >> 8;
+	Data[1] = Motor1;
+	Data[2] = Motor2 >> 8;
+	Data[3] = Motor2;
+
+	Motor->GetData(CANx, StdID, Num);
+	SendData(CANx, StdID, Data, 4);
+}
+
+void CAN_Ctrl::SendData(Motor_CAN_Ctrl *Motor, int16_t Motor1)
+{
+	CAN_TypeDef *CANx;
+	uint32_t StdID;
+	uint8_t Num;
+	uint8_t Data[2];
+	Data[0] = Motor1 >> 8;
+	Data[1] = Motor1;
+
+	Motor->GetData(CANx, StdID, Num);
+	SendData(CANx, StdID, Data, 2);
+}
+
+void CAN_Ctrl::CAN_CMD_RESET_ID(Motor_CAN_Ctrl *Motor)
+{
+	CAN_TypeDef *CANx;
+	uint32_t StdID;
+	uint8_t Num;
+	Motor->GetData(CANx, StdID, Num);
+	StdID = 0x700;
+	uint8_t Data[8];
+	for(uint8_t i = 0; i < 8; i++)
+	{
+		Data[i] = 0;
+	}
+	SendData(CANx, StdID, Data, 8);
 }
