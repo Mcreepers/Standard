@@ -2,7 +2,7 @@
 #define __APP_PREFERENCE_H
 
 //ºöÂÔ¾¯¸æ£¬°ÚÀÃ
-#pragma diag_suppress 117
+#pragma diag_suppress 177
 #pragma diag_suppress 550
 #pragma diag_suppress 3337
 
@@ -48,9 +48,9 @@ typedef enum
 	SerialData6,
 	SerialData7,
 	SerialData8,
-    RC_Data,
-    MessageData,
-    ChassisData,
+	RC_Data,
+	MessageData,
+	ChassisData,
 	UIdrawData,
 	CorrespondenceData,
 	SupercapData,

@@ -50,10 +50,7 @@ public:
     void SendData(Serialctrl *Serial, const void *str);
     void SendData(Serialctrl *Serial, const void *buf, uint8_t len);
 
-    void Serial3_Hook();
-
-    ~Serial_Ctrl()
-    {}
+    ~Serial_Ctrl() {}
 
 private:
     Serial_Data_t *Serial3;
