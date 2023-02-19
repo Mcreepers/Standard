@@ -4,7 +4,7 @@
 #include "protocol_judgement.h"
 
 Serialctrl Serial3_Ctrl(USART3, Serial3_Buffer_Size, USART_IT_RXNE_AND_IDLE);
-Serialctrl Serial6_Ctrl(USART6, Serial6_Buffer_Size);
+Serialctrl Serial6_Ctrl(USART6, Serial6_Buffer_Size, USART_IT_RXNE_AND_IDLE);
 Serialctrl Serial7_Ctrl(UART7, Serial7_Buffer_Size, USART_IT_IDLE);
 Serialctrl Serial8_Ctrl(UART8, Serial8_Buffer_Size, USART_IT_IDLE);
 

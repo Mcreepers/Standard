@@ -2,9 +2,6 @@
 #define Correspondence_TASK_H
 
 #include "dev_system.h"
-#include "Chassis_Task.h"
-#include "Message_Task.h"
-#include "protocol_judgement.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -15,60 +12,5 @@ void Correspondence_Task(void *pvParameters);
 #ifdef __cplusplus
 }
 #endif
-
-union F
-{
-    uint8_t I[4];
-    fp32 F;
-};
-
-#define RATE_5_HZ		5
-#define RATE_10_HZ		10
-#define RATE_25_HZ		25
-#define RATE_50_HZ		50
-#define RATE_100_HZ		100
-#define RATE_200_HZ 	200
-#define RATE_250_HZ 	250
-#define RATE_500_HZ 	500
-#define RATE_1000_HZ 	1000
-
-#define MAIN_LOOP_RATE 	RATE_500_HZ
-
-#define RATE_DO_EXECUTE(RATE_HZ, TICK) ((TICK % (MAIN_LOOP_RATE / RATE_HZ)) == 0)
-
-struct Gimbal_Send_Data_t
-{
-    uint8_t Header;
-    uint8_t Grade;
-    uint8_t Shoot[4];
-    uint8_t robo_ID;
-    uint8_t Tail;
-};
-
-
-struct Cap_Data_t
-{
-    uint8_t enable;
-    uint8_t mode;
-    uint8_t power;
-    uint8_t power_limit;
-};
-
-class correspondence_ctrl
-{
-public:
-    const judge_type_t *robo;
-
-    void Corres_Init(void);
-    void Corres_Send(void);
-    void Corres_Feedback(void);
-    Cap_Data_t SuperCapS;
-private:
-    Message_Ctrl *Corres_Message;
-    Chassis_Ctrl *Corres_Chassis;
-    Gimbal_Send_Data_t GimbalS;
-
-    void CAP_SendData(const void *buf, uint8_t len);
-};
 
 #endif
