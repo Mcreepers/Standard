@@ -57,6 +57,7 @@ Serialctrl *Serial_Ctrl::Tran(USART_TypeDef *SERIAL)
     {
         return &Serial8_Ctrl;
     }
+	return NULL;
 }
 
 void Serial_Ctrl::Hook(USART_TypeDef *SERIAL, bool mode)
@@ -104,11 +105,14 @@ void Serial_Ctrl::Handle(Serialctrl *SerialCtrl, Serial_Data_t *Serial, bool mod
         {
             Serial->Data[0] = 0;
         }
-        if(Serial->Tail != NULL && Serial->Data[Serial->Len + 1] != Serial->Tail)
+        if(Serial->Tail != NULL && Serial->Data[Serial->Len] != Serial->Tail)
         {
             Serial->Data[0] = 0;
         }
-        Send_to_Message(SerialCtrl);
+		if(Serial->Data[0] != 0)
+		{
+			Send_to_Message(SerialCtrl);
+		}
     }
 }
 
@@ -131,18 +135,18 @@ void Serial_Ctrl::Send_to_Message(Serialctrl *SerialCtrl)
     }
     if(SerialCtrl == &Serial6_Ctrl)
     {
-        ID_Data[SerialData3].Data_Ptr = Serial3->Data;
+        ID_Data[SerialData6].Data_Ptr = Serial6->Data;
         xQueueSendFromISR(Message_Queue, &ID_Data[SerialData6], 0);
     }
     if(SerialCtrl == &Serial7_Ctrl)
     {
-        ID_Data[SerialData3].Data_Ptr = Serial3->Data;
+        ID_Data[SerialData7].Data_Ptr = Serial7->Data;
         xQueueSendFromISR(Message_Queue, &ID_Data[SerialData7], 0);
     }
     if(SerialCtrl == &Serial8_Ctrl)
     {
-        ID_Data[SerialData3].Data_Ptr = Serial3->Data;
-        xQueueSendFromISR(Message_Queue, &ID_Data[SerialData7], 0);
+        ID_Data[SerialData8].Data_Ptr = Serial8->Data;
+        xQueueSendFromISR(Message_Queue, &ID_Data[SerialData8], 0);
     }
 }
 

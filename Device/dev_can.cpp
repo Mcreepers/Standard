@@ -24,10 +24,10 @@ void CANctrl::SendData(const void *buf, uint8_t len)
     TxMessage.IDE = CAN_ID_STD;
     TxMessage.RTR = CAN_RTR_DATA;
     TxMessage.DLC = len;
-    do
+    while(len--)
     {
         TxMessage.Data[len] = ch[len];
-    } while(len--);
+    }
 
     CAN_Transmit(CANx, &TxMessage);
 }

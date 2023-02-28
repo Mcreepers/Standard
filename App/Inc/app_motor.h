@@ -85,9 +85,8 @@ public:
 	{
 		return &Motor_Measure[i];
 	}
-	void GetData(CAN_TypeDef *CANx_, uint32_t &StdID_, uint8_t &Num_)
+	void GetData(uint32_t &StdID_, uint8_t &Num_)
 	{
-		CANx_ = this->CANx;
 		StdID_ = this->StdID;
 		Num_ = this->Num;
 	}
@@ -95,11 +94,11 @@ public:
 	{
 		return &Motor_Measure[(i & 3)];
 	}
-private:
 	CAN_TypeDef *CANx;
+private:
+	motor_measure_t *Motor_Measure;
 	uint16_t StdID;
 	uint8_t Num;
-	motor_measure_t *Motor_Measure;
 };
 
 class Motor_PWM_Ctrl
@@ -131,8 +130,8 @@ class CAN_Ctrl
 public:
 	CAN_Ctrl()
 	{
-		Chassis = new Motor_CAN_Ctrl(CAN1, CAN_DJI_Motor_Group2_ID, 4);
-		Gimbal = new Motor_CAN_Ctrl(CAN2, CAN_DJI_Motor_Group1_ID, 4);
+		Chassis = new Motor_CAN_Ctrl(CAN2, CAN_DJI_Motor_Group2_ID, 4);
+		Gimbal = new Motor_CAN_Ctrl(CAN1, CAN_DJI_Motor_Group1_ID, 4);
 	}
 	Motor_CAN_Ctrl *Chassis;
 	Motor_CAN_Ctrl *Gimbal;

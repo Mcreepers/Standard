@@ -113,6 +113,7 @@ extern"C"
 							SBUS_TO_RC(SBUS_rx_buf[0], &rc_ctrl);
 							//发送消息更新按键
 							BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+							ID_Data[RC_Data].Data_Ptr = &rc_ctrl;
                             xQueueSendFromISR(Message_Queue, &ID_Data[RC_Data], &xHigherPriorityTaskWoken);
 							portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 						}
@@ -132,6 +133,7 @@ extern"C"
 							SBUS_TO_RC(SBUS_rx_buf[1], &rc_ctrl);
 							//发送消息更新按键
 							BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+							ID_Data[RC_Data].Data_Ptr = &rc_ctrl;
                             xQueueSendFromISR(Message_Queue, &ID_Data[RC_Data], &xHigherPriorityTaskWoken);
 							portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 						}

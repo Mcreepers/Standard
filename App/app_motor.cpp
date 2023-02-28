@@ -62,7 +62,8 @@ void CAN_Ctrl::SendData(Motor_CAN_Ctrl *Motor, int16_t Motor1, int16_t Motor2, i
 	Data[6] = Motor4 >> 8;
 	Data[7] = Motor4;
 
-	Motor->GetData(CANx, StdID, Num);
+	Motor->GetData(StdID, Num);
+	CANx = Motor->CANx;
 	SendData(CANx, StdID, Data, 8);
 }
 
@@ -79,7 +80,8 @@ void CAN_Ctrl::SendData(Motor_CAN_Ctrl *Motor, int16_t Motor1, int16_t Motor2, i
 	Data[4] = Motor3 >> 8;
 	Data[5] = Motor3;
 
-	Motor->GetData(CANx, StdID, Num);
+	Motor->GetData(StdID, Num);
+	CANx = Motor->CANx;
 	SendData(CANx, StdID, Data, 6);
 }
 
@@ -94,7 +96,8 @@ void CAN_Ctrl::SendData(Motor_CAN_Ctrl *Motor, int16_t Motor1, int16_t Motor2)
 	Data[2] = Motor2 >> 8;
 	Data[3] = Motor2;
 
-	Motor->GetData(CANx, StdID, Num);
+	Motor->GetData(StdID, Num);
+	CANx = Motor->CANx;
 	SendData(CANx, StdID, Data, 4);
 }
 
@@ -107,7 +110,8 @@ void CAN_Ctrl::SendData(Motor_CAN_Ctrl *Motor, int16_t Motor1)
 	Data[0] = Motor1 >> 8;
 	Data[1] = Motor1;
 
-	Motor->GetData(CANx, StdID, Num);
+	Motor->GetData(StdID, Num);
+	CANx = Motor->CANx;
 	SendData(CANx, StdID, Data, 2);
 }
 
@@ -116,7 +120,8 @@ void CAN_Ctrl::CAN_CMD_RESET_ID(Motor_CAN_Ctrl *Motor)
 	CAN_TypeDef *CANx;
 	uint32_t StdID;
 	uint8_t Num;
-	Motor->GetData(CANx, StdID, Num);
+	Motor->GetData(StdID, Num);
+	CANx = Motor->CANx;
 	StdID = 0x700;
 	uint8_t Data[8];
 	for(uint8_t i = 0; i < 8; i++)

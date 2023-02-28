@@ -80,27 +80,6 @@ void Message_Ctrl::CAN1_Process(CanRxMsg *Rx_Message)
 		// SuperCapR.enable = (uint8_t)((Rx_Message)->Data[7]);
 		// SuperCapR.enable = (uint8_t)((Rx_Message)->Data[8]);
 	}
-	case CAN_DJI_Motor1_ID:
-	case CAN_DJI_Motor2_ID:
-	case CAN_DJI_Motor3_ID:
-	case CAN_DJI_Motor4_ID:
-	{
-		static uint8_t i = 0;
-		//处理电机ID号
-		i = Rx_Message->StdId - CAN_DJI_Motor1_ID;
-		//处理电机数据宏函数
-		get_motor_measure(CAN_Cmd.Chassis->GetData(i), Rx_Message);
-		break;
-	}
-	default:
-	break;
-	}
-}
-
-void Message_Ctrl::CAN2_Process(CanRxMsg *Rx_Message)
-{
-	switch(Rx_Message->StdId)
-	{
 #ifdef useMecanum
 	case CAN_YAW_MOTOR_ID:
 	{
@@ -133,10 +112,31 @@ void Message_Ctrl::CAN2_Process(CanRxMsg *Rx_Message)
 	}
 }
 
+void Message_Ctrl::CAN2_Process(CanRxMsg *Rx_Message)
+{
+	switch(Rx_Message->StdId)
+	{
+	case CAN_DJI_Motor1_ID:
+	case CAN_DJI_Motor2_ID:
+	case CAN_DJI_Motor3_ID:
+	case CAN_DJI_Motor4_ID:
+	{
+		static uint8_t i = 0;
+		//处理电机ID号
+		i = Rx_Message->StdId - CAN_DJI_Motor1_ID;
+		//处理电机数据宏函数
+		get_motor_measure(CAN_Cmd.Chassis->GetData(i), Rx_Message);
+		break;
+	}
+	default:
+	break;
+	}
+}
+
 void Message_Ctrl::Usart3_Hook(uint8_t *Rx_Message)
 {
 	uint8_t len = Rx_Message[0];
-//	Message.comm.ReceiveData(&Rx_Message[1], len);
+	//	Message.comm.ReceiveData(&Rx_Message[1], len);
 }
 
 void Message_Ctrl::Usart6_Hook(uint8_t *Rx_Message)
